@@ -48,4 +48,4 @@ The following command starts a second ``kafkaaggregator`` worker on port 6067.
 
 .. code-block:: bash
 
-  docker-compose run kafkaaggregator worker -l info -p 6067
+  docker-compose run kafkaaggregator -l info worker -p 6067

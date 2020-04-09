@@ -17,6 +17,7 @@ def create_app() -> faust.App:
         store=config.store,
         autodiscover=True,
         origin="kafkaaggregator",
+        topic_partitions=config.topic_partitions,
     )
 
     return app

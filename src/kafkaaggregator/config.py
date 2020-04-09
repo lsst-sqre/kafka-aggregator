@@ -24,3 +24,29 @@ class Configuration:
     Tables are stored in-memory by default. In production, a persistent table
     store, such as rocksdb:// is preferred.
     """
+
+    window_size: float = float(os.getenv("WINDOW_SIZE", "1"))
+    """Size of the tumbling window in seconds used to aggregate messages.
+
+    See https://faust.readthedocs.io/en/latest/userguide/tables.html#windowing
+    """
+
+    window_expires: float = float(os.getenv("WINDOW_EXPIRES", "1"))
+    """Window expiration time in seconds. This parameter controls when the
+    callback function to process the expired window(s) is called.
+
+    The default value is set to the window size, which
+    means that at least two tumbling windows will be filled up with messages
+    before the callback function is called to process the expired window(s).
+
+    Note that if the worker (or the producer) stops, the next time the callback
+    is called it might process windows from previous executions as messages
+    from the stream are persisted by Faust.
+    """
+
+    topic_partitions: int = int(os.getenv("TOPIC_PARTITIONS", "4"))
+    """Default number of partitions for new topics.
+
+    This defines the maximum number of workers we could use to distribute the
+    workload of the application.
+    """
