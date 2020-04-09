@@ -17,4 +17,4 @@ update: update-deps init
 
 .PHONY: run
 run:
-	adev runserver --app-factory create_app src/kafkaaggregator/app.py
+	kafkaaggregator
