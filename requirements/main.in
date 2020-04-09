@@ -5,9 +5,5 @@
 # After editing, update requirements/main.txt by running:
 #     make update-deps
 
-safir
-aiohttp
-aiodns
-cchardet
+faust[fast]
 importlib_metadata
-click
