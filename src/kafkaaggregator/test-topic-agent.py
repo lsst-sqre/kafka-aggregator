@@ -20,6 +20,7 @@ import logging
 from statistics import mean
 from typing import List, Tuple
 
+from faust import web
 from faust.types import StreamT
 
 from kafkaaggregator.app import app
@@ -119,6 +120,12 @@ table = (
     .relative_to_field(TestTopic.time)
 )
 
+count = app.Table(
+    "count",
+    default=int,
+    help="Number of test_topic messages processed by the worker.",
+)
+
 
 @app.agent(test_topic)
 async def process_stream(stream: StreamT) -> None:
@@ -131,6 +138,18 @@ async def process_stream(stream: StreamT) -> None:
         The incoming stream of events (messages)
     """
     async for message in stream:
+        count["test_topic"] += 1
         messages = table["test_topic"].value()
         messages.append(message)
         table["test_topic"] = messages
+
+
+@app.page("/test_topic/")
+async def get_count(self: web.View, request: web.Request) -> web.Response:
+    """Handle ``GET /test_topic/`` request.
+
+    This endpoint returns the number of test topic messages
+    processed by the worker.
+    """
+    response = self.json({"count": count["test_topic"] - 1})
+    return response
