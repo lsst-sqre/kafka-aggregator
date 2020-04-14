@@ -18,7 +18,7 @@ __all__ = ["aggregate", "process_window", "process_stream"]
 
 import logging
 from statistics import mean
-from typing import List, Tuple
+from typing import AsyncGenerator, List, Tuple
 
 from faust import web
 from faust.types import StreamT
@@ -128,7 +128,7 @@ count = app.Table(
 
 
 @app.agent(test_topic)
-async def process_stream(stream: StreamT) -> None:
+async def process_stream(stream: StreamT) -> AsyncGenerator:
     """The agent updates the table with incoming messages from the test topic.
 
     Parameters
@@ -143,6 +143,8 @@ async def process_stream(stream: StreamT) -> None:
         messages.append(message)
         table["test_topic"] = messages
 
+        yield message
+
 
 @app.page("/test_topic/")
 async def get_count(self: web.View, request: web.Request) -> web.Response:
@@ -151,5 +153,5 @@ async def get_count(self: web.View, request: web.Request) -> web.Response:
     This endpoint returns the number of test topic messages
     processed by the worker.
     """
-    response = self.json({"count": count["test_topic"] - 1})
+    response = self.json({"count": count["test_topic"]})
     return response

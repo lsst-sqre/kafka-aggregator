@@ -30,9 +30,10 @@ On another terminal session start a ``kafkaaggregator`` worker:
 
 .. code-block:: bash
 
-  docker-compose run kafkaaggregator -l info worker -p 6066
+  docker-compose run --service-ports 6066 kafkaaggregator -l info worker -p 6066
 
-you can access this worker at http://localhost:6066, ports ``[6066-6069]`` are exposed in the docker-compose configuration.
+you can access this worker at http://localhost:6066. In particular,  http://localhost:6066/test_topic/ shows the number of messages processed for the test topic.
+Ports ``[6066-6069]`` are configured in the ``docker-compose.yaml`` and the ``--service-ports`` flag creates and maps those ports to the host.
 
 The following command starts the ``kafkaaggregator`` producer for the test topic. In this example it procduces 6000 messages at 10Hz.
 
@@ -48,4 +49,4 @@ The following command starts a second ``kafkaaggregator`` worker on port 6067.
 
 .. code-block:: bash
 
-  docker-compose run kafkaaggregator -l info worker -p 6067
+  docker-compose run --service-ports kafkaaggregator -l info worker -p 6067
