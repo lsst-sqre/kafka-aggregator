@@ -10,3 +10,4 @@ coverage[toml]
 flake8
 mypy
 pytest
+pytest-asyncio

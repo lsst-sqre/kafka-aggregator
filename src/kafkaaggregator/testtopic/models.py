@@ -4,6 +4,7 @@ import faust
 class TestTopic(faust.Record, serializer="json"):
     """Test topic with raw values."""
 
+    __test__ = False
     time: float
     value: float
 
