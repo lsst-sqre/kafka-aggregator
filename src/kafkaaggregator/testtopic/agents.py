@@ -25,7 +25,7 @@ from faust.types import StreamT
 
 from kafkaaggregator.app import app
 from kafkaaggregator.config import Configuration
-from kafkaaggregator.models import AggTestTopic, TestTopic
+from kafkaaggregator.testtopic.models import AggTestTopic, TestTopic
 
 logger = logging.getLogger("kafkaaggregator")
 
