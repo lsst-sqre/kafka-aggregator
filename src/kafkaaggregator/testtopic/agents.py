@@ -153,5 +153,5 @@ async def get_count(self: web.View, request: web.Request) -> web.Response:
     This endpoint returns the number of test topic messages
     processed by the worker.
     """
-    response = self.json({"count": count["test_topic"] - 1})
+    response = self.json({"count": count["test_topic"]})
     return response
