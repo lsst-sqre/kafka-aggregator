@@ -13,7 +13,12 @@ process the expired window(s) is called. When a window is processed, a new
 message for the aggregated test topic is produced with the aggregated results.
 """
 
-__all__ = ["aggregate", "process_window", "process_stream"]
+__all__ = [
+    "aggregate",
+    "process_window",
+    "process_test_topic",
+    "process_aggregated_test_topic",
+]
 
 
 import logging
@@ -23,13 +28,10 @@ from typing import AsyncGenerator, List, Tuple
 from faust import web
 from faust.types import StreamT
 
-from kafkaaggregator.app import app
-from kafkaaggregator.config import Configuration
+from kafkaaggregator.app import app, config
 from kafkaaggregator.testtopic.models import AggTestTopic, TestTopic
 
 logger = logging.getLogger("kafkaaggregator")
-
-config = Configuration()
 
 test_topic = app.topic("test-topic", value_type=TestTopic, internal=True)
 
@@ -48,7 +50,7 @@ def aggregate(timestamp: float, messages: List[TestTopic]) -> AggTestTopic:
     timestamp: `float`
         A timestamp for the aggregated message, for example, the mid point of
         the window that contains the messages.
-    messages: `List[TestTopic]`
+    messages: `list`
         List of test topic messages to aggregate.
 
     Returns
@@ -81,7 +83,7 @@ def process_window(key: Tuple, value: List[TestTopic]) -> None:
         ``Table[k]``. The key contains the window range, for example,
         key = (k, (start, end))
 
-    value: `List[TestTopic]`
+    value: `list`
         List of messages in the current window.
     """
 
@@ -128,8 +130,9 @@ count = app.Table(
 
 
 @app.agent(test_topic)
-async def process_stream(stream: StreamT) -> AsyncGenerator:
-    """The agent updates the table with incoming messages from the test topic.
+async def process_test_topic(stream: StreamT) -> AsyncGenerator:
+    """Update the tumbling window with incoming messages from the
+    test topic. It also counts the number of incoming messages.
 
     Parameters
     ----------
@@ -146,12 +149,32 @@ async def process_stream(stream: StreamT) -> AsyncGenerator:
         yield message
 
 
-@app.page("/test_topic/")
-async def get_count(self: web.View, request: web.Request) -> web.Response:
-    """Handle ``GET /test_topic/`` request.
+@app.agent(aggregated_test_topic)
+async def process_aggregated_test_topic(stream: StreamT) -> AsyncGenerator:
+    """Persist the number of aggragated messages.
 
-    This endpoint returns the number of test topic messages
-    processed by the worker.
+    Parameters
+    ----------
+
+    stream: `StreamT`
+        The incoming stream of events (messages)
     """
-    response = self.json({"count": count["test_topic"]})
+    async for aggregated_message in stream:
+        count["aggregated_test_topic"] += 1
+
+        yield aggregated_message
+
+
+@app.page("/count/")
+async def get_count(self: web.View, request: web.Request) -> web.Response:
+    """Handle ``GET /count/`` request.
+
+    Get the number of messages and aggregated messages from the count table.
+    """
+    response = self.json(
+        {
+            "test_topic": count["test_topic"],
+            "aggregated_test_topic": count["aggregated_test_topic"],
+        }
+    )
     return response

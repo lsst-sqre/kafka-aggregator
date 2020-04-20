@@ -7,9 +7,18 @@ import faust
 from kafkaaggregator.config import Configuration
 
 
-def create_app() -> faust.App:
-    """Create and configure the Faust application."""
-    config = Configuration()
+def create_app(config: Configuration = None) -> faust.App:
+    """Create and configure the Faust application.
+
+    Parameters
+    ----------
+    config : `Configuration`, optional
+        The configuration to use.  If not provided, the default Configuration
+        will be used.
+    """
+
+    if not config:
+        config = Configuration()
 
     app = faust.App(
         id="kafkaaggregator",
@@ -23,4 +32,7 @@ def create_app() -> faust.App:
     return app
 
 
-app: faust.App = create_app()
+# The default configuration can also be imported from this module
+config = Configuration()
+
+app: faust.App = create_app(config)

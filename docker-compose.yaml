@@ -2,22 +2,6 @@
 version: '3'
 services:
 
-  kafkaaggregator:
-    tty: true
-    build:
-      context: .
-      dockerfile: Dockerfile-dev
-    environment:
-      - KAFKA_BROKER_URL=kafka://broker:29092
-      - SCHEMA_REGISTRY_URL=http://schema-registry:8081
-    ports:
-      - "6066:6066"
-      - "6067:6067"
-      - "6068:6068"
-      - "6069:6069"
-    volumes:
-      - .:/app
-
   zookeeper:
     image: confluentinc/cp-zookeeper:5.3.2
     hostname: zookeeper

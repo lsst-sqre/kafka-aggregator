@@ -10,13 +10,8 @@ kafka-aggregator development is based on the `Safir <https://safir.lsst.io>`__ a
 Running the test topic aggregation example
 ==========================================
 
-Docker compose makes it possible to run the ``kafkaaggregator`` application with a local Kafka cluster.  The ``docker-compose.yaml`` configuration file includes services for the application itself and for Confluent Kafka (zookeeper, broker, schema-registry and control-center), based on `this example <https://github.com/confluentinc/examples/blob/5.3.1-post/cp-all-in-one/docker-compose.yml>`_.
+Docker compose makes it possible to run the ``kafkaaggregator`` application with a local Kafka cluster.  The ``docker-compose.yaml`` configuration includes services for Confluent Kafka (zookeeper, broker, schema-registry and control-center) based on `this example <https://github.com/confluentinc/examples/blob/5.3.1-post/cp-all-in-one/docker-compose.yml>`_.
 
-Build an image for the ``kafkaaggregator`` app:
-
-.. code-block:: bash
-
-  docker-compose build
 
 Start zookeeper, broker, schema-registry, and control-center services:
 
@@ -24,29 +19,39 @@ Start zookeeper, broker, schema-registry, and control-center services:
 
   docker-compose up zookeeper broker schema-registry control-center
 
-you can check the status of the Kafka cluster using the Confluent Control Center at http://localhost:9021.
+you can check the status of the Kafka cluster opening the `Confluent Control Center <http://localhost:9021>`_ in your browser.
 
-On another terminal session start a ``kafkaaggregator`` worker:
-
-.. code-block:: bash
-
-  docker-compose run --service-ports 6066 kafkaaggregator -l info worker -p 6066
-
-you can access this worker at http://localhost:6066. In particular,  http://localhost:6066/test_topic/ shows the number of messages processed for the test topic.
-Ports ``[6066-6069]`` are configured in the ``docker-compose.yaml`` and the ``--service-ports`` flag creates and maps those ports to the host.
-
-The following command starts the ``kafkaaggregator`` producer for the test topic. In this example it procduces 6000 messages at 10Hz.
+On another terminal session, create a new Python virtual environment and install the `kafkaaggregator` app:
 
 .. code-block:: bash
 
-  docker-compose run kafkaaggregator -l info produce --frequency 10 --max-messages 6000
+  make update
 
-Using the Confluent Control Center, you can inspect the messages for the aggregated test topic ``agg-test-topic``.
+Start the ``kafkaaggregator`` worker:
+
+.. code-block:: bash
+
+  kafkaaggregator -l info worker
+
+you can access the worker HTTP API locally on the default port ``6066``. In particular, the ``http://localhost:6066/count/`` endpoint reports the number of messages processed by the worker.
+
+.. code-block:: bash
+
+  curl http://localhost:6066/count/
+  
+
+The following command starts the ``kafkaaggregator`` producer for the test topic. In this example it produces 6000 messages at 10Hz.
+
+.. code-block:: bash
+
+  kafkaaggregator -l info produce --frequency 10 --max-messages 6000
+
+Using `Confluent Control Center <http://localhost:9021>`_, you can inspect the messages for the aggregated topic ``agg-test-topic``.
 
 You can also inspect the lag for the ``kafkaaggregator`` consumers. An advantage of Faust is that you can easily add multiple workers to distribute the workload of the application. If topics are created with multiple partitions (see the ``config.topic_partitions`` configuration parameter) partitions are reassigned to different workers.
 
-The following command starts a second ``kafkaaggregator`` worker on port 6067.
+The following command starts a second ``kafkaaggregator`` worker on port ``6067``.
 
 .. code-block:: bash
 
-  docker-compose run --service-ports kafkaaggregator -l info worker -p 6067
+  kafkaaggregator -l info worker -p 6067
