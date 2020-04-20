@@ -7,13 +7,13 @@ A Kafka aggregator based on the `Faust <https://faust.readthedocs.io/en/latest/i
 kafka-aggregator development is based on the `Safir <https://safir.lsst.io>`__ application template.
 
 
-Running the test topic aggregation example
-==========================================
+Docker compose
+==============
 
 Docker compose makes it possible to run the ``kafkaaggregator`` application with a local Kafka cluster.  The ``docker-compose.yaml`` configuration includes services for Confluent Kafka (zookeeper, broker, schema-registry and control-center) based on `this example <https://github.com/confluentinc/examples/blob/5.3.1-post/cp-all-in-one/docker-compose.yml>`_.
 
 
-Start zookeeper, broker, schema-registry, and control-center services:
+Start the zookeeper, broker, schema-registry, and control-center services:
 
 .. code-block:: language
 
@@ -21,11 +21,42 @@ Start zookeeper, broker, schema-registry, and control-center services:
 
 you can check the status of the Kafka cluster opening the `Confluent Control Center <http://localhost:9021>`_ in your browser.
 
+Installing `kafkaaggregator`
+============================
+
 On another terminal session, create a new Python virtual environment and install the `kafkaaggregator` app:
 
 .. code-block:: bash
 
   make update
+
+
+Avro schemas
+============
+
+`faust-avro <https://github.com/masterysystems/faust-avro>`_ adds Avro serialization and schema registry support to Faust. It can parse Faust Records into Avro Schemas,  for example:
+
+.. code-block:: bash
+
+   # list the curret models
+   kafkaaggregator models
+   # dump the Avro schema for the corresponding model
+   kafkaaggregator schema testtopic.models.AggTestTopic
+
+Before running the test topic aggregation example you have to register the schemas:
+
+.. code-block:: bash
+
+  kafkaaggregator register
+
+You can verify that the schemas have been uploaded:
+
+.. code-block:: bash
+
+  curl http://localhost:8081/subjects
+
+Running the test topic aggregation example
+==========================================
 
 Start the ``kafkaaggregator`` worker:
 
@@ -38,7 +69,7 @@ you can access the worker HTTP API locally on the default port ``6066``. In part
 .. code-block:: bash
 
   curl http://localhost:6066/count/
-  
+
 
 The following command starts the ``kafkaaggregator`` producer for the test topic. In this example it produces 6000 messages at 10Hz.
 

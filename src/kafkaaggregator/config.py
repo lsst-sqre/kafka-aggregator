@@ -18,6 +18,14 @@ class Configuration:
     messages.
     """
 
+    registry_url: str = os.getenv(
+        "SCHEMA_REGISTRY_URL", "http://localhost:8081"
+    )
+    """The Confluent Schema Registry URL.
+
+    Used in conjunction with faust-avro to register Avro schemas.
+    """
+
     store: str = os.getenv("STORE", "memory://")
     """The backend used for table storage.
 

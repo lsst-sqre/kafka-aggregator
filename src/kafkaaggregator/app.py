@@ -2,12 +2,12 @@
 
 __all__ = ["create_app"]
 
-import faust
+import faust_avro
 
 from kafkaaggregator.config import Configuration
 
 
-def create_app(config: Configuration = None) -> faust.App:
+def create_app(config: Configuration = None) -> faust_avro.App:
     """Create and configure the Faust application.
 
     Parameters
@@ -20,9 +20,10 @@ def create_app(config: Configuration = None) -> faust.App:
     if not config:
         config = Configuration()
 
-    app = faust.App(
+    app = faust_avro.App(
         id="kafkaaggregator",
         broker=config.broker,
+        registry_url=config.registry_url,
         store=config.store,
         autodiscover=True,
         origin="kafkaaggregator",
@@ -35,4 +36,4 @@ def create_app(config: Configuration = None) -> faust.App:
 # The default configuration can also be imported from this module
 config = Configuration()
 
-app: faust.App = create_app(config)
+app: faust_avro.App = create_app(config)

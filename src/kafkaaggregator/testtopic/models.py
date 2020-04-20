@@ -1,7 +1,7 @@
-import faust
+import faust_avro
 
 
-class TestTopic(faust.Record, serializer="json"):
+class TestTopic(faust_avro.Record):
     """Test topic with raw values."""
 
     __test__ = False
@@ -9,7 +9,7 @@ class TestTopic(faust.Record, serializer="json"):
     value: float
 
 
-class AggTestTopic(faust.Record, serializer="json"):
+class AggTestTopic(faust_avro.Record):
     """Test topic with aggregated values."""
 
     time: float
