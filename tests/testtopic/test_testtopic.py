@@ -1,7 +1,7 @@
 import pytest
 from faust.windows import TumblingWindow
 
-from kafkaaggregator.testtopic.agents import count, process_stream
+from kafkaaggregator.testtopic.agents import count, process_test_topic
 from kafkaaggregator.testtopic.models import TestTopic
 
 
@@ -24,20 +24,13 @@ async def test_tumbling_window_ranges():
 @pytest.mark.asyncio
 async def test_count_table(test_app):
     """Test if the count table is updated every time the agent processes a new
-    message
+    message and if counts are persisted.
     """
-    async with process_stream.test_context() as agent:
-        test_topic_1 = TestTopic(time=0.0, value=0.5)
-        await agent.put(test_topic_1)
+    test_topic = TestTopic(time=0.0, value=0.5)
+    async with process_test_topic.test_context() as agent:
+        await agent.put(test_topic)
         assert count["test_topic"] == 1
-        await agent.put(test_topic_1)
+
+    async with process_test_topic.test_context() as agent:
+        await agent.put(test_topic)
         assert count["test_topic"] == 2
-
-
-@pytest.mark.asyncio
-async def test_count_table_persistence(test_app):
-    """Test if count table is persisted after restarting the app"""
-    async with process_stream.test_context() as agent:
-        test_topic_1 = TestTopic(time=0.0, value=0.5)
-        await agent.put(test_topic_1)
-        assert count["test_topic"] == 3
