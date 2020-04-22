@@ -43,7 +43,7 @@ Avro schemas
    # dump the Avro schema for the corresponding model
    kafkaaggregator schema testtopic.models.AggTestTopic
 
-Before running the test topic aggregation example you have to register the schemas:
+Before running the test topic aggregation example you have to register the schemas for internal topics managed by Faust.
 
 .. code-block:: bash
 
@@ -54,6 +54,16 @@ You can verify that the schemas have been uploaded:
 .. code-block:: bash
 
   curl http://localhost:8081/subjects
+
+Internal vs. external managed topics
+====================================
+
+Faust manages topics declared as internal by the agents, like the ``agg-test-topic`` topic, which is created by Faust and whose schema is also controlled by Faust.
+
+In real-life, source topics already exist in Kafka and their schemas are already registered in the Schema Registry. We demonstrate that we can run the test topic aggregation example when a source topic is not managed by Faust, i.e the agents assume that the ``test-topic`` exists and the messages can be deserialized without specifying a model for the ``test-topic`` topic in Faust.
+
+However, to run the test topic aggregation example, we have to initialize ``test-topic`` and that's done when we start the Faust worker.
+
 
 Running the test topic aggregation example
 ==========================================

@@ -1,12 +1,6 @@
+"""Models for the internal topics managed by Faust."""
+
 import faust_avro
-
-
-class TestTopic(faust_avro.Record):
-    """Test topic with raw values."""
-
-    __test__ = False
-    time: float
-    value: float
 
 
 class AggTestTopic(faust_avro.Record):

@@ -29,18 +29,19 @@ from faust import web
 from faust.types import StreamT
 
 from kafkaaggregator.app import app, config
-from kafkaaggregator.testtopic.models import AggTestTopic, TestTopic
+from kafkaaggregator.testtopic.models import AggTestTopic
 
 logger = logging.getLogger("kafkaaggregator")
 
-test_topic = app.topic("test-topic", value_type=TestTopic, internal=True)
+# Asumme the test topic exists
+test_topic = app.topic("test-topic")
 
 aggregated_test_topic = app.topic(
     "agg-test-topic", value_type=AggTestTopic, internal=True
 )
 
 
-def aggregate(timestamp: float, messages: List[TestTopic]) -> AggTestTopic:
+def aggregate(timestamp: float, messages: List) -> AggTestTopic:
     """Return an aggregated message from a list of messages for the test
     topic and a timestamp.
 
@@ -60,7 +61,7 @@ def aggregate(timestamp: float, messages: List[TestTopic]) -> AggTestTopic:
     """
     count = len(messages)
 
-    values = [message.value for message in messages]
+    values = [message["value"] for message in messages]
     minimum = min(values)
     average = mean(values)
     maximum = max(values)
@@ -72,7 +73,7 @@ def aggregate(timestamp: float, messages: List[TestTopic]) -> AggTestTopic:
     return aggregated_message
 
 
-def process_window(key: Tuple, value: List[TestTopic]) -> None:
+def process_window(key: Tuple, value: List) -> None:
     """Process a window and send an aggregated message.
 
     Parameters
@@ -108,8 +109,9 @@ def process_window(key: Tuple, value: List[TestTopic]) -> None:
 
 
 # Tumbling window to persist test topic messages, the process_window
-# callback is called when the window expires. Window range is relative to the
-# time field in the messages.
+# callback is called when the window expires. Note that we don't have a model
+# for the test topic to specify the time field to use. An alternative is to
+# construct the window ranges relative to the timestamp added by Kafka.
 table = (
     app.Table(
         "tumbling-window",
@@ -119,7 +121,7 @@ table = (
         f"{config.window_size}s.",
     )
     .tumbling(config.window_size, expires=config.window_expires)
-    .relative_to_field(TestTopic.time)
+    .relative_to_stream()
 )
 
 count = app.Table(

@@ -94,5 +94,5 @@ exclude = '''
 include_trailing_comma = true
 multi_line_output = 3
 known_first_party = ["kafkaaggregator", "tests"]
-known_third_party = ["faust", "faust_avro", "pytest", "setuptools", "yarl"]
+known_third_party = ["aiohttp", "faust", "faust_avro", "pytest", "setuptools", "yarl"]
 skip = ["docs/conf.py"]

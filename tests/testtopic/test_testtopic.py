@@ -1,8 +1,13 @@
 import pytest
+from faust import Record
 from faust.windows import TumblingWindow
 
 from kafkaaggregator.testtopic.agents import count, process_test_topic
-from kafkaaggregator.testtopic.models import TestTopic
+
+
+class TestTopic(Record):
+    time: float
+    value: float
 
 
 @pytest.mark.asyncio

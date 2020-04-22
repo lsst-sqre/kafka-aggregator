@@ -10,7 +10,6 @@ from time import time
 from faust.cli import AppCommand, option
 
 from kafkaaggregator.app import app
-from kafkaaggregator.testtopic.models import TestTopic
 
 logger = logging.getLogger("kafkaaggregator")
 
@@ -37,7 +36,8 @@ async def produce(
     """Produce messages for the kafkaaggregator test-topic
     """
 
-    test_topic = app.topic("test-topic", value_type=TestTopic, internal=True)
+    # Assume the test topic exists
+    test_topic = app.topic("test-topic")
 
     logger.info(
         f"Producing {max_messages} message(s) for test-topic at "
@@ -46,5 +46,5 @@ async def produce(
 
     for i in range(max_messages):
         value = random.random()
-        await test_topic.send(value=TestTopic(time=time(), value=value))
+        await test_topic.send(value=dict(time=time(), value=value))
         await asyncio.sleep(1 / frequency)
