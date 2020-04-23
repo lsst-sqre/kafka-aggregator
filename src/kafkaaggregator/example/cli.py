@@ -1,4 +1,4 @@
-"""Command-line interface for the test topic aggregation example."""
+"""Command-line interface for the aggregation example."""
 
 __all__ = ["produce"]
 
@@ -9,8 +9,7 @@ from time import time
 
 from faust.cli import AppCommand, option
 
-from kafkaaggregator.app import app
-from kafkaaggregator.testtopic.models import TestTopic
+from kafkaaggregator.app import app, config
 
 logger = logging.getLogger("kafkaaggregator")
 
@@ -34,17 +33,18 @@ logger = logging.getLogger("kafkaaggregator")
 async def produce(
     self: AppCommand, frequency: float, max_messages: int
 ) -> None:
-    """Produce messages for the kafkaaggregator test-topic
+    """Produce messages for the kafkaaggregator source topic
     """
 
-    test_topic = app.topic("test-topic", value_type=TestTopic, internal=True)
+    # Assume the source topic exists
+    src_topic = app.topic(config.src_topic)
 
     logger.info(
-        f"Producing {max_messages} message(s) for test-topic at "
+        f"Producing {max_messages} message(s) for {config.src_topic} at "
         f"{frequency} Hz."
     )
 
     for i in range(max_messages):
         value = random.random()
-        await test_topic.send(value=TestTopic(time=time(), value=value))
+        await src_topic.send(value=dict(time=time(), value=value))
         await asyncio.sleep(1 / frequency)

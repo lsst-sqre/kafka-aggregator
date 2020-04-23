@@ -1,8 +1,18 @@
 import pytest
+from faust import Record
 from faust.windows import TumblingWindow
 
-from kafkaaggregator.testtopic.agents import count, process_test_topic
-from kafkaaggregator.testtopic.models import TestTopic
+from kafkaaggregator.config import Configuration
+from kafkaaggregator.example.agents import count, process_src_topic
+
+config = Configuration()
+
+
+class TestTopic(Record):
+
+    __test__ = False
+    time: float
+    value: float
 
 
 @pytest.mark.asyncio
@@ -27,10 +37,10 @@ async def test_count_table(test_app):
     message and if counts are persisted.
     """
     test_topic = TestTopic(time=0.0, value=0.5)
-    async with process_test_topic.test_context() as agent:
+    async with process_src_topic.test_context() as agent:
         await agent.put(test_topic)
-        assert count["test_topic"] == 1
+        assert count[config.src_topic] == 1
 
-    async with process_test_topic.test_context() as agent:
+    async with process_src_topic.test_context() as agent:
         await agent.put(test_topic)
-        assert count["test_topic"] == 2
+        assert count[config.src_topic] == 2

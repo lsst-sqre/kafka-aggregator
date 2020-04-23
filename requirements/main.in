@@ -6,4 +6,5 @@
 #     make update-deps
 
 faust[fast]
+faust-avro
 importlib_metadata
