@@ -58,3 +58,12 @@ class Configuration:
     This defines the maximum number of workers we could use to distribute the
     workload of the application.
     """
+
+    src_topic: str = os.getenv("SOURCE_TOPIC", "kafkaaggregator-src-topic")
+    """Name of the source topic used in the kafkaaggregator example.
+    """
+
+    agg_topic: str = os.getenv(
+        "AGGREGATION_TOPIC", "kafkaaggregator-agg-topic"
+    )
+    """Name of the aggregation topic used in the kafkaaggregator example."""

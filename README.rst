@@ -19,10 +19,10 @@ Start the zookeeper, broker, schema-registry, and control-center services:
 
   docker-compose up zookeeper broker schema-registry control-center
 
-you can check the status of the Kafka cluster opening the `Confluent Control Center <http://localhost:9021>`_ in your browser.
+you can check the status of the Kafka cluster opening the `Confluent Control Center <http://localhost:9021>`_ in the browser.
 
-Installing `kafkaaggregator`
-============================
+Installing kafkaaggregator
+==========================
 
 On another terminal session, create a new Python virtual environment and install the `kafkaaggregator` app:
 
@@ -34,22 +34,22 @@ On another terminal session, create a new Python virtual environment and install
 Avro schemas
 ============
 
-`faust-avro <https://github.com/masterysystems/faust-avro>`_ adds Avro serialization and schema registry support to Faust. It can parse Faust Records into Avro Schemas,  for example:
+`faust-avro <https://github.com/masterysystems/faust-avro>`_ adds Avro serialization and schema registry support to Faust. It can parse Faust models into Avro Schemas, for example:
 
 .. code-block:: bash
 
    # list the curret models
    kafkaaggregator models
    # dump the Avro schema for the corresponding model
-   kafkaaggregator schema testtopic.models.AggTestTopic
+   kafkaaggregator schema testtopic.models.AggTopic
 
-Before running the test topic aggregation example you have to register the schemas for internal topics managed by Faust.
+Before running the aggregation example you have to register the schemas for internal topics managed by Faust.
 
 .. code-block:: bash
 
   kafkaaggregator register
 
-You can verify that the schemas have been uploaded:
+You can verify that the schemas have been registered:
 
 .. code-block:: bash
 
@@ -58,15 +58,15 @@ You can verify that the schemas have been uploaded:
 Internal vs. external managed topics
 ====================================
 
-Faust manages topics declared as internal by the agents, like the ``agg-test-topic`` topic, which is created by Faust and whose schema is also controlled by Faust.
+Faust manages topics declared as *internal* by the agents, like the aggregation topic, which is created by Faust and whose schema is also controlled by Faust.
 
-In real-life, source topics already exist in Kafka and their schemas are already registered in the Schema Registry. We demonstrate that we can run the test topic aggregation example when a source topic is not managed by Faust, i.e the agents assume that the ``test-topic`` exists and the messages can be deserialized without specifying a model for the ``test-topic`` topic in Faust.
+In real-life, source topics already exist in Kafka and their schemas are already registered in the Schema Registry. We demonstrate that we can run the aggregation example when a source topic is not managed by Faust, i.e the agents assume that the source topic exists and the messages can be deserialized without specifying a model for the source topic in Faust.
 
-However, to run the test topic aggregation example, we have to initialize ``test-topic`` and that's done when we start the Faust worker.
+However, to run the aggregation example, we have to initialize the source topic and that's done when we start the Faust worker.
 
 
-Running the test topic aggregation example
-==========================================
+Running the aggregation example
+===============================
 
 Start the ``kafkaaggregator`` worker:
 
@@ -81,13 +81,13 @@ you can access the worker HTTP API locally on the default port ``6066``. In part
   curl http://localhost:6066/count/
 
 
-The following command starts the ``kafkaaggregator`` producer for the test topic. In this example it produces 6000 messages at 10Hz.
+The following command starts the producer for the source topic. In this example, it produces 6000 messages at 10Hz.
 
-.. code-block:: bash
+.. code-block:: bas
 
   kafkaaggregator -l info produce --frequency 10 --max-messages 6000
 
-Using `Confluent Control Center <http://localhost:9021>`_, you can inspect the messages for the aggregated topic ``agg-test-topic``.
+Using `Confluent Control Center <http://localhost:9021>`_, you can inspect the messages for the aggregation topic.
 
 You can also inspect the lag for the ``kafkaaggregator`` consumers. An advantage of Faust is that you can easily add multiple workers to distribute the workload of the application. If topics are created with multiple partitions (see the ``config.topic_partitions`` configuration parameter) partitions are reassigned to different workers.
 

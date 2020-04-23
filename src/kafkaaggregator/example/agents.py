@@ -1,62 +1,59 @@
-"""Faust agent for the test topic aggregation example.
+"""Faust agent for the source topic aggregation example.
 
-The Faust agent persists the messages for the test topic in tumbling windows.
+The Faust agent persists the messages for the source topic in tumbling windows.
 See https://faust.readthedocs.io/en/latest/userguide/tables.html#windowing
 
 The window_size parameter controls the number of messages to aggregate,
-if the test topic is produced at a constant frequency, the number of messages
+if the source topic is produced at a constant frequency, the number of messages
 aggregated in each window is n = window_size * frequency. The window range is
-relative to the time field in the test topic.
+relative to the timestamp in the kafka stream.
 
-The window_expires parameter controls when the callback function to
-process the expired window(s) is called. When a window is processed, a new
-message for the aggregated test topic is produced with the aggregated results.
+The window_expires parameter controls when the callback function that
+processes the expired window(s) is called. When a window is processed, a new
+message is produced with the aggregated results.
 """
 
 __all__ = [
     "aggregate",
     "process_window",
-    "process_test_topic",
-    "process_aggregated_test_topic",
+    "process_src_topic",
+    "process_agg_topic",
 ]
 
 
 import logging
 from statistics import mean
-from typing import AsyncGenerator, List, Tuple
+from typing import Any, AsyncGenerator, List, Tuple
 
 from faust import web
 from faust.types import StreamT
 
 from kafkaaggregator.app import app, config
-from kafkaaggregator.testtopic.models import AggTestTopic
+from kafkaaggregator.example.models import AggTopic
 
 logger = logging.getLogger("kafkaaggregator")
 
-# Asumme the test topic exists
-test_topic = app.topic("test-topic")
+# Asumme the source topic exists
+src_topic = app.topic(config.src_topic)
 
-aggregated_test_topic = app.topic(
-    "agg-test-topic", value_type=AggTestTopic, internal=True
-)
+agg_topic = app.topic(config.agg_topic, value_type=AggTopic, internal=True)
 
 
-def aggregate(timestamp: float, messages: List) -> AggTestTopic:
-    """Return an aggregated message from a list of messages for the test
+def aggregate(timestamp: float, messages: List[Any]) -> AggTopic:
+    """Return an aggregated message from a list of messages for the source
     topic and a timestamp.
 
     Parameters
     ----------
-
     timestamp: `float`
         A timestamp for the aggregated message, for example, the mid point of
         the window that contains the messages.
     messages: `list`
-        List of test topic messages to aggregate.
+        List of messages to aggregate.
 
     Returns
     -------
-    aggregated_message: `AggTestTopic`
+    aggregated_message: `AggTopic`
         Aggregated message.
     """
     count = len(messages)
@@ -66,23 +63,22 @@ def aggregate(timestamp: float, messages: List) -> AggTestTopic:
     average = mean(values)
     maximum = max(values)
 
-    aggregated_message = AggTestTopic(
+    agg_message = AggTopic(
         time=timestamp, count=count, min=minimum, mean=average, max=maximum
     )
 
-    return aggregated_message
+    return agg_message
 
 
-def process_window(key: Tuple, value: List) -> None:
+def process_window(key: Tuple, value: List[Any]) -> None:
     """Process a window and send an aggregated message.
 
     Parameters
     ----------
-
     key: `Tuple`
         key for the current window in the WindowSet associated to
-        ``Table[k]``. The key contains the window range, for example,
-        key = (k, (start, end))
+        ``Table[k]``. The key contains the window range.
+        Example: ``key = (k, (start, end))``
 
     value: `list`
         List of messages in the current window.
@@ -98,73 +94,68 @@ def process_window(key: Tuple, value: List) -> None:
     # the current window.
     window_timestamp = (start + end + 0.1) / 2
 
-    aggregated_message = aggregate(window_timestamp, value)
+    agg_message = aggregate(window_timestamp, value)
 
-    aggregated_test_topic.send_soon(value=aggregated_message)
+    agg_topic.send_soon(value=agg_message)
 
     logger.info(
-        f"{aggregated_message.count:5d} messages aggregated on window "
+        f"{agg_message.count:5d} messages aggregated on window "
         f"({start}, {end + 0.1})."
     )
 
 
-# Tumbling window to persist test topic messages, the process_window
+# Tumbling window to persist source topic messages, the process_window
 # callback is called when the window expires. Note that we don't have a model
-# for the test topic to specify the time field to use. An alternative is to
+# for the source topic to specify the time field to use. An alternative is to
 # construct the window ranges relative to the timestamp added by Kafka.
 table = (
     app.Table(
         "tumbling-window",
         default=list,
         on_window_close=process_window,
-        help=f"Persit messages from test-topic in windows of "
-        f"{config.window_size}s.",
+        help=f"Persit messages in windows of " f"{config.window_size}s.",
     )
     .tumbling(config.window_size, expires=config.window_expires)
     .relative_to_stream()
 )
 
 count = app.Table(
-    "count",
-    default=int,
-    help="Number of test_topic messages processed by the worker.",
+    "count", default=int, help="Number of messages processed by the worker.",
 )
 
 
-@app.agent(test_topic)
-async def process_test_topic(stream: StreamT) -> AsyncGenerator:
-    """Update the tumbling window with incoming messages from the
-    test topic. It also counts the number of incoming messages.
+@app.agent(src_topic)
+async def process_src_topic(stream: StreamT) -> AsyncGenerator:
+    """Update the tumbling window with messages from the
+    source topic. It also counts the number or incoming messages.
 
     Parameters
     ----------
-
     stream: `StreamT`
         The incoming stream of events (messages)
     """
     async for message in stream:
-        count["test_topic"] += 1
-        messages = table["test_topic"].value()
+        count[config.src_topic] += 1
+        messages = table[config.src_topic].value()
         messages.append(message)
-        table["test_topic"] = messages
+        table[config.src_topic] = messages
 
         yield message
 
 
-@app.agent(aggregated_test_topic)
-async def process_aggregated_test_topic(stream: StreamT) -> AsyncGenerator:
-    """Persist the number of aggragated messages.
+@app.agent(agg_topic)
+async def process_agg_topic(stream: StreamT) -> AsyncGenerator:
+    """Counts the number of aggragated messages.
 
     Parameters
     ----------
-
     stream: `StreamT`
         The incoming stream of events (messages)
     """
-    async for aggregated_message in stream:
-        count["aggregated_test_topic"] += 1
+    async for agg_message in stream:
+        count[config.agg_topic] += 1
 
-        yield aggregated_message
+        yield agg_message
 
 
 @app.page("/count/")
@@ -175,8 +166,8 @@ async def get_count(self: web.View, request: web.Request) -> web.Response:
     """
     response = self.json(
         {
-            "test_topic": count["test_topic"],
-            "aggregated_test_topic": count["aggregated_test_topic"],
+            config.src_topic: count[config.src_topic],
+            config.agg_topic: count[config.agg_topic],
         }
     )
     return response

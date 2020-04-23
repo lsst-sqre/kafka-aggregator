@@ -3,8 +3,8 @@
 import faust_avro
 
 
-class AggTestTopic(faust_avro.Record):
-    """Test topic with aggregated values."""
+class AggTopic(faust_avro.Record):
+    """Topic with aggregated values."""
 
     time: float
     count: int
