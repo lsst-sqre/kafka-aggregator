@@ -23,7 +23,18 @@ class Configuration:
     )
     """The Confluent Schema Registry URL.
 
-    Used in conjunction with faust-avro to register Avro schemas.
+    Schema Registry used to read source topic schemas.
+    """
+
+    internal_registry_url: str = os.getenv(
+        "INTERNAL_SCHEMA_REGISTRY_URL", "http://localhost:28081"
+    )
+    """Internal Confluent Schema Registry URL.
+
+    Used in conjunction with faust-avro to register aggregated topic schemas.
+    Depending on your Kafka setup you can use this internal Schema Registry to
+    separate the aggregated topic schemas from other schemas and avoid
+    Schema ID conflicts.
     """
 
     store: str = os.getenv("STORE", "memory://")
