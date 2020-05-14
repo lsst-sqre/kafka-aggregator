@@ -56,7 +56,7 @@ async def init_external_topic(topic: str, schema: SchemaT) -> None:
             Avro schema.
     """
     subject = f"{topic}-value"
-    client = ConfluentSchemaRegistryClient()
+    client = ConfluentSchemaRegistryClient(url=config.registry_url)
     schema_id = None
     try:
         schema_id = await client.sync(subject, schema)
