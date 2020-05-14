@@ -26,20 +26,34 @@ from statistics import mean
 from typing import Any, AsyncGenerator, List, Tuple
 
 from faust import web
-from faust.types import StreamT
+from faust.types import ModelT, StreamT
 
 from kafkaaggregator.app import app, config
-from kafkaaggregator.example.models import AggTopic
+from kafkaaggregator.models import make_record
 
 logger = logging.getLogger("kafkaaggregator")
 
 # Asumme the source topic exists
 src_topic = app.topic(config.src_topic)
 
+# The Faust model for the aggregated topic is created at runtime
+agg_topic_fields = {
+    "time": float,
+    "count": int,
+    "min": float,
+    "mean": float,
+    "max": float,
+}
+AggTopic = make_record(
+    cls_name="AggTopic",
+    fields=agg_topic_fields,
+    doc="Topic with aggregated values",
+)
+
 agg_topic = app.topic(config.agg_topic, value_type=AggTopic, internal=True)
 
 
-def aggregate(timestamp: float, messages: List[Any]) -> AggTopic:
+def aggregate(timestamp: float, messages: List[Any]) -> ModelT:
     """Return an aggregated message from a list of messages for the source
     topic and a timestamp.
 
