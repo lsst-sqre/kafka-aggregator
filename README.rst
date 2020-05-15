@@ -17,7 +17,7 @@ Start the zookeeper, broker, schema-registry, and control-center services:
 
 .. code-block:: language
 
-  docker-compose up zookeeper broker schema-registry control-center
+  docker-compose up zookeeper broker schema-registry internal-schema-registry control-center
 
 you can check the status of the Kafka cluster opening the `Confluent Control Center <http://localhost:9021>`_ in the browser.
 
@@ -45,15 +45,17 @@ Avro schemas
 
 Before running the aggregation example you have to register the schemas for internal topics managed by Faust.
 
+We plan on using the ``kafka-aggregator`` in a `multi-datacenter setup <https://docs.confluent.io/current/schema-registry/multidc.html>`_ where the aggregation happens in the destination cluster, so we don't want to replicate aggregated topic schemas to the source cluster Schema Registry.  To avoid collisions between schema IDs for schemas created at the source and destination clusters, we use an internal Schema Registry for the aggregated topic schemas which is configured to run on port ``28081``.
+
 .. code-block:: bash
 
   kafkaaggregator register
 
-You can verify that the schemas have been registered:
+You can verify that the schemas for the internal topics have been registered:
 
 .. code-block:: bash
 
-  curl http://localhost:8081/subjects
+  curl http://localhost:28081/subjects
 
 Internal vs. external managed topics
 ====================================
