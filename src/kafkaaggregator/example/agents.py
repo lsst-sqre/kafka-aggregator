@@ -22,35 +22,33 @@ __all__ = [
 
 
 import logging
-from statistics import mean
+from statistics import mean, median
 from typing import Any, AsyncGenerator, List, Tuple
 
 from faust import web
 from faust.types import ModelT, StreamT
 
+from kafkaaggregator.aggregator import Aggregator
 from kafkaaggregator.app import app, config
-from kafkaaggregator.models import make_record
 
 logger = logging.getLogger("kafkaaggregator")
 
-# Asumme the source topic exists
-src_topic = app.topic(config.src_topic)
 
-# The Faust model for the aggregated topic is created at runtime
-agg_topic_fields = {
-    "time": float,
-    "count": int,
-    "min": float,
-    "mean": float,
-    "max": float,
-}
-AggTopic = make_record(
-    cls_name="AggTopic",
-    fields=agg_topic_fields,
-    doc="Topic with aggregated values",
+# Topic names for the example are obtained from the configuration
+Agg = Aggregator(
+    config=config,
+    source_topic=config.src_topic,
+    aggregation_topic=config.agg_topic,
 )
 
-agg_topic = app.topic(config.agg_topic, value_type=AggTopic, internal=True)
+# The Faust Record for the aggregation topic is created at runtime
+AggregationRecord = Agg.async_record()
+
+src_topic = app.topic(config.src_topic)
+
+agg_topic = app.topic(
+    config.agg_topic, value_type=AggregationRecord, internal=True
+)
 
 
 def aggregate(timestamp: float, messages: List[Any]) -> ModelT:
@@ -73,12 +71,19 @@ def aggregate(timestamp: float, messages: List[Any]) -> ModelT:
     count = len(messages)
 
     values = [message["value"] for message in messages]
-    minimum = min(values)
-    average = mean(values)
-    maximum = max(values)
+    min_value = min(values)
+    mean_value = mean(values)
+    median_value = median(values)
+    max_value = max(values)
 
-    agg_message = AggTopic(
-        time=timestamp, count=count, min=minimum, mean=average, max=maximum
+    agg_message = AggregationRecord(
+        time=timestamp,
+        window_size=config.window_size,
+        count=count,
+        min_value=min_value,
+        mean_value=mean_value,
+        median_value=median_value,
+        max_value=max_value,
     )
 
     return agg_message
