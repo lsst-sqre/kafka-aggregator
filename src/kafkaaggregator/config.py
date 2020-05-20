@@ -78,3 +78,12 @@ class Configuration:
         "AGGREGATION_TOPIC", "kafkaaggregator-agg-topic"
     )
     """Name of the aggregation topic used in the kafkaaggregator example."""
+
+    excluded_field_names: str = os.getenv(
+        "EXCLUDED_FIELD_NAMES", "time, window_size, count"
+    )
+    """Comma separated list of field names to exclude from aggregation.
+
+       By default we exclude the field names ``time``, ``window_size``, and
+       ``count`` that are special as they are added by the aggregator.
+    """
