@@ -2,19 +2,23 @@
 
 __all__ = ["make_record"]
 
-from typing import Any, Mapping
+from typing import Any, List, Mapping
 
 import faust_avro
 
+from kafkaaggregator.fields import Field
+
 
 def make_record(
-    cls_name: str, fields: Mapping[str, Any], doc: str = None
+    cls_name: str, fields: List[Field], doc: str = None
 ) -> faust_avro.Record:
     """A class factory for Faust Records.
 
     Examples
     --------
-    >>> Foo = make_record('Foo', {'bar': int})
+    >>> from kafkaaggregator.fields import Field
+    >>> from kafkaaggregator.models import make_record
+    >>> Foo = make_record('Foo', [Field('bar', int)])
     >>> f = Foo(bar=0)
     >>> f.bar
     0
@@ -25,8 +29,8 @@ def make_record(
     ----------
     cls_name: `str`
         Name of the new class to create.
-    fields: `dict`
-        Dictionary mapping of field names and types for the Faust Record.
+    fields: `list` [`tuple`]
+        List of tuples mapping field names and types for the Faust Record.
     doc: `str`
         Docstring for the new class.
 
@@ -36,6 +40,8 @@ def make_record(
         A faust_avro.Record subclass.
 
     """
-    cls_attrs = dict(__annotations__=fields, __doc__=doc,)
+    _fields: Mapping[str, Any] = dict([f.astuple() for f in fields])
+
+    cls_attrs = dict(__annotations__=_fields, __doc__=doc,)
 
     return type(cls_name, (faust_avro.Record,), cls_attrs)
