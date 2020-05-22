@@ -8,15 +8,10 @@ import logging
 import random
 from time import time
 
-from aiohttp.client_exceptions import ClientConnectorError
 from faust.cli import AppCommand, option
-from faust_avro.asyncio import (
-    ConfluentSchemaRegistryClient,
-    SchemaNotFound,
-    SubjectNotFound,
-)
 
 from kafkaaggregator.app import app, config
+from kafkaaggregator.topics import SourceTopic
 
 logger = logging.getLogger("kafkaaggregator")
 
@@ -72,10 +67,9 @@ async def init_example(self: AppCommand) -> None:
     managed by Faust, it represents an external topic and thus needs to be
     created in Kafka and its schema needs to registered in the Schema Registry.
     """
-    topic = config.src_topic
+    src_topic = SourceTopic(topic=config.src_topic)
 
-    subject = f"{topic}-value"
-
+    subject = f"{src_topic.topic}-value"
     schema = json.dumps(
         dict(
             type="record",
@@ -88,26 +82,12 @@ async def init_example(self: AppCommand) -> None:
         )
     )
 
-    client = ConfluentSchemaRegistryClient(url=config.registry_url)
+    # Register source topic schema
+    await src_topic.register(subject=subject, schema=schema)
 
-    schema_id = None
-
-    try:
-        schema_id = await client.sync(subject, schema)
-    except SchemaNotFound:
-        logger.info(f"Schema for subject {subject} not found.")
-    except SubjectNotFound:
-        logger.info(f"Subject {subject} not found.")
-    except ClientConnectorError:
-        logger.error(
-            f"Could not connect to Schema Registry at {config.registry_url}."
-        )
-
-    if not schema_id:
-        logger.info(f"Register schema for subject {subject}.")
-        await client.register(subject, schema)
-
-    # An external topic does not have a corresponding model in Faust,
-    # thus value_type=bytes.
-    external_topic = app.topic(topic, value_type=bytes, internal=False)
+    # Declare the source topic as an external topic in Faust. External topics
+    # do not have a corresponding model in Faust, thus value_type=bytes.
+    external_topic = app.topic(
+        src_topic.topic, value_type=bytes, internal=False
+    )
     await external_topic.declare()
