@@ -14,7 +14,6 @@ message is produced with the aggregated results.
 """
 
 __all__ = [
-    "aggregate",
     "process_window",
     "process_src_topic",
     "process_agg_topic",
@@ -22,11 +21,10 @@ __all__ = [
 
 
 import logging
-from statistics import mean, median
 from typing import Any, AsyncGenerator, List, Tuple
 
 from faust import web
-from faust.types import ModelT, StreamT
+from faust.types import StreamT
 
 from kafkaaggregator.aggregator import Aggregator
 from kafkaaggregator.app import app, config
@@ -42,51 +40,13 @@ Agg = Aggregator(
 )
 
 # The Faust Record for the aggregation topic is created at runtime
-AggregationRecord = Agg.async_record()
+AggregationRecord = Agg.async_create_record()
 
 src_topic = app.topic(config.src_topic)
 
 agg_topic = app.topic(
     config.agg_topic, value_type=AggregationRecord, internal=True
 )
-
-
-def aggregate(timestamp: float, messages: List[Any]) -> ModelT:
-    """Return an aggregated message from a list of messages for the source
-    topic and a timestamp.
-
-    Parameters
-    ----------
-    timestamp: `float`
-        A timestamp for the aggregated message, for example, the mid point of
-        the window that contains the messages.
-    messages: `list`
-        List of messages to aggregate.
-
-    Returns
-    -------
-    aggregated_message: `AggTopic`
-        Aggregated message.
-    """
-    count = len(messages)
-
-    values = [message["value"] for message in messages]
-    min_value = min(values)
-    mean_value = mean(values)
-    median_value = median(values)
-    max_value = max(values)
-
-    agg_message = AggregationRecord(
-        time=timestamp,
-        window_size=config.window_size,
-        count=count,
-        min_value=min_value,
-        mean_value=mean_value,
-        median_value=median_value,
-        max_value=max_value,
-    )
-
-    return agg_message
 
 
 def process_window(key: Tuple, value: List[Any]) -> None:
@@ -102,7 +62,6 @@ def process_window(key: Tuple, value: List[Any]) -> None:
     value: `list`
         List of messages in the current window.
     """
-
     start, end = key[1]
 
     # Faust defines the window range as (start,  start + size - 0.1)
@@ -111,9 +70,11 @@ def process_window(key: Tuple, value: List[Any]) -> None:
     # by 0.1. Note that, despite of this definition, messages with timestamps
     # between (start + size - 0.1) and (start + size) are correctly added to
     # the current window.
-    window_timestamp = (start + end + 0.1) / 2
+    time = (start + end + 0.1) / 2
 
-    agg_message = aggregate(window_timestamp, value)
+    agg_message = Agg.compute(
+        time=time, window_size=config.window_size, messages=value
+    )
 
     agg_topic.send_soon(value=agg_message)
 
@@ -145,7 +106,9 @@ count = app.Table(
 
 @app.agent(src_topic)
 async def process_src_topic(stream: StreamT) -> AsyncGenerator:
-    """Update the tumbling window with messages from the
+    """Process source topic messages.
+
+    Update the tumbling window with messages from the
     source topic. It also counts the number or incoming messages.
 
     Parameters
@@ -164,7 +127,7 @@ async def process_src_topic(stream: StreamT) -> AsyncGenerator:
 
 @app.agent(agg_topic)
 async def process_agg_topic(stream: StreamT) -> AsyncGenerator:
-    """Counts the number of aggragated messages.
+    """Count the number of aggragated messages.
 
     Parameters
     ----------
