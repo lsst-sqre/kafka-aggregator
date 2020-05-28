@@ -176,5 +176,59 @@ class Aggregator:
             subject=subject, schema=json.dumps(schema)
         )
 
-    def compute(self) -> None:
-        pass
+    def compute(
+        self, time: float, window_size: float, messages: List[Any]
+    ) -> Record:
+        """Compute summary statistics for a list of messages.
+
+        Parameters
+        ----------
+        time: `float`
+            The timestamp of the aggregated message, typically the midpoint
+            of the aggregation window.
+        window_size: `float`
+            Size of the aggregation window.
+        messages: `list`
+            List of messages from which to compute the summary statistics
+
+        Returns
+        -------
+        aggregated_message: `Record`
+            Aggregated message.
+        """
+        if not self._record:
+            msg = (
+                "Use Aggregator.record() to created the Faust record for the "
+                "aggregation topic first."
+            )
+            raise RuntimeError(msg)
+
+        count = len(messages)
+
+        aggregated_values = {
+            "count": count,
+            "time": time,
+            "window_size": window_size,
+        }
+
+        for aggregation_field in self._aggregation_fields:
+
+            if aggregation_field.metadata:
+
+                source_field = aggregation_field.metadata["source_field"]
+                values = [message[source_field] for message in messages]
+
+                try:
+                    operation = aggregation_field.metadata["operation"]
+                    aggregated_value = eval(operation)(values)
+                except Exception:
+                    msg = f"Error computing {operation} of {values}."
+                    raise StatisticsError(msg)
+
+                aggregated_values.update(
+                    {aggregation_field.name: aggregated_value}
+                )
+
+        aggregated_message = self._record(**aggregated_values)
+
+        return aggregated_message
