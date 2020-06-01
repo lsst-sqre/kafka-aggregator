@@ -1,3 +1,5 @@
+"""Test the Kafka-aggregator method for computing summary statistics."""
+
 from typing import Any, List, Mapping
 
 import pytest
@@ -9,6 +11,7 @@ from kafkaaggregator.models import make_record
 
 @pytest.fixture
 def incoming_messages():
+    """Mock incoming messages."""
     messages = [
         {"time": 0, "value": 1.0},
         {"time": 1, "value": 2.0},
@@ -19,6 +22,7 @@ def incoming_messages():
 
 @pytest.fixture
 def aggregation_fields():
+    """Mock aggreation fields."""
     fields = [
         Field("time", int),
         Field("count", int),
@@ -54,6 +58,7 @@ def aggregation_fields():
 
 @pytest.fixture
 def expected_result():
+    """Return test expected result."""
     result = {
         "count": 3,
         "min_value": 1.0,
@@ -83,7 +88,6 @@ def test_compute(
     expected_result: `dict`
         Dictionary with the expected result for the aggregated_message
     """
-
     Agg = Aggregator(
         source_topic="test-source-topic",
         aggregation_topic="test-aggregation-topic",

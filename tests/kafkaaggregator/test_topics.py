@@ -1,3 +1,5 @@
+"""Tests for the topics module."""
+
 import json
 
 import faust_avro
@@ -9,6 +11,7 @@ from kafkaaggregator.topics import Topic
 
 @pytest.fixture
 def avro_schema():
+    """Mock avro schema to test primitive data types."""
     schema = json.dumps(
         dict(
             type="record",

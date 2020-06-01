@@ -1,3 +1,5 @@
+"""Tests for the aggregator module."""
+
 import pytest
 
 from kafkaaggregator.aggregator import Aggregator
@@ -7,6 +9,7 @@ from kafkaaggregator.models import make_record
 
 @pytest.fixture
 def source_topic_fields():
+    """Mock source topic fields."""
     fields = [
         Field("time", int),
         Field("value", float),
@@ -19,6 +22,7 @@ def source_topic_fields():
 
 @pytest.fixture
 def excluded_field_names():
+    """Mock excluded field names."""
     return ["time", "excluded"]
 
 
@@ -51,7 +55,7 @@ def test_record_class():
     """Test Faust Record creation."""
     # make a simple Faust Record
     Foo = make_record(
-        cls_name="Foo", fields=[Field("bar", int)], doc=f"Test record",
+        cls_name="Foo", fields=[Field("bar", int)], doc="Test record",
     )
     f = Foo(bar=0)
     assert f.is_valid()
