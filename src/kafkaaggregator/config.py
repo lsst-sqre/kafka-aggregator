@@ -3,7 +3,8 @@
 __all__ = ["Configuration"]
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import List
 
 
 @dataclass
@@ -71,19 +72,37 @@ class Configuration:
     """
 
     src_topic: str = os.getenv("SOURCE_TOPIC", "kafkaaggregator-src-topic")
-    """Name of the source topic used in the kafkaaggregator example.
-    """
+    """Name of the source topic used in the kafkaaggregator example."""
 
     agg_topic: str = os.getenv(
         "AGGREGATION_TOPIC", "kafkaaggregator-agg-topic"
     )
     """Name of the aggregation topic used in the kafkaaggregator example."""
 
-    excluded_field_names: str = os.getenv(
-        "EXCLUDED_FIELD_NAMES", "time, window_size, count"
-    )
-    """Comma separated list of field names to exclude from aggregation.
+    excluded_field_names: List[str] = field(default_factory=list)
+    """List of field names to exclude from aggregation."""
 
-       By default we exclude the field names ``time``, ``window_size``, and
-       ``count`` that are special as they are added by the aggregator.
-    """
+    def __post_init__(self) -> None:
+        """Set default value for excluded_field_names.
+
+        By default we exclude the field names ``time``, ``window_size``, and
+        ``count`` that are special as they are added by the aggregator.
+        """
+        self.excluded_field_names = self._strtolist(
+            os.getenv("EXCLUDED_FIELD_NAMES", "time, window_size, count")
+        )
+
+    def _strtolist(self, s: str) -> List[str]:
+        """Convert comma separated values to a list of strings.
+
+        Parameters
+        ----------
+        s : `str`
+            Comma separated values
+
+        Returns
+        -------
+        slist : `list`
+        """
+        slist = s.replace(" ", "").split(",")
+        return slist

@@ -27,22 +27,6 @@ from kafkaaggregator.topics import AggregationTopic, SourceTopic
 logger = logging.getLogger("kafkaaggregator")
 
 
-def _strtolist(s: str) -> List[str]:
-    """Convert comma separated values to a list of strings.
-
-    Parameters
-    ----------
-    s : `str`
-        Comma separated values
-
-    Returns
-    -------
-    slist : `list`
-    """
-    slist = s.replace(" ", "").split(",")
-    return slist
-
-
 class Aggregator:
     """Create the aggregation model and compute summary statistics.
 
@@ -55,8 +39,8 @@ class Aggregator:
         Name of the source kafka topic.
     aggregation_topic : `str`
         Name of the kafka topic with the aggregated data.
-    excluded_field_names: `str`
-        Comma separated list of field names to exclude from aggregation.
+    excluded_field_names: `list` ['str']
+        List of field names to exclude from aggregation.
     """
 
     logger = logger
@@ -65,12 +49,12 @@ class Aggregator:
         self,
         source_topic: str,
         aggregation_topic: str,
-        excluded_field_names: str,
+        excluded_field_names: List[str],
     ) -> None:
 
         self._source_topic = SourceTopic(source_topic)
         self._aggregation_topic = AggregationTopic(aggregation_topic)
-        self._excluded_field_names = _strtolist(excluded_field_names)
+        self._excluded_field_names = excluded_field_names
         self._make_record = make_record
 
     @staticmethod
