@@ -67,9 +67,8 @@ async def init_example(self: AppCommand) -> None:
     managed by Faust, it represents an external topic and thus needs to be
     created in Kafka and its schema needs to registered in the Schema Registry.
     """
-    src_topic = SourceTopic(topic=config.src_topic)
+    src_topic = SourceTopic(name=config.src_topic)
 
-    subject = f"{src_topic.topic}-value"
     schema = json.dumps(
         dict(
             type="record",
@@ -83,11 +82,11 @@ async def init_example(self: AppCommand) -> None:
     )
 
     # Register source topic schema
-    await src_topic.register(subject=subject, schema=schema)
+    await src_topic.register(schema=schema)
 
     # Declare the source topic as an external topic in Faust. External topics
     # do not have a corresponding model in Faust, thus value_type=bytes.
     external_topic = app.topic(
-        src_topic.topic, value_type=bytes, internal=False
+        src_topic.name, value_type=bytes, internal=False
     )
     await external_topic.declare()

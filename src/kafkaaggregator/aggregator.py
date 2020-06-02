@@ -47,13 +47,13 @@ class Aggregator:
 
     def __init__(
         self,
-        source_topic: str,
-        aggregation_topic: str,
+        source_topic_name: str,
+        aggregation_topic_name: str,
         excluded_field_names: List[str],
     ) -> None:
 
-        self._source_topic = SourceTopic(source_topic)
-        self._aggregation_topic = AggregationTopic(aggregation_topic)
+        self._source_topic = SourceTopic(name=source_topic_name)
+        self._aggregation_topic = AggregationTopic(name=aggregation_topic_name)
         self._excluded_field_names = excluded_field_names
         self._make_record = make_record
 
@@ -111,7 +111,7 @@ class Aggregator:
         record : `Record`
             Faust-avro Record for the aggreation topic.
         """
-        logger.info(f"Make Faust record for topic {self._source_topic.topic}.")
+        logger.info(f"Make Faust record for topic {self._source_topic.name}.")
 
         fields = await self._source_topic.get_fields()
 
@@ -122,7 +122,7 @@ class Aggregator:
         self._record = self._make_record(
             cls_name="AggregationRecord",
             fields=self._aggregation_fields,
-            doc=f"Faust record for topic {self._source_topic.topic}.",
+            doc=f"Faust record for topic {self._source_topic.name}.",
         )
 
         await self._register(self._record)
@@ -152,13 +152,12 @@ class Aggregator:
         record: `Record`
             Faust-avro Record for the aggregation model.
         """
-        subject = f"{self._aggregation_topic.topic}-value"
-        logger.info(f"Register Avro schema for subject {subject}.")
+        logger.info(
+            f"Register Avro schema for topic {self._aggregation_topic.name}."
+        )
         schema = record.to_avro(registry=self._aggregation_topic._registry)
 
-        await self._aggregation_topic.register(
-            subject=subject, schema=json.dumps(schema)
-        )
+        await self._aggregation_topic.register(schema=json.dumps(schema))
 
     def compute(
         self, time: float, window_size: float, messages: List[Any]

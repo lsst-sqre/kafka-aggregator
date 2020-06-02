@@ -35,11 +35,9 @@ def avro_schema():
 async def test_register(avro_schema):
     """Test topic schema registration."""
     topic = Topic(
-        topic="test-avro-schema", registry_url="http://localhost:8081"
+        name="test-avro-schema", registry_url="http://localhost:8081"
     )
-    schema_id = await topic.register(
-        subject="test-avro-schema-value", schema=avro_schema
-    )
+    schema_id = await topic.register(schema=avro_schema)
     assert schema_id == 1
 
 
@@ -49,9 +47,9 @@ async def test_register(avro_schema):
 async def test_get_fields(avro_schema):
     """Test `topic.get_fields()` method returning faust-avro types."""
     topic = Topic(
-        topic="test-avro-schema", registry_url="http://localhost:8081"
+        name="test-avro-schema", registry_url="http://localhost:8081"
     )
-    await topic.register(subject="test-avro-schema-value", schema=avro_schema)
+    await topic.register(schema=avro_schema)
     fields = await topic.get_fields()
 
     assert Field("int_field", faust_avro.types.int32) in fields

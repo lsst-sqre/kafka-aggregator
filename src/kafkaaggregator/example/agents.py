@@ -34,8 +34,8 @@ logger = logging.getLogger("kafkaaggregator")
 
 # Topic names for the example are obtained from the configuration
 Agg = Aggregator(
-    source_topic=config.src_topic,
-    aggregation_topic=config.agg_topic,
+    source_topic_name=config.src_topic,
+    aggregation_topic_name=config.agg_topic,
     excluded_field_names=config.excluded_field_names,
 )
 

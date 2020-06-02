@@ -33,7 +33,7 @@ class Topic:
 
     Parameters
     ----------
-    topic : `str`
+    name : `str`
         Name of a kafka topic.
     registry_url : `str`
         Schema Registry URL.
@@ -41,9 +41,10 @@ class Topic:
 
     logger = logger
 
-    def __init__(self, topic: str, registry_url: str) -> None:
+    def __init__(self, name: str, registry_url: str) -> None:
 
-        self.topic = topic
+        self.name = name
+        self._subject = f"{self.name}-value"
         self._client = ConfluentSchemaRegistryClient(url=registry_url)
         self._registry = self._client.registry
         self._parse = self._client.registry.parse
@@ -56,12 +57,11 @@ class Topic:
         schema : `str`
             Avro schema.
         """
-        subject = f"{self.topic}-value"
         schema = None
         try:
-            schema = await self._client.schema_by_topic(subject)
+            schema = await self._client.schema_by_topic(self._subject)
         except Exception:
-            msg = f"Could not retrieve schema for subject {subject}."
+            msg = f"Could not retrieve schema for subject {self._subject}."
             raise SchemaException(msg)
 
         return schema
@@ -88,9 +88,7 @@ class Topic:
 
         return fields
 
-    async def register(
-        self, subject: str, schema: AvroSchemaT
-    ) -> Union[int, None]:
+    async def register(self, schema: AvroSchemaT) -> Union[int, None]:
         """Register an Avro schema with the Schema Registry.
 
         If the schema is already register for this subject it does nothing.
@@ -108,11 +106,13 @@ class Topic:
             Schema ID from the Schema Registry or `None` if it is already
             registered.
         """
-        logger.info(f"Register schema for subject {subject}.")
+        logger.info(f"Register schema for subject {self._subject}.")
 
         is_registered = False
         try:
-            is_registered = await self._client.is_registered(subject, schema)
+            is_registered = await self._client.is_registered(
+                self._subject, schema
+            )
         except Exception:
             msg = "Could not connect to Schema Registry."
             raise SchemaException(msg)
@@ -120,9 +120,9 @@ class Topic:
         schema_id = None
         if not is_registered:
             try:
-                schema_id = await self._client.register(subject, schema)
+                schema_id = await self._client.register(self._subject, schema)
             except Exception:
-                msg = f"Could not register schema for subject {subject}."
+                msg = f"Could not register schema for subject {self._subject}."
                 raise SchemaException(msg)
         return schema_id
 
@@ -134,26 +134,24 @@ class SourceTopic(Topic):
 
     Parameters
     ----------
-    topic: `str`
+    name: `str`
         Name of the source topic in Kafka.
     """
 
-    def __init__(self, topic: str) -> None:
-        super().__init__(topic, registry_url=config.registry_url)
+    def __init__(self, name: str) -> None:
+        super().__init__(name=name, registry_url=config.registry_url)
 
 
 class AggregationTopic(Topic):
     """Represents aggregation topics.
 
-    Sets the right Schema Registry URL aggreation topics.
+    Sets the right Schema Registry URL for aggregation topics.
 
     Parameters
     ----------
-    topic: `str`
+    name: `str`
         Name of the aggregation topic in Kafka.
     """
 
-    def __init__(self, topic: str) -> None:
-        super().__init__(
-            topic=topic, registry_url=config.internal_registry_url
-        )
+    def __init__(self, name: str) -> None:
+        super().__init__(name=name, registry_url=config.internal_registry_url)

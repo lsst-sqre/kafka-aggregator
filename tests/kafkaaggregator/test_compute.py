@@ -22,7 +22,7 @@ def incoming_messages():
 
 @pytest.fixture
 def aggregation_fields():
-    """Mock aggreation fields."""
+    """Mock aggregation fields."""
     fields = [
         Field("time", int),
         Field("count", int),
@@ -89,8 +89,8 @@ def test_compute(
         Dictionary with the expected result for the aggregated_message
     """
     Agg = Aggregator(
-        source_topic="test-source-topic",
-        aggregation_topic="test-aggregation-topic",
+        source_topic_name="test-source-topic",
+        aggregation_topic_name="test-aggregation-topic",
         # If these fields are present in the incoming message they are excluded
         # as they are used by the aggregator
         excluded_field_names="time, count, window_size",
