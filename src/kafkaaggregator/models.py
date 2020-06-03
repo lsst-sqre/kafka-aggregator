@@ -14,6 +14,20 @@ def make_record(
 ) -> faust_avro.Record:
     """Create a Faust Record class.
 
+    Parameters
+    ----------
+    cls_name: `str`
+        Name of the new class to create.
+    fields: `list` [`Field`]
+        List of tuples mapping field names and types for the Faust Record.
+    doc: `str`
+        Docstring for the new class.
+
+    Returns
+    -------
+    cls: `faust_avro.Record`
+        A faust_avro.Record subclass.
+
     Examples
     --------
     >>> from kafkaaggregator.fields import Field
@@ -24,20 +38,6 @@ def make_record(
     0
     >>> f.dumps()
     {'bar': 0, '__faust': {'ns': '__main__.Foo'}}
-
-    Parameters
-    ----------
-    cls_name: `str`
-        Name of the new class to create.
-    fields: `list` [`tuple`]
-        List of tuples mapping field names and types for the Faust Record.
-    doc: `str`
-        Docstring for the new class.
-
-    Returns
-    -------
-    cls: `faust_avro.Record`
-        A faust_avro.Record subclass.
 
     """
     _fields: Mapping[str, Any] = dict([f.astuple() for f in fields])

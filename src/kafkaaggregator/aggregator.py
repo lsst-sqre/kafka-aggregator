@@ -20,7 +20,7 @@ from typing import Any, List
 
 from faust_avro import Record
 
-from kafkaaggregator.fields import Field
+from kafkaaggregator.fields import Field, Operation
 from kafkaaggregator.models import make_record
 from kafkaaggregator.topics import AggregationTopic, SourceTopic
 
@@ -81,9 +81,9 @@ class Aggregator:
         aggregation_fields : `list` [`Field`]
             List of aggregation fields.
         """
-        time = Field("time", float)
-        window_size = Field("window_size", float)
-        count = Field("count", int)
+        time = Field(name="time", type=float)
+        window_size = Field(name="window_size", type=float)
+        count = Field(name="count", type=int)
 
         aggregation_fields = [time, window_size, count]
 
@@ -92,13 +92,14 @@ class Aggregator:
                 logger.info(f"Excluding field {field.name}.")
                 continue
             # Only numeric fields are aggregated
-            if (field.type is int) or (field.type is float):
-                for operation in ("min", "mean", "stdev", "median", "max"):
-                    metadata = {
-                        "source_field": field.name,
-                        "operation": operation,
-                    }
-                    f = Field(f"{operation}_{field.name}", float, metadata)
+            if field.type in (int, float):
+                for operation in Operation:
+                    f = Field(
+                        name=f"{operation.value}_{field.name}",
+                        type=float,
+                        source_field_name=field.name,
+                        operation=operation,
+                    )
                     aggregation_fields.append(f)
 
         return aggregation_fields
@@ -196,13 +197,13 @@ class Aggregator:
 
         for aggregation_field in self._aggregation_fields:
 
-            if aggregation_field.metadata:
+            if aggregation_field.operation:
 
-                source_field = aggregation_field.metadata["source_field"]
-                values = [message[source_field] for message in messages]
+                source_field_name = aggregation_field.source_field_name
+                values = [message[source_field_name] for message in messages]
 
                 try:
-                    operation = aggregation_field.metadata["operation"]
+                    operation = aggregation_field.operation.value
                     aggregated_value = eval(operation)(values)
                 except Exception:
                     msg = f"Error computing {operation} of {values}."

@@ -33,14 +33,14 @@ logger = logging.getLogger("kafkaaggregator")
 
 
 # Topic names for the example are obtained from the configuration
-Agg = Aggregator(
+agg = Aggregator(
     source_topic_name=config.src_topic,
     aggregation_topic_name=config.agg_topic,
     excluded_field_names=config.excluded_field_names,
 )
 
 # The Faust Record for the aggregation topic is created at runtime
-AggregationRecord = Agg.async_create_record()
+AggregationRecord = agg.async_create_record()
 
 src_topic = app.topic(config.src_topic)
 
@@ -72,7 +72,7 @@ def process_window(key: Tuple, value: List[Any]) -> None:
     # the current window.
     time = (start + end + 0.1) / 2
 
-    agg_message = Agg.compute(
+    agg_message = agg.compute(
         time=time, window_size=config.window_size, messages=value
     )
 

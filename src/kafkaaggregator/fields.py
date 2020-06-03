@@ -7,7 +7,18 @@ field to aggregate and the aggregation operation.
 
 __all__ = ["Field"]
 
-from typing import Any, Mapping, Optional, Tuple, Type, Union
+from enum import Enum
+from typing import Mapping, Optional, Tuple, Type, Union
+
+
+class Operation(Enum):
+    """Possible operations on fields."""
+
+    MIN = "min"
+    MEAN = "mean"
+    MEDIAN = "median"
+    STDEV = "stdev"
+    MAX = "max"
 
 
 class Field:
@@ -15,23 +26,31 @@ class Field:
 
     Parameters
     ----------
-    name: `str`
+    name : `str`
         Field name.
-    type: `int` or `float`
-        Field type.
-    metadata: `dict`, optional
-        Field metadata.
+    type : `int` or `float`
+        Field data type.
+    source_field_name : `str`, optional
+        Source field name.
+    operation : `Operation`, optional
     """
 
     def __init__(
         self,
         name: str,
         type: Union[Type[int], Type[float]],
-        metadata: Optional[Mapping[str, Any]] = None,
+        source_field_name: Optional[str] = None,
+        operation: Optional[Operation] = None,
     ) -> None:
         self.name = name
         self.type = type
-        self.metadata = metadata
+        self.source_field_name = source_field_name
+        self.operation = operation
+        if operation:
+            if not isinstance(operation, Operation):
+                raise TypeError(
+                    "Operation must be an instance of the Operation Enum."
+                )
 
     def __repr__(self) -> str:
         """Field representation."""

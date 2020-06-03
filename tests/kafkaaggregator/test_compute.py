@@ -5,7 +5,7 @@ from typing import Any, List, Mapping
 import pytest
 
 from kafkaaggregator.aggregator import Aggregator
-from kafkaaggregator.fields import Field
+from kafkaaggregator.fields import Field, Operation
 from kafkaaggregator.models import make_record
 
 
@@ -27,31 +27,11 @@ def aggregation_fields():
         Field("time", int),
         Field("count", int),
         Field("window_size", float),
-        Field(
-            "min_value",
-            float,
-            metadata={"source_field": "value", "operation": "min"},
-        ),
-        Field(
-            "mean_value",
-            float,
-            metadata={"source_field": "value", "operation": "mean"},
-        ),
-        Field(
-            "median_value",
-            float,
-            metadata={"source_field": "value", "operation": "median"},
-        ),
-        Field(
-            "stdev_value",
-            float,
-            metadata={"source_field": "value", "operation": "stdev"},
-        ),
-        Field(
-            "max_value",
-            float,
-            metadata={"source_field": "value", "operation": "max"},
-        ),
+        Field("min_value", float, "value", Operation.MIN),
+        Field("mean_value", float, "value", Operation.MEAN),
+        Field("median_value", float, "value", Operation.MEDIAN),
+        Field("stdev_value", float, "value", Operation.STDEV,),
+        Field("max_value", float, "value", Operation.MAX),
     ]
     return fields
 
