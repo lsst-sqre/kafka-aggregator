@@ -8,6 +8,8 @@
 pre-commit
 coverage[toml]
 flake8
+flake8-docstrings
 mypy
 pytest
 pytest-asyncio
+pytest-vcr

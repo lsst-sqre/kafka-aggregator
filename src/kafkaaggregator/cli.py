@@ -6,8 +6,5 @@ from kafkaaggregator.app import app
 
 
 def main() -> None:
-    """kafkaaggregator
-
-    Entrypoint for Faust CLI.
-    """
+    """Entrypoint for Faust CLI."""
     app.main()

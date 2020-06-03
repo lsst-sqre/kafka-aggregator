@@ -16,7 +16,6 @@ def create_app(config: Configuration = None) -> faust_avro.App:
         The configuration to use.  If not provided, the default Configuration
         will be used.
     """
-
     if not config:
         config = Configuration()
 
