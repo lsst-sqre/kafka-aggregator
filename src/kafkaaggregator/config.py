@@ -79,15 +79,33 @@ class Configuration:
     )
     """Name of the aggregation topic used in the kafkaaggregator example."""
 
+    topic_rename_format: str = os.getenv(
+        "TOPIC_RENAME_FORMAT", "{source_topic_name}-aggregated"
+    )
+    """A format string for the aggregation topic name, which must contain
+    ``{source_topic_name}`` as a placeholder for the source topic name."""
+
     excluded_field_names: List[str] = field(default_factory=list)
     """List of field names to exclude from aggregation."""
 
-    def __post_init__(self) -> None:
-        """Set default value for excluded_field_names.
+    agents_output_dir: str = os.getenv("AGENTS_OUTPUT_DIR", "agents")
+    """Name of output directoty for the agents code."""
 
-        By default we exclude the field names ``time``, ``window_size``, and
-        ``count`` that are special as they are added by the aggregator.
-        """
+    agents_template_file: str = os.getenv("AGENTS_TEMPLATE_FILE", "agents.j2")
+    """Name of the agents Jinja2 template file."""
+
+    def __post_init__(self) -> None:
+        """Post config initialization steps."""
+        # Validate topic_rename_format
+        if "{source_topic_name}" not in self.topic_rename_format:
+            raise ValueError(
+                "config.topic_rename_format must contain the "
+                "{source_topic_name} string."
+            )
+
+        # Set default value for excluded_field_names.
+        # By default we exclude the field names ``time``, ``window_size``, and
+        # ``count`` that are special as they are added by the aggregator.
         self.excluded_field_names = self._strtolist(
             os.getenv("EXCLUDED_FIELD_NAMES", "time, window_size, count")
         )
