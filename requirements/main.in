@@ -8,3 +8,5 @@
 faust[fast]
 faust-avro
 importlib_metadata
+jinja2
+aiofiles
