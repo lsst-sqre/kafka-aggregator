@@ -78,23 +78,35 @@ class Configuration:
     )
     """Name of the source topic used in the kafkaaggregator example."""
 
+    topic_regex: str = os.getenv("TOPIC_REGEX", "^kafkaaggregator-example$")
+    """Regex to select topics to aggregate."""
+
+    excluded_topics: List[str] = field(default_factory=list)
+    """Topics excluded from aggregation."""
+
     topic_rename_format: str = os.getenv(
         "TOPIC_RENAME_FORMAT", "{source_topic_name}-aggregated"
     )
     """A format string for the aggregation topic name, which must contain
-    ``{source_topic_name}`` as a placeholder for the source topic name."""
+    ``{source_topic_name}`` as a placeholder for the source topic name.
+    """
 
     excluded_field_names: List[str] = field(default_factory=list)
     """List of field names to exclude from aggregation."""
 
     agents_output_dir: str = os.getenv("AGENTS_OUTPUT_DIR", "agents")
-    """Name of output directoty for the agents code."""
+    """Name of output directory for the agents' code."""
 
-    agents_template_file: str = os.getenv("AGENTS_TEMPLATE_FILE", "agents.j2")
-    """Name of the agents Jinja2 template file."""
+    agent_template_file: str = os.getenv("AGENT_TEMPLATE_FILE", "agent.j2")
+    """Name of the agent Jinja2 template file."""
 
     def __post_init__(self) -> None:
         """Post config initialization steps."""
+        # Set default value for excluded_topics
+        self.excluded_topics = self._strtolist(
+            os.getenv("EXCLUDED_TOPICS", "")
+        )
+
         # Validate topic_rename_format
         if "{source_topic_name}" not in self.topic_rename_format:
             raise ValueError(
