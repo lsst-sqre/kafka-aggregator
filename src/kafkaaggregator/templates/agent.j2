@@ -1,0 +1,109 @@
+"""Faust agent for the {{ source_topic_name }} topic.
+
+The Faust agent persists the messages for the source topic in tumbling windows.
+See https://faust.readthedocs.io/en/latest/userguide/tables.html#windowing
+
+If the source topic is produced at a constant rate, the number of messages
+aggregated in each window is n = window_size * frequency. The window range is
+relative to the timestamp in the Kafka stream.
+
+The window_expires parameter controls when the callback function that
+processes the expired window(s) is called. When a window is processed, a new
+message is produced with the aggregated results.
+"""
+
+__all__ = [
+    "process_window",
+    "process_source_topic",
+]
+
+import logging
+from typing import Any, AsyncGenerator, List, Tuple
+
+from faust import web
+from faust.types import StreamT
+
+from kafkaaggregator.aggregator import Aggregator
+from kafkaaggregator.app import app, config
+
+logger = logging.getLogger("kafkaaggregator")
+
+
+# Topic names for the example are obtained from the configuration
+aggregator = Aggregator(
+    source_topic_name="{{ source_topic_name }}",
+    aggregation_topic_name="{{ aggregation_topic_name }}",
+    excluded_field_names=config.excluded_field_names,
+)
+
+# The Faust Record for the aggregation topic is created at runtime
+AggregationRecord = aggregator.async_create_record()
+
+source_topic = app.topic("{{ source_topic_name }}")
+
+aggregation_topic = app.topic(
+    "{{ aggregation_topic_name }}",
+    value_type=AggregationRecord,
+    internal=True
+)
+
+
+def process_window(key: Tuple, value: List[Any]) -> None:
+    """Process a window and send an aggregated message.
+
+    Parameters
+    ----------
+    key: `Tuple`
+        key for the current window in the WindowSet associated to
+        ``Table[k]``. The key contains the window range.
+        Example: ``key = (k, (start, end))``
+
+    value: `list`
+        List of messages in the current window.
+    """
+    start, end = key[1]
+
+    # Faust defines the window range as (start,  start + size - 0.1)
+    # https://github.com/robinhood/faust/blob/master/faust/types/windows.py#L16
+    # To compute the midpoint of the window we have to correct the window range
+    # by 0.1. Note that, despite of this definition, messages with timestamps
+    # between (start + size - 0.1) and (start + size) are correctly added to
+    # the current window.
+    time = (start + end + 0.1) / 2
+
+    aggregated_message = aggregator.compute(
+        time=time, window_size=config.window_size, messages=value
+    )
+
+    aggregation_topic.send_soon(value=aggregated_message)
+
+    logger.info(
+        f"{aggregated_message.count:5d} messages aggregated on window "
+        f"({start}, {end + 0.1})."
+    )
+
+
+# Tumbling window to persist source topic messages, the process_window
+# callback is called when the window expires. The window range is relative to
+# the timestamp added by Kafka.
+table = (
+    app.Table(
+        "{{ source_topic_name }}-tumbling-window",
+        default=list,
+        on_window_close=process_window,
+        help=f"Persit messages in windows of " f"{config.window_size}s.",
+    )
+    .tumbling(config.window_size, expires=config.window_expires)
+    .relative_to_stream()
+)
+
+
+@app.agent(source_topic)
+async def process_source_topic(stream: StreamT) -> AsyncGenerator:
+    """Process incoming messages for the {{ source_topic_name }} topic."""
+    async for message in stream:
+        messages = table["{{ source_topic_name }}"].value()
+        messages.append(message)
+        table["{{ source_topic_name }}"] = messages
+
+        yield message
