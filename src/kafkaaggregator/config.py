@@ -3,7 +3,9 @@
 __all__ = ["Configuration"]
 
 import os
+import sys
 from dataclasses import dataclass, field
+from os.path import abspath, dirname, isdir
 from typing import List
 
 
@@ -106,6 +108,13 @@ class Configuration:
         self.excluded_field_names = self._strtolist(
             os.getenv("EXCLUDED_FIELD_NAMES", "time, window_size, count")
         )
+
+        # Make sure agents_output_dir exists and update syspath to enable
+        # agents autodiscover
+        if not isdir(self.agents_output_dir):
+            os.makedirs(self.agents_output_dir)
+
+        sys.path.append(abspath(dirname(self.agents_output_dir)))
 
     def _strtolist(self, s: str) -> List[str]:
         """Convert comma separated values to a list of strings.

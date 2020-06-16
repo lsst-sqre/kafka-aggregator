@@ -25,7 +25,7 @@ def create_app(config: Configuration = None) -> faust_avro.App:
         registry_url=config.internal_registry_url,
         store=config.store,
         autodiscover=True,
-        origin="kafkaaggregator",
+        origin=config.agents_output_dir,
         topic_partitions=config.topic_partitions,
     )
 
