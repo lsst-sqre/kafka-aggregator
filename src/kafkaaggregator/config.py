@@ -71,13 +71,10 @@ class Configuration:
     workload of the application.
     """
 
-    src_topic: str = os.getenv("SOURCE_TOPIC", "kafkaaggregator-src-topic")
-    """Name of the source topic used in the kafkaaggregator example."""
-
-    agg_topic: str = os.getenv(
-        "AGGREGATION_TOPIC", "kafkaaggregator-agg-topic"
+    source_topic_name: str = os.getenv(
+        "SOURCE_TOPIC", "kafkaaggregator-example"
     )
-    """Name of the aggregation topic used in the kafkaaggregator example."""
+    """Name of the source topic used in the kafkaaggregator example."""
 
     topic_rename_format: str = os.getenv(
         "TOPIC_RENAME_FORMAT", "{source_topic_name}-aggregated"
