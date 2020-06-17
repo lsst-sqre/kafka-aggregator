@@ -41,15 +41,7 @@ def main() -> None:
 async def produce(
     self: AppCommand, frequency: float, max_messages: int
 ) -> None:
-    """Produce messages for the kafkaaggregator source topic.
-
-    Parameters
-    ----------
-    frequency: `float`
-        The frequency in Hz in wich messages are produced
-    max_messages: `int`
-        The maximum number of messages to produce.
-    """
+    """Produce messages for the kafkaaggregator source topic."""
     # Assume the source topic exists
     src_topic = app.topic(config.source_topic_name)
 
@@ -97,8 +89,9 @@ async def init_example(self: AppCommand) -> None:
     )
     await external_topic.declare()
 
-    # Generate Faust agent for the aggregation example
-    agent_generator = AgentGenerator(
-        source_topic_names=[config.source_topic_name]
-    )
+
+@app.command()
+async def generate_agents(self: AppCommand) -> None:
+    """Generate Faust agents' code."""
+    agent_generator = AgentGenerator()
     await agent_generator.run()
