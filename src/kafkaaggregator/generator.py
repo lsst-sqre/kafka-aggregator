@@ -1,13 +1,16 @@
-"""Generates Faust agents based on the agents.j2 template."""
+"""Generates Faust agents based on the agent.j2 template."""
 
 __all__ = ["AgentGenerator"]
 
 import logging
 import os
-from typing import Any, List, Mapping
+import re
+from typing import Any, Mapping, Set
 
 import aiofiles
 from jinja2 import Environment, PackageLoader, Template, TemplateError
+from kafka import KafkaConsumer
+from kafka.errors import KafkaError
 
 from kafkaaggregator.app import config
 
@@ -27,18 +30,57 @@ class AgentGenerator:
 
     logger = logger
 
-    def __init__(self, source_topic_names: List[str]) -> None:
-        self._source_topic_names = source_topic_names
+    def __init__(self) -> None:
+        self._source_topic_names = self._get_source_topic_names()
         self._template: Template = self._load_template()
 
     @property
     def template(self) -> Template:
-        """Get the agents template."""
+        """Get the agent template."""
         return self._template
 
     @staticmethod
+    def _get_source_topic_names() -> Set[str]:
+        """Get a set of source topics to aggregate from Kafka.
+
+        Retrieve source topics based on the topic_regex and the excluded_topics
+        configuration parameters.
+
+        Returns
+        -------
+        source_topic_names : `set`
+            Set of source topics to aggregate.
+        """
+        logger.info("Discovering source topics...")
+        bootstrap_servers = [config.broker.replace("kafka://", "")]
+        try:
+            consumer = KafkaConsumer(
+                bootstrap_servers=bootstrap_servers, enable_auto_commit=False
+            )
+            source_topic_names: Set[str] = consumer.topics()
+        except KafkaError as e:
+            logger.error("Error retrieving topics from Kafka.")
+            raise e
+
+        if config.topic_regex:
+            pattern = re.compile(config.topic_regex)
+            source_topic_names = {
+                name for name in source_topic_names if pattern.match(name)
+            }
+
+        if config.excluded_topics:
+            excluded_topics = set(config.excluded_topics)
+            source_topic_names = source_topic_names - excluded_topics
+
+        n = len(source_topic_names)
+        s = ", ".join(source_topic_names)
+        logger.info(f"Found {n} topic(s): {s}")
+
+        return source_topic_names
+
+    @staticmethod
     def _create_filepath(source_topic_name: str) -> str:
-        """Return the file path for the agents code.
+        """Return the file path for the agent.
 
         The directory name comes from the agents_output_dir configuration
         parameter and the file name is based on source topic name.
@@ -85,16 +127,16 @@ class AgentGenerator:
 
     @staticmethod
     def _load_template() -> Template:
-        """Load the agents template file."""
-        agents_template_file = config.agents_template_file
+        """Load the agent template file."""
+        agent_template_file = config.agent_template_file
 
         env = Environment(
             loader=PackageLoader("kafkaaggregator"), keep_trailing_newline=True
         )
         try:
-            template = env.get_template(agents_template_file)
+            template = env.get_template(agent_template_file)
         except TemplateError as e:
-            logger.error("Error loading the agents template file.")
+            logger.error("Error loading the agent template file.")
             raise e
 
         return template
