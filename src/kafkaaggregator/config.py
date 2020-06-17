@@ -3,7 +3,9 @@
 __all__ = ["Configuration"]
 
 import os
+import sys
 from dataclasses import dataclass, field
+from os.path import abspath, dirname, isdir
 from typing import List
 
 
@@ -71,26 +73,60 @@ class Configuration:
     workload of the application.
     """
 
-    src_topic: str = os.getenv("SOURCE_TOPIC", "kafkaaggregator-src-topic")
+    source_topic_name: str = os.getenv(
+        "SOURCE_TOPIC", "kafkaaggregator-example"
+    )
     """Name of the source topic used in the kafkaaggregator example."""
 
-    agg_topic: str = os.getenv(
-        "AGGREGATION_TOPIC", "kafkaaggregator-agg-topic"
+    topic_regex: str = os.getenv("TOPIC_REGEX", "^kafkaaggregator-example$")
+    """Regex to select topics to aggregate."""
+
+    excluded_topics: List[str] = field(default_factory=list)
+    """Topics excluded from aggregation."""
+
+    topic_rename_format: str = os.getenv(
+        "TOPIC_RENAME_FORMAT", "{source_topic_name}-aggregated"
     )
-    """Name of the aggregation topic used in the kafkaaggregator example."""
+    """A format string for the aggregation topic name, which must contain
+    ``{source_topic_name}`` as a placeholder for the source topic name.
+    """
 
     excluded_field_names: List[str] = field(default_factory=list)
     """List of field names to exclude from aggregation."""
 
-    def __post_init__(self) -> None:
-        """Set default value for excluded_field_names.
+    agents_output_dir: str = os.getenv("AGENTS_OUTPUT_DIR", "agents")
+    """Name of output directory for the agents' code."""
 
-        By default we exclude the field names ``time``, ``window_size``, and
-        ``count`` that are special as they are added by the aggregator.
-        """
+    agent_template_file: str = os.getenv("AGENT_TEMPLATE_FILE", "agent.j2")
+    """Name of the agent Jinja2 template file."""
+
+    def __post_init__(self) -> None:
+        """Post config initialization steps."""
+        # Set default value for excluded_topics
+        self.excluded_topics = self._strtolist(
+            os.getenv("EXCLUDED_TOPICS", "")
+        )
+
+        # Validate topic_rename_format
+        if "{source_topic_name}" not in self.topic_rename_format:
+            raise ValueError(
+                "config.topic_rename_format must contain the "
+                "{source_topic_name} string."
+            )
+
+        # Set default value for excluded_field_names.
+        # By default we exclude the field names ``time``, ``window_size``, and
+        # ``count`` that are special as they are added by the aggregator.
         self.excluded_field_names = self._strtolist(
             os.getenv("EXCLUDED_FIELD_NAMES", "time, window_size, count")
         )
+
+        # Make sure agents_output_dir exists and update syspath to enable
+        # agents autodiscover
+        if not isdir(self.agents_output_dir):
+            os.makedirs(self.agents_output_dir)
+
+        sys.path.append(abspath(dirname(self.agents_output_dir)))
 
     def _strtolist(self, s: str) -> List[str]:
         """Convert comma separated values to a list of strings.

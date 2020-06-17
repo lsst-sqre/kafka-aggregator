@@ -45,7 +45,7 @@ Before running the aggregation example you have to run this initialization comma
 
 .. code-block:: bash
 
-  kafkaaggregator init-example
+  kafkaaggregator -l info init-example
 
 You can check that the source topic was created in Kafka:
 
@@ -69,18 +69,30 @@ We use `faust-avro <https://github.com/masterysystems/faust-avro>`_ to add Avro 
 Running the example
 -------------------
 
+Generate the Faust agents:
+
+.. code-block:: bash
+
+  kafkaaggregator -l info generate_agents
+
+by default agents are generated under the ``./agents`` folder. And kafkaaggregator is configured to find them. For the ``kafkaaggregator-example`` topic you should have this output:
+
+.. code-block:: bash
+
+  kafkaaggregator -l info agents
+
+  ┌Agents─────────────────────────────────────────┬─────────────────────────┬──────────────────────────────────────────────────────────────────┐
+  │ name                                          │ topic                   │ help                                                             │
+  ├───────────────────────────────────────────────┼─────────────────────────┼──────────────────────────────────────────────────────────────────┤
+  │ @kafkaaggregator-example.process_source_topic │ kafkaaggregator-example │ Process incoming messages for the kafkaaggregator-example topic. │
+  └───────────────────────────────────────────────┴─────────────────────────┴──────────────────────────────────────────────────────────────────┘
+
+
 Start the ``kafkaaggregator`` worker:
 
 .. code-block:: bash
 
   kafkaaggregator -l info worker
-
-you can access the worker HTTP API locally on the default port ``6066``. The ``http://localhost:6066/count/`` endpoint reports the number of messages processed by the worker.
-
-.. code-block:: bash
-
-  curl http://localhost:6066/count/
-
 
 Run the following command in another terminal to produce messages for the source topic. In this example, it produces 6000 messages at 10Hz.
 
