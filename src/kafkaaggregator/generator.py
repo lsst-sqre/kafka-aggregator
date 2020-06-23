@@ -71,6 +71,8 @@ class AgentGenerator:
         context : `dict`
             A dictionary with values passed to the template.
         """
+        cls_name = source_topic_name.title().replace("-", "")
+
         topic_rename_format = config.topic_rename_format
 
         aggregation_topic_name = topic_rename_format.format(
@@ -78,6 +80,7 @@ class AgentGenerator:
         )
 
         context = dict(
+            cls_name=cls_name,
             source_topic_name=source_topic_name,
             aggregation_topic_name=aggregation_topic_name,
         )
