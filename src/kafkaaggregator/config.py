@@ -73,13 +73,19 @@ class Configuration:
     workload of the application.
     """
 
-    source_topic_name: str = os.getenv(
-        "SOURCE_TOPIC", "kafkaaggregator-example"
+    source_topic_name_prefix: str = os.getenv(
+        "SOURCE_TOPIC_NAME_PREFIX", "example"
     )
-    """Name of the source topic used in the kafkaaggregator example."""
+    """Prefix for the source topic name used in the aggregation example."""
 
-    topic_regex: str = os.getenv("TOPIC_REGEX", "^kafkaaggregator-example$")
-    """Regex to select topics to aggregate."""
+    ntopics: int = int(os.getenv("NTOPICS", "10"))
+    """Number of source topics used in the aggregation example."""
+
+    nfields: int = int(os.getenv("NFIELDS", "10"))
+    """Number of fields for source topics used in the aggregation example."""
+
+    topic_regex: str = os.getenv("TOPIC_REGEX", "^example-[0-9][0-9][0-9]?$")
+    """Regex to select source topics to aggregate."""
 
     excluded_topics: List[str] = field(default_factory=list)
     """Topics excluded from aggregation."""

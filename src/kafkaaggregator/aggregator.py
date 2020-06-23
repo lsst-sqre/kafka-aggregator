@@ -114,6 +114,8 @@ class Aggregator:
         """
         logger.info(f"Make Faust record for topic {self._source_topic.name}.")
 
+        cls_name = self._source_topic.name.title().replace("-", "")
+
         fields = await self._source_topic.get_fields()
 
         self._aggregation_fields = self._create_aggregation_fields(
@@ -121,7 +123,7 @@ class Aggregator:
         )
 
         self._record = self._make_record(
-            cls_name="AggregationRecord",
+            cls_name=cls_name,
             fields=self._aggregation_fields,
             doc=f"Faust record for topic {self._source_topic.name}.",
         )

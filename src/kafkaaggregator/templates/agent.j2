@@ -37,13 +37,13 @@ aggregator = Aggregator(
 )
 
 # The Faust Record for the aggregation topic is created at runtime
-AggregationRecord = aggregator.async_create_record()
+{{ cls_name }} = aggregator.async_create_record()
 
 source_topic = app.topic("{{ source_topic_name }}")
 
 aggregation_topic = app.topic(
     "{{ aggregation_topic_name }}",
-    value_type=AggregationRecord,
+    value_type={{ cls_name }},
     internal=True
 )
 
