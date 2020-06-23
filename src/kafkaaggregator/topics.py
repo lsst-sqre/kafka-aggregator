@@ -11,9 +11,12 @@ __all__ = ["SchemaException", "Topic", "SourceTopic", "AggregationTopic"]
 
 import json
 import logging
-from typing import List, Union
+import re
+from typing import List, Set, Union
 
 from faust_avro.asyncio import ConfluentSchemaRegistryClient
+from kafka import KafkaConsumer
+from kafka.errors import KafkaError
 
 from kafkaaggregator.app import config
 from kafkaaggregator.fields import Field
@@ -140,6 +143,34 @@ class SourceTopic(Topic):
 
     def __init__(self, name: str) -> None:
         super().__init__(name=name, registry_url=config.registry_url)
+
+    @staticmethod
+    def names() -> Set[str]:
+        """Return a set of source topic names from Kafka."""
+        logger.info("Discovering source topics...")
+        bootstrap_servers = [config.broker.replace("kafka://", "")]
+        try:
+            consumer = KafkaConsumer(
+                bootstrap_servers=bootstrap_servers, enable_auto_commit=False
+            )
+            names: Set[str] = consumer.topics()
+        except KafkaError as e:
+            logger.error("Error retrieving topics from Kafka.")
+            raise e
+
+        if config.topic_regex:
+            pattern = re.compile(config.topic_regex)
+            names = {name for name in names if pattern.match(name)}
+
+        if config.excluded_topics:
+            excluded_topics = set(config.excluded_topics)
+            names = names - excluded_topics
+
+        n = len(names)
+        s = ", ".join(sorted(names))
+        logger.info(f"Found {n} topic(s): {s}")
+
+        return names
 
 
 class AggregationTopic(Topic):
