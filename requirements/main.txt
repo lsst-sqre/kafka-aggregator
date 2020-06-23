@@ -117,9 +117,9 @@ colorlog==4.1.0 \
     --hash=sha256:30aaef5ab2a1873dec5da38fd6ba568fa761c9fa10b40241027fa3edea47f3d2 \
     --hash=sha256:732c191ebbe9a353ec160d043d02c64ddef9028de8caae4cfa8bd49b6afed53e \
     # via mode
-croniter==0.3.33 \
-    --hash=sha256:03ad19baa220ca8bd105413c9f3bab2e7a1514046c20aeb7bf16805c07538eee \
-    --hash=sha256:8e383724066891901ee72dc543a8d520ac14a1f8a820920f2b21f74cd75c8b59 \
+croniter==0.3.34 \
+    --hash=sha256:15597ef0639f8fbab09cbf8c277fa8c65c8b9dbe818c4b2212f95dbc09c6f287 \
+    --hash=sha256:7186b9b464f45cf3d3c83a18bc2344cc101d7b9fd35a05f2878437b14967e964 \
     # via faust
 cython==0.29.20 \
     --hash=sha256:0754ec9d45518d0dbb5da72db2c8b063d40c4c51779618c68431054de179387f \
