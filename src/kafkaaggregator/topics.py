@@ -168,7 +168,7 @@ class SourceTopic(Topic):
 
         n = len(names)
         s = ", ".join(sorted(names))
-        logger.info(f"Found {n} topic(s): {s}")
+        logger.info(f"Found {n} source topic(s): {s}")
 
         return names
 

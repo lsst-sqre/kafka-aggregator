@@ -78,8 +78,9 @@ def process_window(key: Tuple, value: List[Any]) -> None:
     aggregation_topic.send_soon(value=aggregated_message)
 
     logger.info(
-        f"{aggregated_message.count:5d} messages aggregated on window "
-        f"({start}, {end + 0.1})."
+        f"{aggregated_message.count:5d} messages aggregated on "
+        f"{{ source_topic_name }}-tumbling-window ({start:.2f}, "
+        f"{(end + 0.1):.2f})."
     )
 
 
