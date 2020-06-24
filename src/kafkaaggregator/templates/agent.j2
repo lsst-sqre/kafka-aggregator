@@ -72,7 +72,10 @@ def process_window(key: Tuple, value: List[Any]) -> None:
     time = (start + end + 0.1) / 2
 
     aggregated_message = aggregator.compute(
-        time=time, window_size=config.window_size, messages=value
+        time=time,
+        window_size=config.window_size,
+        min_sample_size=config.min_sample_size,
+        messages=value
     )
 
     aggregation_topic.send_soon(value=aggregated_message)
