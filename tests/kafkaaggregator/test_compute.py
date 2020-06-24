@@ -85,7 +85,10 @@ def test_compute(
         doc="Faust record for topic test-source-topic.",
     )
     aggregated_message = Agg.compute(
-        time=1.0, window_size=1.0, messages=incoming_messages
+        time=1.0,
+        window_size=1.0,
+        min_sample_size=1,
+        messages=incoming_messages
     )
     assert aggregated_message.is_valid()
     assert aggregated_message.asdict() == expected_result
