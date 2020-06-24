@@ -10,7 +10,7 @@ from kafkaaggregator.models import make_record
 
 
 @pytest.fixture
-def incoming_messages():
+def incoming_messages() -> List[Any]:
     """Mock incoming messages."""
     messages = [
         {"time": 0, "value": 1.0},
@@ -21,7 +21,7 @@ def incoming_messages():
 
 
 @pytest.fixture
-def aggregation_fields():
+def aggregation_fields() -> List[Field]:
     """Mock aggregation fields."""
     fields = [
         Field("time", int),
@@ -37,7 +37,7 @@ def aggregation_fields():
 
 
 @pytest.fixture
-def expected_result():
+def expected_result() -> Mapping[str, Any]:
     """Return test expected result."""
     result = {
         "count": 3,
