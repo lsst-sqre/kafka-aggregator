@@ -61,7 +61,7 @@ class Aggregator:
     def _create_aggregation_fields(
         fields: List[Field], excluded_field_names: List
     ) -> List[Field]:
-        """Create the aggregation topic fields based on the source topic fields.
+        """Create aggregation topic fields based on the source topic fields.
 
         Add the fields `time`, `window_size`, and `count` and fields for the
         `min`, `mean`, `stdev`, `median`, and `max` statistics for every
