@@ -61,7 +61,7 @@ class Aggregator:
     def _create_aggregation_fields(
         fields: List[Field], excluded_field_names: List
     ) -> List[Field]:
-        """Create the aggregation topic fields based on the source topic fields.
+        """Create aggregation topic fields based on the source topic fields.
 
         Add the fields `time`, `window_size`, and `count` and fields for the
         `min`, `mean`, `stdev`, `median`, and `max` statistics for every
@@ -163,7 +163,11 @@ class Aggregator:
         await self._aggregation_topic.register(schema=json.dumps(schema))
 
     def compute(
-        self, time: float, window_size: float, messages: List[Any]
+        self,
+        time: float,
+        window_size: float,
+        min_sample_size: int,
+        messages: List[Any],
     ) -> Record:
         """Compute summary statistics for a list of messages.
 
@@ -206,7 +210,11 @@ class Aggregator:
 
                 try:
                     operation = aggregation_field.operation.value
-                    aggregated_value = eval(operation)(values)
+                    # Make sure there are enough values to compute statistics
+                    if len(values) >= min_sample_size:
+                        aggregated_value = eval(operation)(values)
+                    else:
+                        aggregated_value = values[0]
                 except Exception:
                     msg = f"Error computing {operation} of {values}."
                     raise StatisticsError(msg)
