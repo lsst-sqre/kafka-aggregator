@@ -8,6 +8,7 @@ from faust.cli import AppCommand, option
 
 from kafkaaggregator.app import app
 from kafkaaggregator.example import AggregationExample
+from kafkaaggregator.app import app, config
 from kafkaaggregator.generator import AgentGenerator
 
 logger = logging.getLogger("kafkaaggregator")
@@ -22,14 +23,14 @@ def main() -> None:
     option(
         "--frequency",
         type=float,
-        default=10,
+        default=config.frequency,
         help="The frequency in Hz in wich messages are produced.",
         show_default=True,
     ),
     option(
         "--max-messages",
         type=int,
-        default=600,
+        default=config.max_messages,
         help="The maximum number of messages to produce.",
         show_default=True,
     ),
