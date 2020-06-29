@@ -19,7 +19,7 @@ AvroSchemaT = str
 logger = logging.getLogger("kafkaaggregator")
 
 
-class AggregationExampleError(RuntimeError):
+class UnexpectedNumberOfTopicsError(RuntimeError):
     """Raised when the number of source topics is unnexpected.
 
     The number of source topics in Kafka must match the number of topics
@@ -116,7 +116,7 @@ class AggregationExample:
                 "verify if the topic_regex configuration matches the "
                 "source topic names."
             )
-            raise AggregationExampleError(msg)
+            raise UnexpectedNumberOfTopicsError(msg)
         logger.info(
             f"Producing {max_messages} message(s) at {frequency} Hz for each "
             f"source topic."
