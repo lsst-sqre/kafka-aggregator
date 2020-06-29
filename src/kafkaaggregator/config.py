@@ -96,6 +96,16 @@ class Configuration:
     nfields: int = int(os.getenv("NFIELDS", "10"))
     """Number of fields for source topics used in the aggregation example."""
 
+    frequency: float = float(os.getenv("FREQUENCY", "10"))
+    """The frequency in Hz in which messages are produced for the
+    example topics.
+    """
+
+    max_messages: int = int(os.getenv("MAX_MESSAGES", "10"))
+    """The maximum number of messages to produce. Set max_messages to a number
+    smaller than 1 to produce an indefinite number of messages.
+    """
+
     topic_regex: str = os.getenv("TOPIC_REGEX", "^example-[0-9][0-9][0-9]?$")
     """Regex to select source topics to aggregate."""
 

@@ -6,8 +6,11 @@ import logging
 
 from faust.cli import AppCommand, option
 
-from kafkaaggregator.app import app
-from kafkaaggregator.example import AggregationExample
+from kafkaaggregator.app import app, config
+from kafkaaggregator.example import (
+    AggregationExample,
+    UnexpectedNumberOfTopicsError,
+)
 from kafkaaggregator.generator import AgentGenerator
 
 logger = logging.getLogger("kafkaaggregator")
@@ -22,14 +25,14 @@ def main() -> None:
     option(
         "--frequency",
         type=float,
-        default=10,
+        default=config.frequency,
         help="The frequency in Hz in wich messages are produced.",
         show_default=True,
     ),
     option(
         "--max-messages",
         type=int,
-        default=600,
+        default=config.max_messages,
         help="The maximum number of messages to produce.",
         show_default=True,
     ),
@@ -39,9 +42,13 @@ async def produce(
 ) -> None:
     """Produce messages for the aggregation example."""
     example = AggregationExample()
-    await example.produce(
-        app=app, frequency=frequency, max_messages=max_messages
-    )
+
+    try:
+        await example.produce(
+            app=app, frequency=frequency, max_messages=max_messages
+        )
+    except UnexpectedNumberOfTopicsError as e:
+        logger.error(e)
 
 
 @app.command()

@@ -19,7 +19,7 @@ AvroSchemaT = str
 logger = logging.getLogger("kafkaaggregator")
 
 
-class AggregationExampleError(RuntimeError):
+class UnexpectedNumberOfTopicsError(RuntimeError):
     """Raised when the number of source topics is unnexpected.
 
     The number of source topics in Kafka must match the number of topics
@@ -116,12 +116,13 @@ class AggregationExample:
                 "verify if the topic_regex configuration matches the "
                 "source topic names."
             )
-            raise AggregationExampleError(msg)
+            raise UnexpectedNumberOfTopicsError(msg)
         logger.info(
-            f"Producing {max_messages} message(s) at {frequency} Hz for each "
-            f"source topic."
+            f"Producing message(s) at {frequency} Hz for each source topic."
         )
-        for i in range(max_messages):
+        count = 0
+        send_count = 0
+        while True:
             message = {"time": time()}
             for n in range(self._nfields):
                 value = random.random()
@@ -130,5 +131,12 @@ class AggregationExample:
             for source_topic_name in source_topic_names:
                 source_topic = app.topic(source_topic_name)
                 await source_topic.send(value=message)
+                send_count += 1
 
             await asyncio.sleep(1 / frequency)
+            # Allow for an indefinite loop if max_messages is a number
+            # smaller than 1
+            count += 1
+            if count == max_messages:
+                logger.info(f"{send_count} messages sent.")
+                break
