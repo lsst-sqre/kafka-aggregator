@@ -1,4 +1,4 @@
-"""A class factory for Faust Records."""
+"""A class factory for Faust-avro Records."""
 
 __all__ = ["make_record"]
 
@@ -12,14 +12,14 @@ from kafkaaggregator.fields import Field
 def make_record(
     cls_name: str, fields: List[Field], doc: str = None
 ) -> faust_avro.Record:
-    """Create a Faust Record class.
+    """Create a Faust-avro Record subclass.
 
     Parameters
     ----------
     cls_name: `str`
         Name of the new class to create.
     fields: `list` [`Field`]
-        List of tuples mapping field names and types for the Faust Record.
+        List of tuples mapping field names and types for the Faust-avro Record.
     doc: `str`
         Docstring for the new class.
 

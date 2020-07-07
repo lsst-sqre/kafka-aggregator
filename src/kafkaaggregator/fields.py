@@ -1,11 +1,12 @@
-"""Field represents a field in the aggregation topic.
+"""Represents an aggregation field and possible operations on fields.
 
-The Field type is numeric by construction (only numeric fields are aggregated).
-It also allows for metadata about the field such as the name of the source
-field to aggregate and the aggregation operation.
+The Field has a numerical type by construction
+(only numeric fields are aggregated).
+It also holds the name of the source field aggregated and the operation
+performed.
 """
 
-__all__ = ["Field"]
+__all__ = ["Field", "Operation"]
 
 from enum import Enum
 from typing import Mapping, Optional, Tuple, Type, Union

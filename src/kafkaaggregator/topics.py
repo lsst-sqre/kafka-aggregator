@@ -1,11 +1,10 @@
 """Implements Topic, SourceTopic and AggregationTopic classes.
 
 The Topic class has methods to retrieve the topic schema from the Schema
-Registry and a parsed list of fields from the Avro schema with Python types
-that are used for aggregation.
+Registry and a parsed list of fields from the Avro schema with Python types.
 
 The child classes SourceTopic and AggregationTopic set the right Schema
-Registry URL to be used for each topic type.
+Registry URL to be used with each topic type.
 """
 __all__ = ["SchemaException", "Topic", "SourceTopic", "AggregationTopic"]
 
@@ -146,7 +145,11 @@ class SourceTopic(Topic):
 
     @staticmethod
     def names() -> Set[str]:
-        """Return a set of source topic names from Kafka."""
+        """Return a set of source topic names from Kafka.
+
+        Use the `topic_regex` and `excluded_topics` configuration settings to
+        select topics from kafka.
+        """
         logger.info("Discovering source topics...")
         bootstrap_servers = [config.broker.replace("kafka://", "")]
         try:

@@ -1,12 +1,11 @@
 """Create the aggregation model and compute summary statistics.
 
-Given a source topic and a list field names to exclude from the source
-topic creates the model for the aggregation topic and compute summary
-statistics.
+Given a source topic and a list of field names to exclude from aggregation
+create the aggregation model and compute summary statistics.
 
-The aggregator add the aggregation fields `time`, `window_size`, and
-`count` and computes the following statistics: `min`, `mean`, `stdev`,
-`median`, and `max` statistics for every numeric field in the source topic.
+kafka-aggregator adds the aggregation fields `time`, `window_size`, and
+`count` and computes `min`, `mean`, `stdev`, `median`, and `max` statistics
+for every numeric field in the source topic.
 """
 
 
@@ -30,15 +29,19 @@ logger = logging.getLogger("kafkaaggregator")
 class Aggregator:
     """Create the aggregation model and compute summary statistics.
 
-    Given a source topic, creates the model for the aggregation topic and
-    compute summary statistics.
+    Given a source topic and a list of field names to exclude from aggregation
+    create the aggregation model and compute summary statistics.
+
+    kafka-aggregator adds the aggregation fields `time`, `window_size`, and
+    `count` and computes `min`, `mean`, `stdev`, `median`, and `max` statistics
+    for every numeric field in the source topic.
 
     Parameters
     ----------
     source_topic : `str`
         Name of the source kafka topic.
     aggregation_topic : `str`
-        Name of the kafka topic with the aggregated data.
+        Name of the aggregation kafka topic.
     excluded_field_names: `list` ['str']
         List of field names to exclude from aggregation.
     """
@@ -105,12 +108,12 @@ class Aggregator:
         return aggregation_fields
 
     async def create_record(self) -> Record:
-        """Create the Faust Record for the aggregation topic.
+        """Create a Faust-avro Record class for the aggregation topic.
 
         Returns
         -------
         record : `Record`
-            Faust-avro Record for the aggreation topic.
+            Faust-avro Record class for the aggreation topic.
         """
         logger.info(f"Make Faust record for topic {self._source_topic.name}.")
 
@@ -141,7 +144,7 @@ class Aggregator:
         Returns
         -------
         record : `Record`
-            Faust-avro Record for the aggreation topic.
+            Faust-avro Record class for the aggreation topic.
         """
         loop = asyncio.get_event_loop()
         record = loop.run_until_complete(self.create_record())

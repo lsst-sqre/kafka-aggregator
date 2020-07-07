@@ -1,4 +1,4 @@
-"""The main application definition for kafkaaggregator."""
+"""Create a kafka-aggregator application."""
 
 __all__ = ["create_app"]
 
@@ -8,13 +8,13 @@ from kafkaaggregator.config import Configuration
 
 
 def create_app(config: Configuration = None) -> faust_avro.App:
-    """Create and configure the Faust application.
+    """Create and configure a Faust based kafka-aggregator application.
 
     Parameters
     ----------
     config : `Configuration`, optional
-        The configuration to use.  If not provided, the default Configuration
-        will be used.
+        The configuration to use.  If not provided, the default
+        :ref:`Configuration` will be used.
     """
     if not config:
         config = Configuration()
