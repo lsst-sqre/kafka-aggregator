@@ -1,7 +1,7 @@
 """Aggregation example."""
 
 
-__all__ = ["AggregationExample"]
+__all__ = ["AggregationExample", "UnexpectedNumberOfTopicsError"]
 
 import asyncio
 import json

@@ -50,7 +50,9 @@ class Configuration:
     window_size: float = float(os.getenv("WINDOW_SIZE", "1"))
     """Size of the tumbling window in seconds used to aggregate messages.
 
-    See https://faust.readthedocs.io/en/latest/userguide/tables.html#windowing
+    See also `Faust's windowing feature
+    <https://faust.readthedocs.io/en/latest/userguide/tables.html#windowing>`_
+    documentation.
     """
 
     window_expires: float = float(os.getenv("WINDOW_EXPIRES", "1"))
