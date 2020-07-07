@@ -2,7 +2,7 @@
 Kafka-aggregator
 ################
 
-A Kafka aggregator based on the Faust Python Stream Processing library.
+A Kafka aggregator based on the `Faust <https://faust.readthedocs.io/en/latest/index.html>`_ Python Stream Processing library.
 
 This site provides documentation for kafka-aggregator's installation, configuration, user and development guides, and API reference. Before installing kafka-aggregator, you might want to use the docker-compose set up as a way to run it locally, in this case jump straight to the `Configuration`_ and `User guide`_ sessions.
 
