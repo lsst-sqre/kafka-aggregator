@@ -28,6 +28,14 @@ cfgv==3.1.0 \
     --hash=sha256:1ccf53320421aeeb915275a196e23b3b8ae87dea8ac6698b1638001d4a486d53 \
     --hash=sha256:c8e8f552ffcc6194f4e18dd4f68d9aef0c0d58ae7e7be8c82bee3c5e9edfa513 \
     # via pre-commit
+chardet==3.0.4 \
+    --hash=sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae \
+    --hash=sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691 \
+    # via requests
+click==7.1.2 \
+    --hash=sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a \
+    --hash=sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc \
+    # via documenteer
 coverage[toml]==5.2 \
     --hash=sha256:0fc4e0d91350d6f43ef6a61f64a48e917637e1dcfcba4b4b7d543c628ef82c2d \
     --hash=sha256:10f2a618a6e75adf64329f828a6a5b40244c1c50f5ef4ce4109e904e69c71bd2 \
@@ -96,9 +104,9 @@ gitpython==3.1.3 \
     --hash=sha256:e107af4d873daed64648b4f4beb89f89f0cfbe3ef558fc7821ed2331c2f8da1a \
     --hash=sha256:ef1d60b01b5ce0040ad3ec20bc64f783362d41fa0822a2742d3586e1f49bb8ac \
     # via documenteer
-graphviz==0.14 \
-    --hash=sha256:cb0e878f90378489f17aab140b68e64e44b79e4cb59a530c8863d84bf2e2e5f5 \
-    --hash=sha256:e104ba036c8aef84320ec80560e544cd3cad68c9f90394b4e2b87bc44ab09791 \
+graphviz==0.14.1 \
+    --hash=sha256:088562ef6e3dad5e8dde9389caf4a84f768e65dcaa08238cfcdf36d2b30ccf61 \
+    --hash=sha256:f5aad52a652c06825dcc5ee018d920fca26aef339386866094597fb3f2f222ce \
     # via -r requirements/dev.in
 identify==1.4.21 \
     --hash=sha256:c4d07f2b979e3931894170a9e0d4b8281e6905ea6d018c326f7ffefaf20db680 \
@@ -112,10 +120,6 @@ imagesize==1.2.0 \
     --hash=sha256:6965f19a6a2039c7d48bca7dba2473069ff854c36ae6f19d2cde309d998228a1 \
     --hash=sha256:b1f6b5a4eab1f73479a50fb79fcf729514a900c341d8503d62a62dbc4127a2b1 \
     # via sphinx
-importlib-metadata==1.7.0 \
-    --hash=sha256:90bb658cdbbf6d1735b6341ce708fc7024a3e14e99ffdc5783edea9f9b077f83 \
-    --hash=sha256:dc15b2969b4ce36305c51eebe62d418ac7791e9a157911d58bfb1f9ccd8e2070 \
-    # via flake8, pluggy, pre-commit, pytest, virtualenv
 jinja2==2.11.2 \
     --hash=sha256:89aab215427ef59c34ad58735269eb58b1a5808103067f7bb9d5836c651b3bb0 \
     --hash=sha256:f0a4641d3cf955324a89c04f3d94663aa4d638abe8f733ecd3582848e1c37035 \
@@ -383,10 +387,6 @@ yarl==1.4.2 \
     --hash=sha256:d8cdee92bc930d8b09d8bd2043cedd544d9c8bd7436a77678dd602467a993080 \
     --hash=sha256:e15199cdb423316e15f108f51249e44eb156ae5dba232cb73be555324a1d49c2 \
     # via vcrpy
-zipp==3.1.0 \
-    --hash=sha256:aa36550ff0c0b7ef7fa639055d797116ee891440eac1a56f378e2d3179e0320b \
-    --hash=sha256:c599e4d75c98f6798c509911d08a22e6c021d074469042177c8c86fb92eefd96 \
-    # via importlib-metadata
 
 # WARNING: The following packages were not pinned, but pip requires them to be
 # pinned when the requirements file includes hashes. Consider using the --allow-unsafe flag.
