@@ -2,6 +2,8 @@
 kafka-aggregator
 ################
 
+|Build| |Docker|
+
 A Kafka aggregator based on the `Faust <https://faust.readthedocs.io/en/latest/index.html>`_ Python Stream Processing library.
 
 kafka-aggregator development is based on the `Safir <https://safir.lsst.io>`__ application template.
@@ -17,3 +19,13 @@ kafka-aggregator implements a Faust agent, a "stream processor",  that adds mess
 kafka-aggregator uses `faust-avro <https://github.com/masterysystems/faust-avro>`_ to add Avro serialization and Schema Registry support to Faust. faust-avro can parse Faust models into Avro Schemas.
 
 See `the docs <https://kafka-aggregator.lsst.io/>`_ for more information.
+
+.. |Build| image:: https://github.com/lsst-sqre/kafka-aggregator/workflows/CI/badge.svg
+   :alt: GitHub Actions
+   :scale: 100%
+   :target: https://github.com/lsst-sqre/kafka-aggregator/actions
+
+.. |Docker| image:: https://img.shields.io/docker/v/lsstsqre/kafkaaggregator?sort=date
+   :alt: Docker Hub repository
+   :scale: 100%
+   :target: https://hub.docker.com/repository/docker/lsstsqre/kafkaaggregator
