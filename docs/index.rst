@@ -15,6 +15,12 @@ kafka-aggregator implements a Faust agent (stream processor) that adds messages 
 
 kafka-aggregator uses `faust-avro <https://github.com/masterysystems/faust-avro>`_ to add Avro serialization and Schema Registry support to Faust.
 
+
+.. figure:: /_static/kafka-aggregator.svg
+   :name: Kafka-aggretor architecture diagram
+
+   Figure 1. Kafka-aggregator architecture diagram showing Kafka and Faust components.
+
 Summary statistics
 ------------------
 kafka-aggregator uses the `Python statistics`_ module to compute summary statistics for each field in the messages allocated to an aggregation window.
