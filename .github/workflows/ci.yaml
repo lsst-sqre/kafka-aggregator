@@ -79,6 +79,8 @@ jobs:
           python-version: 3.7
       - name: Install tox and LTD Conveyor
         run: pip install tox ltd-conveyor
+      - name: Install graphviz
+        run: sudo apt-get install graphviz
       - name: Run tox
         run: tox -e docs
       - name: Upload to LSST the Docs
