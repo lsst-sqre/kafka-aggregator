@@ -1,0 +1,17 @@
+{
+  "enabledManagers": [
+    "docker-compose",
+    "kustomize"
+  ],
+  "extends": [
+    "config:base"
+  ],
+  "packageRules": [
+    {
+      "groupName": "test dependencies",
+      "paths": [
+        "docker-compose.yaml"
+      ]
+    }
+  ]
+}
