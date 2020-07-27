@@ -361,7 +361,7 @@ typing-extensions==3.7.4.2 \
     --hash=sha256:6e95524d8a547a91e08f404ae485bbb71962de46967e1b71a0cb89af24e761c5 \
     --hash=sha256:79ee589a3caca649a9bfd2a8de4709837400dfa00b6cc81962a1e6a1815969ae \
     --hash=sha256:f8d2bd89d25bc39dabe7d23df520442fa1d8969b82544370e03d88b5a591c392 \
-    # via typing-inspect, yarl
+    # via mode, typing-inspect, yarl
 typing-inspect==0.5.0 \
     --hash=sha256:75c97b7854426a129f3184c68588db29091ff58e6908ed520add1d52fc44df6e \
     --hash=sha256:811b44f92e780b90cfe7bac94249a4fae87cfaa9b40312765489255045231d9c \
