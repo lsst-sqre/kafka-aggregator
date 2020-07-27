@@ -3,8 +3,9 @@
 import os
 import sys
 
-import kafkaaggregator
 import lsst_sphinx_bootstrap_theme
+
+import kafkaaggregator
 
 # Work around Sphinx bug related to large and highly-nested source files
 sys.setrecursionlimit(2000)
