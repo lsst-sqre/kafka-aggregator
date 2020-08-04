@@ -30,7 +30,7 @@ class Configuration:
     """
 
     internal_registry_url: str = os.getenv(
-        "INTERNAL_SCHEMA_REGISTRY_URL", "http://localhost:28081"
+        "INTERNAL_SCHEMA_REGISTRY_URL", "http://localhost:8081"
     )
     """Internal Confluent Schema Registry URL.
 
