@@ -62,7 +62,7 @@ class Aggregator:
 
     @staticmethod
     def _create_aggregation_fields(
-        fields: List[Field], excluded_field_names: List
+        fields: List[Field], excluded_field_names: List[str]
     ) -> List[Field]:
         """Create aggregation topic fields based on the source topic fields.
 
