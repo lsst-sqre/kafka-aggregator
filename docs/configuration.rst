@@ -54,7 +54,7 @@ Configure the size of the aggregation using the `window_size` configuration sett
   Faust allocates at least one message on each aggregation window, if `window_size` is smaller than the time interval between two consecutive messages Faust will skip that window and no aggregation is computed.
 
 
-When deciding the size of the aggregation window, an important consideration is the `data reduction factor` given by ``R=window_size*f_in/N`` where ``f_in`` is the frequency of the input data stream in Hz and  ``N`` is the number of summary statistics computed by kafka-aggregator. For example, to get a reduction factor of 50 times in storage for an input data stream of 50Hz the size of the aggregation window must be 5s for N=5.
+When deciding the size of the aggregation window, an important consideration is the `data reduction factor` given by ``R=window_size*f_in/N`` where ``f_in`` is the frequency of the input data stream in Hz and  ``N`` is the number of summary statistics computed by kafka-aggregator. For example, to get a reduction factor of 100 times in storage for an input data stream of 50Hz the size of the aggregation window must be 10s for N=5.
 
 Also, `window_size` should be large enough to minimize the standard error associated to the number of messages (sample size) allocated to a window. The smaller the standard error the more precise the computed estimate is. kafka-aggregator stores the sample size in the ``count`` field of each aggregated message. That can be used, for example, to compute the standard error of the mean, given by ``SE=stdev/sqrt(count)`` where ``stdev`` is the sample standard deviation (the square root of the sample variance) computed and stored for each field in the aggregated message.
 
