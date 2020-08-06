@@ -30,7 +30,7 @@ class Configuration:
     """
 
     internal_registry_url: str = os.getenv(
-        "INTERNAL_SCHEMA_REGISTRY_URL", "http://localhost:28081"
+        "INTERNAL_SCHEMA_REGISTRY_URL", "http://localhost:8081"
     )
     """Internal Confluent Schema Registry URL.
 
@@ -122,7 +122,7 @@ class Configuration:
     """
 
     excluded_field_names: List[str] = field(default_factory=list)
-    """List of field names to exclude from aggregation."""
+    """List of field names to exclude from being aggregated."""
 
     agents_output_dir: str = os.getenv("AGENTS_OUTPUT_DIR", "agents")
     """Name of output directory for the agents' code."""

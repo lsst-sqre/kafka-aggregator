@@ -8,10 +8,14 @@ import json
 import logging
 import random
 from time import time
+from typing import List
 
 import faust_avro
+from faust_avro import Record
 
 from kafkaaggregator.app import config
+from kafkaaggregator.fields import Field
+from kafkaaggregator.models import make_record
 from kafkaaggregator.topics import SourceTopic
 
 AvroSchemaT = str
@@ -40,37 +44,49 @@ class AggregationExample:
     def __init__(self) -> None:
         self._ntopics = min(config.ntopics, AggregationExample.MAX_NTOPICS)
         self._nfields = min(config.nfields, AggregationExample.MAX_NFIELDS)
+        self._make_record = make_record
 
-    def create_schema(self, name: str) -> AvroSchemaT:
-        """Create Avro schema for the source topic.
+    def make_fields(self) -> List[Field]:
+        """Make fields for the example topics.
 
-        Parameters
-        ----------
-        source_topic_name : `str`
-            Name of the source topic.
+        Returns
+        -------
+        fields : `list`
+            A list of fields mapping field name and type.
         """
-        fields = []
         # A source topic needs a timestamp field
-        fields.append(dict(name="time", type="double"))
-
+        time = Field(name="time", type=float)
+        fields = [time]
         for n in range(self._nfields):
-            fields.append(dict(name=f"value{n}", type="double"))
+            fields.append(Field(name=f"value{n}", type=float))
+        return fields
 
-        schema = json.dumps(
-            dict(
-                type="record",
-                name=name.replace("-", "_"),
-                doc="Source topic with raw values.",
-                fields=fields,
-            )
+    def create_record(self, name: str) -> Record:
+        """Create a Faust-avro Record class for the source topic.
+
+        With a Faust-avro Record for the source topic it is possible
+        to produce messages in Avro format for the aggregation example,
+        instead of using ``value_type=bytes``.
+
+        Returns
+        -------
+        record : `Record`
+            Faust-avro Record class for the source topic.
+        """
+        logger.info(f"Make Faust record for topic {name}.")
+        cls_name = name.title().replace("-", "")
+        fields = self.make_fields()
+        self._record = self._make_record(
+            cls_name=cls_name,
+            fields=fields,
+            doc=f"Faust record for topic {name}.",
         )
-        return schema
+        return self._record
 
     async def initialize(self, app: faust_avro.App) -> None:
         """Initialize source topics for the aggregation example.
 
-        The source topic is not managed by Faust, it is an external
-        topic. To initialize the topic, its schema needs to registered in
+        To initialize the topic, its schema needs to be registered in
         the Schema Registry and the topic itself needs to be created in Kafka.
 
         Parameters
@@ -81,15 +97,14 @@ class AggregationExample:
         for n in range(self._ntopics):
             source_topic_name = f"{config.source_topic_name_prefix}-{n:03d}"
             source_topic = SourceTopic(name=source_topic_name)
-            schema = self.create_schema(name=source_topic_name)
-            await source_topic.register(schema=schema)
-            # Declare the source topic as an external topic in Faust.
-            # External topics do not have a corresponding model, thus
-            # value_type=bytes.
-            external_topic = app.topic(
-                source_topic_name, value_type=bytes, internal=False
+            record = self.create_record(name=source_topic_name)
+            schema = record.to_avro(registry=source_topic._registry)
+            await source_topic.register(schema=json.dumps(schema))
+            # Declare the source topic as an internal topic in Faust.
+            internal_topic = app.topic(
+                source_topic_name, value_type=record, internal=True
             )
-            await external_topic.declare()
+            await internal_topic.declare()
 
     async def produce(
         self, app: faust_avro.App, frequency: float, max_messages: int
