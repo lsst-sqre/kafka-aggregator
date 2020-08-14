@@ -1,6 +1,6 @@
 """Tests for the fields module."""
 
-from kafkaaggregator.fields import Field, Operation
+from kafkaaggregator.fields import Field
 
 
 def test_hash() -> None:
@@ -10,9 +10,6 @@ def test_hash() -> None:
     """
     assert hash(
         Field(
-            "field",
-            int,
-            source_field_name="source_field",
-            operation=Operation.MEAN,
+            "field", int, source_field_name="source_field", operation="mean",
         )
     )

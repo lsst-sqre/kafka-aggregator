@@ -1,25 +1,14 @@
-"""Represents an aggregation field and possible operations on fields.
+"""Aggregation field class.
 
-The Field has a numerical type by construction
-(only numeric fields are aggregated).
-It also holds the name of the source field aggregated and the operation
-performed.
+The Field has a numerical type by construction. It also holds the name of
+the source field being aggregated and the operation performed.
 """
 
-__all__ = ["Field", "Operation"]
+__all__ = ["Field"]
 
-from enum import Enum
 from typing import Mapping, Optional, Tuple, Type, Union
 
-
-class Operation(Enum):
-    """Possible operations on fields."""
-
-    MIN = "min"
-    MEAN = "mean"
-    MEDIAN = "median"
-    STDEV = "stdev"
-    MAX = "max"
+from kafkaaggregator.operations import Operation
 
 
 class Field:
@@ -33,7 +22,7 @@ class Field:
         Field data type.
     source_field_name : `str`, optional
         Source field name.
-    operation : `Operation`, optional
+    operation : `str`, optional
     """
 
     def __init__(
@@ -41,16 +30,17 @@ class Field:
         name: str,
         type: Union[Type[int], Type[float]],
         source_field_name: Optional[str] = None,
-        operation: Optional[Operation] = None,
+        operation: Optional[str] = None,
     ) -> None:
         self.name = name
         self.type = type
         self.source_field_name = source_field_name
         self.operation = operation
         if operation:
-            if not isinstance(operation, Operation):
-                raise TypeError(
-                    "Operation must be an instance of the Operation Enum."
+            if operation not in Operation.values():
+                raise RuntimeError(
+                    f"Invalid operation '{operation}'. "
+                    f"Allowed values are: {', '.join(Operation.values())}."
                 )
 
     def __repr__(self) -> str:

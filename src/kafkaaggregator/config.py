@@ -8,6 +8,8 @@ from dataclasses import dataclass, field
 from os.path import abspath, dirname, isdir
 from typing import List
 
+from kafkaaggregator.operations import Operation
+
 
 @dataclass
 class Configuration:
@@ -80,6 +82,13 @@ class Configuration:
     The default value min_sample_size=2 make sure we can compute stdev.
     """
 
+    operations: List[str] = field(default_factory=list)
+    """List of operations to perform.
+
+    Allowed operations are `min`, `q1`, `mean`, `median`, `q3`, `stdev` and
+    `max`.
+    """
+
     topic_partitions: int = int(os.getenv("TOPIC_PARTITIONS", "4"))
     """Default number of partitions for new topics.
 
@@ -132,6 +141,18 @@ class Configuration:
 
     def __post_init__(self) -> None:
         """Post config initialization steps."""
+        # Validate operations
+        self.operations = self._strtolist(
+            os.getenv("OPERATIONS", "min, q1, mean, median, stdev, q3, max")
+        )
+
+        for operation in self.operations:
+            if operation not in Operation.values():
+                raise ValueError(
+                    f"Invalid operation '{operation}' in config.operations. "
+                    f"Allowed values are: {', '.join(Operation.values())}."
+                )
+
         # Set default value for excluded_topics
         self.excluded_topics = self._strtolist(
             os.getenv("EXCLUDED_TOPICS", "")

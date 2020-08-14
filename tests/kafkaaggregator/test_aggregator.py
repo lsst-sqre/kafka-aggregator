@@ -26,10 +26,18 @@ def excluded_field_names():
     return ["time", "excluded"]
 
 
-def test_aggregation_fields(source_topic_fields, excluded_field_names):
+@pytest.fixture
+def operations():
+    """Mock list of opertions."""
+    return ["min", "mean", "median", "stdev", "max"]
+
+
+def test_aggregation_fields(
+    source_topic_fields, excluded_field_names, operations
+):
     """Test aggregation fields creation."""
     aggregation_fields = Aggregator._create_aggregation_fields(
-        source_topic_fields, excluded_field_names
+        source_topic_fields, excluded_field_names, operations
     )
     # `time`, `count` and `window_size` are added by the aggregator
     assert Field("time", float) in aggregation_fields

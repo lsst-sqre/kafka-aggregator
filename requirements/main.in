@@ -5,8 +5,8 @@
 # After editing, update requirements/main.txt by running:
 #     make update-deps
 
-faust[fast]
-faust-avro
-importlib_metadata
-jinja2
-aiofiles
+faust[fast]==1.10.4
+faust-avro==0.4.0
+importlib_metadata==1.7.0
+jinja2==2.11.2
+aiofiles==0.5.0
