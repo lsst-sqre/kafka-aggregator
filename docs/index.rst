@@ -4,14 +4,16 @@ Kafka-aggregator
 
 A Kafka aggregator based on the `Faust <https://faust.readthedocs.io/en/latest/index.html>`_ Python Stream Processing library.
 
-This site provides documentation for the kafka-aggregator installation, configuration, user and development guides, and API reference. Before installing kafka-aggregator, you might want to use the docker-compose set up as a way to run it locally, in this case jump straight to the `Configuration`_ and `User guide`_ sessions.
+This site provides documentation for the kafka-aggregator installation, configuration, user and development guides, and API reference.
+
+Before installing kafka-aggregator, you might want to use the docker-compose set up as a way to run it locally, in this case jump straight to the `Configuration`_ and `User guide`_ sessions.
 
 Overview
 ========
 
-kafka-aggregator uses `Faust's windowing feature <https://faust.readthedocs.io/en/latest/userguide/tables.html#windowing>`_  to aggregate a stream of messages from Kafka.
+kafka-aggregator uses `Faust's windowing feature <https://faust.readthedocs.io/en/latest/userguide/tables.html#windowing>`_  to aggregate Kafka streams.
 
-kafka-aggregator implements a Faust agent (stream processor) that adds messages from a source topic into a Faust table. The table is configured as a tumbling window with a size, representing the window duration (time interval) and an expiration time, which specifies the duration for which the data allocated to each window will be stored. Every time a window expires, a callback function is called to aggregate the messages allocated to that window. The size of the window controls the frequency of the aggregated stream.
+kafka-aggregator implements a Faust agent (stream processor) that adds messages from a source topic into a Faust table. The table is configured as a tumbling window with a size and an expiration time. Every time a window expires, a callback function is called to aggregate the messages allocated to that window. The size of the window controls the frequency of the aggregated stream.
 
 kafka-aggregator uses `faust-avro <https://github.com/masterysystems/faust-avro>`_ to add Avro serialization and Schema Registry support to Faust.
 
@@ -23,7 +25,7 @@ kafka-aggregator uses `faust-avro <https://github.com/masterysystems/faust-avro>
 
 Summary statistics
 ------------------
-kafka-aggregator uses the `Python statistics`_ module to compute summary statistics for each field in the messages allocated to an aggregation window.
+kafka-aggregator uses the `Python statistics`_ module to compute summary statistics for each numerical field in the source topic.
 
 .. table:: *Summary statistics computed by kafka-aggregator*.
 
@@ -37,6 +39,10 @@ kafka-aggregator uses the `Python statistics`_ module to compute summary statist
   | max()    | Maximum value of data.               |
   +----------+--------------------------------------+
   | stdev()  | Sample standard deviation of data.   |
+  +----------+--------------------------------------+
+  | q1()     | First quartile of the data.          |
+  +----------+--------------------------------------+
+  | q3()     | Third quartile of the data.          |
   +----------+--------------------------------------+
 
 .. _Python statistics: https://docs.python.org/3/library/statistics.html

@@ -44,6 +44,12 @@ Selecting topics to aggregate
 
 kafka-aggregator selects source topics from Kafka using a regular expression `topic_regex` and exclude source topics listed in the `excluded_topics` list.
 
+Summary Statistics
+------------------
+The `operations` configuration setting specifies the summary statistics to be computed for each
+numerical field in the source topic.
+
+
 Aggregation window settings
 ---------------------------
 
