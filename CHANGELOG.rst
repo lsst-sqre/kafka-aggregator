@@ -2,6 +2,17 @@
 Change log
 ##########
 
+0.2.0 (2020-08-14)
+==================
+
+* Add first and third quartiles (``q1`` and ``q3``) to the list of summary statistics computed by the aggregator.
+* Ability to configure the list of summary statistics to be computed.
+* Pinned top-level requeriments.
+* Add Kafka Connect to the docker-compose setup.
+* Use only one Schema Registry by default to simplify local execution.
+* First release to PyPI.
+
+
 0.1.0 (2020-07-13)
 ==================
 
