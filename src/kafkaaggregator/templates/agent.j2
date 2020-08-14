@@ -34,6 +34,7 @@ aggregator = Aggregator(
     source_topic_name="{{ source_topic_name }}",
     aggregation_topic_name="{{ aggregation_topic_name }}",
     excluded_field_names=config.excluded_field_names,
+    operations=config.operations,
 )
 
 # The Faust Record for the aggregation topic is created at runtime
