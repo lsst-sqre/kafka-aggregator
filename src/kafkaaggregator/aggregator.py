@@ -14,13 +14,20 @@ __all__ = ["Aggregator"]
 import asyncio
 import json
 import logging
-from statistics import StatisticsError, mean, median, stdev  # noqa: F401
+from statistics import StatisticsError
 from typing import Any, List
 
 from faust_avro import Record
 
-from kafkaaggregator.fields import Field, Operation
+from kafkaaggregator.fields import Field
 from kafkaaggregator.models import make_record
+from kafkaaggregator.operations import (  # noqa: F401
+    mean,
+    median,
+    q1,
+    q3,
+    stdev,
+)
 from kafkaaggregator.topics import AggregationTopic, SourceTopic
 
 logger = logging.getLogger("kafkaaggregator")
@@ -42,8 +49,10 @@ class Aggregator:
         Name of the source kafka topic.
     aggregation_topic : `str`
         Name of the aggregation kafka topic.
-    excluded_field_names: `list` ['str']
+    excluded_field_names: `list`
         List of field names to exclude from aggregation.
+    operations: `list`
+        List of operations to perform.
     """
 
     logger = logger
@@ -53,16 +62,20 @@ class Aggregator:
         source_topic_name: str,
         aggregation_topic_name: str,
         excluded_field_names: List[str],
+        operations: List[str],
     ) -> None:
 
         self._source_topic = SourceTopic(name=source_topic_name)
         self._aggregation_topic = AggregationTopic(name=aggregation_topic_name)
         self._excluded_field_names = excluded_field_names
+        self._operations = operations
         self._make_record = make_record
 
     @staticmethod
     def _create_aggregation_fields(
-        fields: List[Field], excluded_field_names: List[str]
+        fields: List[Field],
+        excluded_field_names: List[str],
+        operations: List[str],
     ) -> List[Field]:
         """Create aggregation topic fields based on the source topic fields.
 
@@ -78,6 +91,8 @@ class Aggregator:
             List of fields to aggregate.
         excluded_field_names : `list`
             List of fields excluded from aggregation.
+        operations : `list`
+            List of operations to perform.
 
         Returns
         -------
@@ -96,9 +111,9 @@ class Aggregator:
                 continue
             # Only numeric fields are aggregated
             if field.type in (int, float):
-                for operation in Operation:
+                for operation in operations:
                     f = Field(
-                        name=f"{operation.value}_{field.name}",
+                        name=f"{operation}_{field.name}",
                         type=float,
                         source_field_name=field.name,
                         operation=operation,
@@ -122,7 +137,7 @@ class Aggregator:
         fields = await self._source_topic.get_fields()
 
         self._aggregation_fields = self._create_aggregation_fields(
-            fields, self._excluded_field_names
+            fields, self._excluded_field_names, self._operations
         )
 
         self._record = self._make_record(
@@ -212,7 +227,7 @@ class Aggregator:
                 values = [message[source_field_name] for message in messages]
 
                 try:
-                    operation = aggregation_field.operation.value
+                    operation = aggregation_field.operation
                     # Make sure there are enough values to compute statistics
                     if len(values) >= min_sample_size:
                         aggregated_value = eval(operation)(values)
