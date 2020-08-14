@@ -5,7 +5,7 @@ from typing import Any, List, Mapping
 import pytest
 
 from kafkaaggregator.aggregator import Aggregator
-from kafkaaggregator.fields import Field, Operation
+from kafkaaggregator.fields import Field
 from kafkaaggregator.models import make_record
 
 
@@ -27,11 +27,11 @@ def aggregation_fields() -> List[Field]:
         Field("time", int),
         Field("count", int),
         Field("window_size", float),
-        Field("min_value", float, "value", Operation.MIN),
-        Field("mean_value", float, "value", Operation.MEAN),
-        Field("median_value", float, "value", Operation.MEDIAN),
-        Field("stdev_value", float, "value", Operation.STDEV,),
-        Field("max_value", float, "value", Operation.MAX),
+        Field("min_value", float, "value", "min"),
+        Field("mean_value", float, "value", "mean"),
+        Field("median_value", float, "value", "median"),
+        Field("stdev_value", float, "value", "stdev"),
+        Field("max_value", float, "value", "max"),
     ]
     return fields
 
@@ -95,6 +95,7 @@ def test_compute(
         # If these fields are present in the incoming message they are excluded
         # as they are used by the aggregator
         excluded_field_names="time, count, window_size",
+        operations=["min", "mean", "median", "stdev", "max"],
     )
 
     # Mock the creation of the aggregation fields
