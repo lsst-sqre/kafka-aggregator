@@ -10,6 +10,9 @@ def test_hash() -> None:
     """
     assert hash(
         Field(
-            "field", int, source_field_name="source_field", operation="mean",
+            "field",
+            int,
+            source_field_name="source_field",
+            operation="mean",
         )
     )
