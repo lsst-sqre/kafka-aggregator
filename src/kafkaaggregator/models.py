@@ -42,6 +42,9 @@ def make_record(
     """
     _fields: Mapping[str, Any] = dict([f.astuple() for f in fields])
 
-    cls_attrs = dict(__annotations__=_fields, __doc__=doc,)
+    cls_attrs = dict(
+        __annotations__=_fields,
+        __doc__=doc,
+    )
 
     return type(cls_name, (faust_avro.Record,), cls_attrs)

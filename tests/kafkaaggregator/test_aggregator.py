@@ -63,7 +63,9 @@ def test_record_class():
     """Test Faust Record creation."""
     # make a simple Faust Record
     Foo = make_record(
-        cls_name="Foo", fields=[Field("bar", int)], doc="Test record",
+        cls_name="Foo",
+        fields=[Field("bar", int)],
+        doc="Test record",
     )
     f = Foo(bar=0)
     assert f.is_valid()
