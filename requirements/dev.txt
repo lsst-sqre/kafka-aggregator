@@ -100,9 +100,9 @@ gitdb==4.0.5 \
     --hash=sha256:91f36bfb1ab7949b3b40e23736db18231bf7593edada2ba5c3a174a7b23657ac \
     --hash=sha256:c9e1f2d0db7ddb9a704c2a0217be31214e91a4fe1dea1efad19ae42ba0c285c9 \
     # via gitpython
-gitpython==3.1.8 \
-    --hash=sha256:080bf8e2cf1a2b907634761c2eaefbe83b69930c94c66ad11b65a8252959f912 \
-    --hash=sha256:1858f4fd089abe92ae465f01d5aaaf55e937eca565fb2c1fce35a51b5f85c910 \
+gitpython==3.1.9 \
+    --hash=sha256:138016d519bf4dd55b22c682c904ed2fd0235c3612b2f8f65ce218ff358deed8 \
+    --hash=sha256:a03f728b49ce9597a6655793207c6ab0da55519368ff5961e4a74ae475b9fa8e \
     # via documenteer
 graphviz==0.14.1 \
     --hash=sha256:088562ef6e3dad5e8dde9389caf4a84f768e65dcaa08238cfcdf36d2b30ccf61 \
@@ -366,9 +366,9 @@ vcrpy==4.1.0 \
     --hash=sha256:4138e79eb35981ad391406cbb7227bce7eba8bad788dcf1a89c2e4a8b740debe \
     --hash=sha256:d833248442bbc560599add895c9ab0ef518676579e8dc72d8b0933bdb3880253 \
     # via pytest-vcr
-virtualenv==20.0.31 \
-    --hash=sha256:43add625c53c596d38f971a465553f6318decc39d98512bc100fa1b1e839c8dc \
-    --hash=sha256:e0305af10299a7fb0d69393d8f04cb2965dda9351140d11ac8db4e5e3970451b \
+virtualenv==20.0.33 \
+    --hash=sha256:35ecdeb58cfc2147bb0706f7cdef69a8f34f1b81b6d49568174e277932908b8f \
+    --hash=sha256:a5e0d253fe138097c6559c906c528647254f437d1019af9d5a477b09bfa7300f \
     # via pre-commit
 wrapt==1.12.1 \
     --hash=sha256:b62ffa81fb85f4332a4f609cab4ac40709470da05643a082ec1eb88e6d9b97d7 \
