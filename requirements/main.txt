@@ -121,13 +121,13 @@ click==7.1.2 \
 colorclass==2.2.0 \
     --hash=sha256:b05c2a348dfc1aff2d502527d78a5b7b7e2f85da94a96c5081210d8e9ee8e18b \
     # via faust
-colorlog==4.2.1 \
-    --hash=sha256:43597fd822ce705190fc997519342fdaaf44b9b47f896ece7aa153ed4b909c74 \
-    --hash=sha256:75e55822c3a3387d721579241e776de2cf089c9ef9528b1f09e8b04d403ad118 \
+colorlog==4.4.0 \
+    --hash=sha256:0272c537469ab1e63b9915535874d15b671963c9325db0c4891a2aeff97ce3d1 \
+    --hash=sha256:f14f30f58e2ce6ef40b0088307cac7efb9ecff5605fa2267a2d29955f26aff23 \
     # via mode
-croniter==0.3.34 \
-    --hash=sha256:15597ef0639f8fbab09cbf8c277fa8c65c8b9dbe818c4b2212f95dbc09c6f287 \
-    --hash=sha256:7186b9b464f45cf3d3c83a18bc2344cc101d7b9fd35a05f2878437b14967e964 \
+croniter==0.3.35 \
+    --hash=sha256:4eeb32f173a714a78ab529f23a4d92b52e66c8d14b422202900230df74da82da \
+    --hash=sha256:b9075573d9d18fdc4c67ad6741c4bfa4b446b1b1d7f03279757244c8a75abedf \
     # via faust
 cython==0.29.21 \
     --hash=sha256:0ac10bf476476a9f7ef61ec6e44c280ef434473124ad31d3132b720f7b0e8d2a \

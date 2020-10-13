@@ -108,9 +108,9 @@ graphviz==0.14.1 \
     --hash=sha256:088562ef6e3dad5e8dde9389caf4a84f768e65dcaa08238cfcdf36d2b30ccf61 \
     --hash=sha256:f5aad52a652c06825dcc5ee018d920fca26aef339386866094597fb3f2f222ce \
     # via -r requirements/dev.in
-identify==1.5.5 \
-    --hash=sha256:7c22c384a2c9b32c5cc891d13f923f6b2653aa83e2d75d8f79be240d6c86c4f4 \
-    --hash=sha256:da683bfb7669fa749fc7731f378229e2dbf29a1d1337cbde04106f02236eb29d \
+identify==1.5.6 \
+    --hash=sha256:3139bf72d81dfd785b0a464e2776bd59bdc725b4cc10e6cf46b56a0db931c82e \
+    --hash=sha256:969d844b7a85d32a5f9ac4e163df6e846d73c87c8b75847494ee8f4bd2186421 \
     # via pre-commit
 idna==2.10 \
     --hash=sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6 \
@@ -362,9 +362,9 @@ urllib3==1.25.10 \
     --hash=sha256:91056c15fa70756691db97756772bb1eb9678fa585d9184f24534b100dc60f4a \
     --hash=sha256:e7983572181f5e1522d9c98453462384ee92a0be7fac5f1413a1e35c56cc0461 \
     # via requests
-vcrpy==4.1.0 \
-    --hash=sha256:4138e79eb35981ad391406cbb7227bce7eba8bad788dcf1a89c2e4a8b740debe \
-    --hash=sha256:d833248442bbc560599add895c9ab0ef518676579e8dc72d8b0933bdb3880253 \
+vcrpy==4.1.1 \
+    --hash=sha256:12c3fcdae7b88ecf11fc0d3e6d77586549d4575a2ceee18e82eee75c1f626162 \
+    --hash=sha256:57095bf22fc0a2d99ee9674cdafebed0f3ba763018582450706f7d3a74fff599 \
     # via pytest-vcr
 virtualenv==20.0.33 \
     --hash=sha256:35ecdeb58cfc2147bb0706f7cdef69a8f34f1b81b6d49568174e277932908b8f \
