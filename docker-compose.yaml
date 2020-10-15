@@ -102,7 +102,7 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
 
   connect:
-    image: lsstsqre/cp-kafka-connect:5.5.1-0.8.0
+    image: lsstsqre/cp-kafka-connect:5.5.2-0.8.0
     hostname: connect
     container_name: connect
     depends_on:
