@@ -237,9 +237,9 @@ nodeenv==1.5.0 \
     --hash=sha256:5304d424c529c997bc888453aeaa6362d242b6b4631e90f3d4bf1b290f1c84a9 \
     --hash=sha256:ab45090ae383b716c4ef89e690c41ff8c2b257b85b309f01f3654df3d084bd7c \
     # via pre-commit
-packaging==20.4 \
-    --hash=sha256:4357f74f47b9c12db93624a82154e9b120fa8293699949152b22065d556079f8 \
-    --hash=sha256:998416ba6962ae7fbd6596850b80e17859a5753ba17c32284f67bfff33784181 \
+packaging==20.7 \
+    --hash=sha256:05af3bb85d320377db281cf254ab050e1a7ebcbf5410685a9a407e18a1f81236 \
+    --hash=sha256:eb41423378682dadb7166144a4926e443093863024de508ca5c9737d6bc08376 \
     # via pytest, sphinx
 pbr==5.5.1 \
     --hash=sha256:5fad80b613c402d5b7df7bd84812548b2a61e9977387a80a5fc5c396492b13c9 \
@@ -315,7 +315,7 @@ requests==2.25.0 \
 six==1.15.0 \
     --hash=sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259 \
     --hash=sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced \
-    # via packaging, sphinx, vcrpy, virtualenv
+    # via sphinx, vcrpy, virtualenv
 smmap==3.0.4 \
     --hash=sha256:54c44c197c819d5ef1991799a7e30b662d1e520f2ac75c9efbeb54a742214cf4 \
     --hash=sha256:9c98bbd1f9786d22f14b3d4126894d56befb835ec90cef151af566c7e19b5d24 \
@@ -397,9 +397,9 @@ vcrpy==4.1.1 \
     --hash=sha256:12c3fcdae7b88ecf11fc0d3e6d77586549d4575a2ceee18e82eee75c1f626162 \
     --hash=sha256:57095bf22fc0a2d99ee9674cdafebed0f3ba763018582450706f7d3a74fff599 \
     # via pytest-vcr
-virtualenv==20.2.0 \
-    --hash=sha256:6af42359fbb33a6c7eab4d3246524b96fd9d8e07e7141b7a65998f96e28b2c57 \
-    --hash=sha256:fd4147c5ba3f694e2e4fc3c767407dc2226899623bb9b49c2f15637c2ee335b3 \
+virtualenv==20.2.1 \
+    --hash=sha256:07cff122e9d343140366055f31be4dcd61fd598c69d11cd33a9d9c8df4546dd7 \
+    --hash=sha256:e0aac7525e880a429764cefd3aaaff54afb5d9f25c82627563603f5d7de5a6e5 \
     # via pre-commit
 wrapt==1.12.1 \
     --hash=sha256:b62ffa81fb85f4332a4f609cab4ac40709470da05643a082ec1eb88e6d9b97d7 \
