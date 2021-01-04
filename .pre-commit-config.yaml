@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.3.0
+    rev: v3.4.0
     hooks:
       - id: check-yaml
       - id: check-toml
@@ -12,7 +12,7 @@ repos:
         args: [--exclude=docs/.*\.py, --application-directories, src]
 
   - repo: https://github.com/timothycrosley/isort
-    rev: 5.6.4
+    rev: 5.7.0
     hooks:
       - id: isort
         additional_dependencies:
