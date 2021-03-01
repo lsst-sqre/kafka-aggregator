@@ -10,6 +10,8 @@ from typing import Mapping, Optional, Tuple, Type, Union
 
 from kafkaaggregator.operations import Operation
 
+BasicType = Union[Type[int], Type[float], Type[bytes], Type[str]]
+
 
 class Field:
     """Represents an aggregation field with numeric types.
@@ -18,7 +20,7 @@ class Field:
     ----------
     name : `str`
         Field name.
-    type : `int` or `float`
+    type : `int` or `float` or `bytes` or `str`
         Field data type.
     source_field_name : `str`, optional
         Source field name.
@@ -28,7 +30,7 @@ class Field:
     def __init__(
         self,
         name: str,
-        type: Union[Type[int], Type[float]],
+        type: BasicType,
         source_field_name: Optional[str] = None,
         operation: Optional[str] = None,
     ) -> None:
@@ -57,12 +59,12 @@ class Field:
         """Field needs to be hashable to work with Faust."""
         return object.__hash__(self)
 
-    def astuple(self) -> Tuple[str, Union[Type[int], Type[float]]]:
+    def astuple(self) -> Tuple[str, BasicType]:
         """Convert field to tuple."""
         _field = (self.name, self.type)
         return _field
 
-    def asdict(self) -> Mapping[str, Union[Type[int], Type[float]]]:
+    def asdict(self) -> Mapping[str, BasicType]:
         """Convert field to dict."""
         _field = {self.name: self.type}
         return _field

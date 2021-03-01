@@ -94,7 +94,7 @@ def test_compute(
         aggregation_topic_name="test-aggregation-topic",
         # If these fields are present in the incoming message they are excluded
         # as they are used by the aggregator
-        excluded_field_names="time, count, window_size",
+        excluded_field_names=["time", "count", "window_size"],
         operations=["min", "mean", "median", "stdev", "max"],
     )
 

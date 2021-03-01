@@ -1,5 +1,7 @@
 """Tests for the aggregator module."""
 
+from typing import List
+
 import pytest
 
 from kafkaaggregator.aggregator import Aggregator
@@ -8,7 +10,7 @@ from kafkaaggregator.models import make_record
 
 
 @pytest.fixture
-def source_topic_fields():
+def source_topic_fields() -> List[Field]:
     """Mock source topic fields."""
     fields = [
         Field("time", int),
@@ -21,20 +23,22 @@ def source_topic_fields():
 
 
 @pytest.fixture
-def excluded_field_names():
+def excluded_field_names() -> List[str]:
     """Mock excluded field names."""
     return ["time", "excluded"]
 
 
 @pytest.fixture
-def operations():
+def operations() -> List[str]:
     """Mock list of opertions."""
     return ["min", "mean", "median", "stdev", "max"]
 
 
 def test_aggregation_fields(
-    source_topic_fields, excluded_field_names, operations
-):
+    source_topic_fields: List[Field],
+    excluded_field_names: List[str],
+    operations: List[str],
+) -> None:
     """Test aggregation fields creation."""
     aggregation_fields = Aggregator._create_aggregation_fields(
         source_topic_fields, excluded_field_names, operations
@@ -59,7 +63,7 @@ def test_aggregation_fields(
     assert Field("min_inttype", float) in aggregation_fields
 
 
-def test_record_class():
+def test_record_class() -> None:
     """Test Faust Record creation."""
     # make a simple Faust Record
     Foo = make_record(

@@ -5,8 +5,12 @@
 # After editing, update requirements/main.txt by running:
 #     make update-deps
 
-faust[fast]==1.10.4
-faust-avro==0.4.0
-importlib_metadata==1.7.0
-jinja2==2.11.2
-aiofiles==0.5.0
+aiofiles
+faust[fast]
+faust-avro
+importlib_metadata
+jinja2
+
+# Temporary to avoid a conflict with requirements/dev.txt due to the requests
+# dependency on idna, which is capped at 2.10.
+idna<=2.10
