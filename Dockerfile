@@ -14,7 +14,7 @@
 #   - Runs a non-root user.
 #   - Sets up the entrypoint and port.
 
-FROM python:3.9.1-buster AS base-image
+FROM python:3.9.2-buster AS base-image
 
 # Update system packages
 COPY scripts/install-base-packages.sh .
