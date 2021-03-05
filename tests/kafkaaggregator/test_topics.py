@@ -10,7 +10,7 @@ from kafkaaggregator.topics import Topic
 
 
 @pytest.fixture
-def avro_schema():
+def avro_schema() -> str:
     """Mock avro schema to test primitive data types."""
     schema = json.dumps(
         dict(
@@ -32,7 +32,7 @@ def avro_schema():
 
 @pytest.mark.asyncio
 @pytest.mark.vcr
-async def test_register(avro_schema):
+async def test_register(avro_schema: str) -> None:
     """Test topic schema registration."""
     topic = Topic(
         name="test-avro-schema", registry_url="http://localhost:8081"
@@ -44,7 +44,7 @@ async def test_register(avro_schema):
 # https://github.com/masterysystems/faust-avro/blob/master/faust_avro/types.py
 @pytest.mark.asyncio
 @pytest.mark.vcr
-async def test_get_fields(avro_schema):
+async def test_get_fields(avro_schema: str) -> None:
     """Test `topic.get_fields()` method returning faust-avro types."""
     topic = Topic(
         name="test-avro-schema", registry_url="http://localhost:8081"
