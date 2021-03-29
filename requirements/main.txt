@@ -154,9 +154,9 @@ colorlog==4.8.0 \
     --hash=sha256:3dd15cb27e8119a24c1a7b5c93f9f3b455855e0f73993b1c25921b2f646f1dcd \
     --hash=sha256:59b53160c60902c405cdec28d38356e09d40686659048893e026ecbd589516b1
     # via mode
-croniter==1.0.8 \
-    --hash=sha256:530fa33d7c4961b3525d7ffacecefb2e5aa169517fbfcb2c64f648c5e06e18c8 \
-    --hash=sha256:c8b830d787c9993361b74eaad7d7396090d7f2d9db41ceb4a52cb75da461c3ed
+croniter==1.0.10 \
+    --hash=sha256:364c48e393060295c3161588a6556d5c890b5c34299973c393adbe4488ca1ecb \
+    --hash=sha256:652aec8d339ad7c1cf911975ac9664acded9f0974ce52b3a5d15edfb14f41a34
     # via faust
 cython==0.29.22 \
     --hash=sha256:105d813eedf276588a02a240ece2f7bca8235aee9bb48e25293410c3c1ac7230 \
@@ -232,18 +232,15 @@ funcy==1.15 \
     --hash=sha256:65b746fed572b392d886810a98d56939c6e0d545abb750527a717c21ced21008 \
     --hash=sha256:c247c3d085e03a89974e0c9e8331e9a79db3768a263556ba896d6c92d665bba2
     # via faust-avro
-future==0.18.2 \
-    --hash=sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d
-    # via croniter
 idna==2.10 \
     --hash=sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6 \
     --hash=sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0
     # via
     #   -r requirements/main.in
     #   yarl
-importlib-metadata==3.7.3 \
-    --hash=sha256:742add720a20d0467df2f444ae41704000f50e1234f46174b51f9c6031a1bd71 \
-    --hash=sha256:b74159469b464a99cb8cc3e21973e4d96e05d3024d337313fedb618a6e86e6f4
+importlib-metadata==3.9.0 \
+    --hash=sha256:036eae7ebbd41db176774c42e80f3288a1e41c7ebfc8ed099a94653973ebd00f \
+    --hash=sha256:6fd684b4c6c7bb36d57e93d57fc244b5ffc08faa1c298bcda3dfbbbf19d7550a
     # via -r requirements/main.in
 jinja2==2.11.3 \
     --hash=sha256:03e47ad063331dd6a3f04a43eddca8a966a26ba0c5b7207a9a9e4e08f1b29419 \
@@ -359,10 +356,6 @@ mypy-extensions==0.4.3 \
     #   faust
     #   mode
     #   typing-inspect
-natsort==7.1.1 \
-    --hash=sha256:00c603a42365830c4722a2eb7663a25919551217ec09a243d3399fa8dd4ac403 \
-    --hash=sha256:d0f4fc06ca163fa4a5ef638d9bf111c67f65eedcc7920f98dec08e489045b67e
-    # via croniter
 opentracing==1.3.0 \
     --hash=sha256:9b3f7c7a20c34170b9253c97121256264daf6b5f090035c732c6e2548cc5c0a7
     # via faust
