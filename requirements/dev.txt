@@ -147,9 +147,9 @@ documenteer==0.5.8 \
     --hash=sha256:4988d7eea7986bb6ea498eca863b2eb12914a5ec0d2287868a2940aeb543b278 \
     --hash=sha256:e9de6fc613ac1a516f69ffccb1ee6e47687bde47c635f61a125398cb5ae6cbc2
     # via -r requirements/dev.in
-docutils==0.16 \
-    --hash=sha256:0c5b78adfbf7762415433f5515cd5c9e762339e23369dbe8000d84a4bf4ab3af \
-    --hash=sha256:c2de3a60e9e7d07be26b7f2b00ca0309c207e06c100f9cc2a94931fc75a478fc
+docutils==0.17 \
+    --hash=sha256:a71042bb7207c03d5647f280427f14bfbd1a65c9eb84f4b341d85fafb6bb4bdf \
+    --hash=sha256:e2ffeea817964356ba4470efba7c2f42b6b0de0b04e66378507e3e2504bbff4c
     # via
     #   sphinx
     #   sphinx-click
@@ -383,9 +383,9 @@ pytest-vcr==1.0.2 \
     --hash=sha256:23ee51b75abbcc43d926272773aae4f39f93aceb75ed56852d0bf618f92e1896 \
     --hash=sha256:2f316e0539399bea0296e8b8401145c62b6f85e9066af7e57b6151481b0d6d9c
     # via -r requirements/dev.in
-pytest==6.2.2 \
-    --hash=sha256:9d1edf9e7d0b84d72ea3dbcdfd22b35fb543a5e8f2a60092dd578936bf63d7f9 \
-    --hash=sha256:b574b57423e818210672e07ca1fa90aaf194a4f63f3ab909a2c67ebb22913839
+pytest==6.2.3 \
+    --hash=sha256:671238a46e4df0f3498d1c3270e5deb9b32d25134c99b7d75370a68cfbe9b634 \
+    --hash=sha256:6ad9c7bdf517a808242b998ac20063c41532a570d088d77eec1ee12b0b5574bc
     # via
     #   -r requirements/dev.in
     #   pytest-asyncio
