@@ -62,9 +62,9 @@ async-timeout==3.0.1 \
     --hash=sha256:0c3c816a028d47f659d6ff5c745cb2acf1f966da1fe5c19c77a70282b25f4c5f \
     --hash=sha256:4291ca197d287d274d0b6cb5d6f8f8f82d434ed288f962539ff18cc9012f9ea3
     # via aiohttp
-attrs==20.3.0 \
-    --hash=sha256:31b2eced602aa8423c2aea9c76a724617ed67cf9513173fd3a4f03e3a929c7e6 \
-    --hash=sha256:832aa3cde19744e49938b91fea06d69ecb9e649c93ba974535d08ad92164f700
+attrs==21.2.0 \
+    --hash=sha256:149e90d6d8ac20db7a955ad60cf0e6881a3f20d37096140088356da6c716b0b1 \
+    --hash=sha256:ef6aaac3ca6cd92904cdd0d83f629a15f18053ec84e6432106f7a4d04ae4f5fb
     # via aiohttp
 cchardet==2.1.7 \
     --hash=sha256:0b859069bbb9d27c78a2c9eb997e6f4b738db2d7039a03f8792b4058d61d1109 \
@@ -154,9 +154,9 @@ colorlog==5.0.1 \
     --hash=sha256:4e6be13d9169254e2ded6526a6a4a1abb8ac564f2fa65b310a98e4ca5bea2c04 \
     --hash=sha256:f17c013a06962b02f4449ee07cfdbe6b287df29efc2c9a1515b4a376f4e588ea
     # via mode
-croniter==1.0.12 \
-    --hash=sha256:3603ef0d60fc6df98ce356c01529de90b06a002379b9f5e9eae981fb9c1fd936 \
-    --hash=sha256:d8d2033368f0176243c59360afeda19daf5baa2d6f712cf655b3104c5c349aa2
+croniter==1.0.13 \
+    --hash=sha256:0c67c8afbf0f9ac3fce587caa7c911f871be8a42f6169e9f486ae125ab54a1b0 \
+    --hash=sha256:57f36df4f5a1c31bbf50bbffa3551612c19f6156ab1e88e2e42342ccbb9f9b9a
     # via faust
 cython==0.29.23 \
     --hash=sha256:0c4b9f7e3aa004cf3f364e3e772f55fec5740485bafea99d1f13bdc9bbd8a545 \
@@ -453,9 +453,9 @@ setproctitle==1.2.2 \
     --hash=sha256:e8ef655eab26e83ec105ce79036bb87e5f2bf8ba2d6f48afdd9595ef7647fcf4 \
     --hash=sha256:fbf914179dc4540ee6bfd8228b4cc1f1f6fb12dad66b72b5c9b955b222403220
     # via faust
-six==1.15.0 \
-    --hash=sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259 \
-    --hash=sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced
+six==1.16.0 \
+    --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
+    --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
     # via python-dateutil
 terminaltables==3.1.0 \
     --hash=sha256:f3eb0eb92e3833972ac36796293ca0906e998dc3be91fbe1f8615b331b853b81
