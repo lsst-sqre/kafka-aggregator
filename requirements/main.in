@@ -6,11 +6,12 @@
 #     make update-deps
 
 aiofiles
-faust[fast]
 faust-avro
-importlib_metadata
-jinja2
+jinja2<3.0.0
 
 # Temporary to avoid a conflict with requirements/dev.txt due to the requests
 # dependency on idna, which is capped at 2.10.
 idna<=2.10
+
+# Reconcile with requirements/dev.txt
+markupsafe<2.0.0

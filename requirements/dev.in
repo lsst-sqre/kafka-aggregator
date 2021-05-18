@@ -14,12 +14,11 @@ pre-commit
 pytest
 pytest-asyncio
 pytest-vcr
-documenteer>=0.5,<0.6
-lsst-sphinx-bootstrap-theme<0.3
-sphinx-automodapi==0.12
+documenteer
+sphinx-automodapi
 sphinx-prompt
 sphinx-click
 
-# Temporarily copied from main.in to reconcile the competing requirements
-# for chardet between dev.txt and main.txt.
-aiohttp
+# Reconcile with requirements/main.in 
+
+click==7.1.2
