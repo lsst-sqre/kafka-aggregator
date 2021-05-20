@@ -15,10 +15,11 @@ pytest
 pytest-asyncio
 pytest-vcr
 documenteer
+lsst_sphinx_bootstrap_theme
 sphinx-automodapi
 sphinx-prompt
 sphinx-click
 
-# Reconcile with requirements/main.in 
+# Reconcile with requirements/main.in
 
 click==7.1.2
