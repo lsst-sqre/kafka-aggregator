@@ -49,25 +49,11 @@ class Configuration:
     store, such as rocksdb:// is preferred.
     """
 
-    window_size: float = float(os.getenv("WINDOW_SIZE", "1"))
-    """Size of the tumbling window in seconds used to aggregate messages.
-
-    See also `Faust's windowing feature
-    <https://faust.readthedocs.io/en/latest/userguide/tables.html#windowing>`_
-    documentation.
-    """
-
-    window_expires: float = float(os.getenv("WINDOW_EXPIRES", "1"))
-    """Window expiration time in seconds. This parameter controls when the
+    default_window_expiration_seconds: float = float(
+        os.getenv("WINDOW_EXPIRATION_SECONDS", "0")
+    )
+    """Default Window expiration time in seconds. This parameter controls when the
     callback function to process the expired window(s) is called.
-
-    The default value is set to the window size, which
-    means that at least two tumbling windows will be filled up with messages
-    before the callback function is called to process the expired window(s).
-
-    Note that if the worker (or the producer) stops, the next time the callback
-    is called it might process windows from previous executions as messages
-    from the stream are persisted by Faust.
     """
 
     min_sample_size: int = int(os.getenv("MIN_SAMPLE_SIZE", "2"))
@@ -96,27 +82,6 @@ class Configuration:
     workload of the application.
     """
 
-    source_topic_name_prefix: str = os.getenv(
-        "SOURCE_TOPIC_NAME_PREFIX", "example"
-    )
-    """Prefix for the source topic name used in the aggregation example."""
-
-    topic_regex: str = os.getenv("TOPIC_REGEX", "^example-[0-9][0-9][0-9]?$")
-    """Regex to select source topics to aggregate."""
-
-    excluded_topics: List[str] = field(default_factory=list)
-    """Topics excluded from aggregation."""
-
-    topic_rename_format: str = os.getenv(
-        "TOPIC_RENAME_FORMAT", "{source_topic_name}-aggregated"
-    )
-    """A format string for the aggregation topic name, which must contain
-    ``{source_topic_name}`` as a placeholder for the source topic name.
-    """
-
-    excluded_field_names: List[str] = field(default_factory=list)
-    """List of field names to exclude from being aggregated."""
-
     agents_output_dir: str = os.getenv("AGENTS_OUTPUT_DIR", "agents")
     """Name of output directory for the agents' code."""
 
@@ -136,25 +101,6 @@ class Configuration:
                     f"Invalid operation '{operation}' in config.operations. "
                     f"Allowed values are: {', '.join(Operation.values())}."
                 )
-
-        # Set default value for excluded_topics
-        self.excluded_topics = self._strtolist(
-            os.getenv("EXCLUDED_TOPICS", "")
-        )
-
-        # Validate topic_rename_format
-        if "{source_topic_name}" not in self.topic_rename_format:
-            raise ValueError(
-                "config.topic_rename_format must contain the "
-                "{source_topic_name} string."
-            )
-
-        # Set default value for excluded_field_names.
-        # By default we exclude the field names ``time``, ``window_size``, and
-        # ``count`` that are special as they are added by the aggregator.
-        self.excluded_field_names = self._strtolist(
-            os.getenv("EXCLUDED_FIELD_NAMES", "time, window_size, count")
-        )
 
         # Make sure agents_output_dir exists and update syspath to enable
         # agents autodiscover
