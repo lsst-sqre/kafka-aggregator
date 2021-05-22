@@ -4,7 +4,7 @@ __all__ = ["Configuration", "ExampleConfiguration"]
 
 import os
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from os.path import abspath, dirname, isdir
 from typing import List
 
@@ -66,13 +66,6 @@ class Configuration:
     min_sample_size the values of the first message are used instead.
 
     The default value min_sample_size=2 make sure we can compute stdev.
-    """
-
-    operations: List[str] = field(default_factory=list)
-    """List of operations to perform.
-
-    Allowed operations are `min`, `q1`, `mean`, `median`, `q3`, `stdev` and
-    `max`.
     """
 
     topic_partitions: int = int(os.getenv("TOPIC_PARTITIONS", "4"))
