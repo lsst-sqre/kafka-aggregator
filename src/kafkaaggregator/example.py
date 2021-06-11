@@ -13,7 +13,7 @@ from typing import List
 import faust_avro
 from faust_avro import Record
 
-from kafkaaggregator.app import config
+from kafkaaggregator.config import ExampleConfiguration
 from kafkaaggregator.fields import Field
 from kafkaaggregator.models import make_record
 from kafkaaggregator.topics import SourceTopic
@@ -21,6 +21,8 @@ from kafkaaggregator.topics import SourceTopic
 AvroSchemaT = str
 
 logger = logging.getLogger("kafkaaggregator")
+
+config = ExampleConfiguration()
 
 
 class UnexpectedNumberOfTopicsError(RuntimeError):

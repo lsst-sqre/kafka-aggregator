@@ -6,7 +6,8 @@ import logging
 
 from faust.cli import AppCommand, option
 
-from kafkaaggregator.app import app, config
+from kafkaaggregator.app import app
+from kafkaaggregator.config import ExampleConfiguration
 from kafkaaggregator.example import (
     AggregationExample,
     UnexpectedNumberOfTopicsError,
@@ -14,6 +15,8 @@ from kafkaaggregator.example import (
 from kafkaaggregator.generator import AgentGenerator
 
 logger = logging.getLogger("kafkaaggregator")
+
+config = ExampleConfiguration()
 
 
 def main() -> None:
