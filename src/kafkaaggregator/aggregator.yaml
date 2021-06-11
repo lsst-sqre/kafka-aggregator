@@ -19,5 +19,3 @@ example000_aggregated:
         # by default field names in the aggregated topic follow the convention
         # "source_topic"."operation"_"source_field"
         description: "Mean value for value0 in the example000 topic."
-
-
