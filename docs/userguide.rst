@@ -19,13 +19,11 @@ Clone the kafka-aggregator repository:
 
   $ git clone https://github.com/lsst-sqre/kafka-aggregator.git
 
-Start the `zookeeper`, `broker`, `schema-registry`, `internal-schema-registry` and `control-center` services:
+Start the `zookeeper`, `broker`, and `schema-registry` services:
 
 .. code-block:: bash
 
-  docker-compose up zookeeper broker schema-registry internal-schema-registry control-center
-
-You can check the status of the Kafka cluster by opening `Confluent Control Center <http://localhost:9021>`_ in the browser.
+  docker-compose up -d zookeeper broker schema-registry
 
 On another terminal session, create a new Python virtual environment and install kafka-aggregator locally:
 
@@ -56,8 +54,7 @@ You can check that the source topics were created in Kafka:
 
 .. code-block:: bash
 
-  docker-compose exec broker /bin/bash
-  root@broker:/# kafka-topics --bootstrap-server broker:29092 --list
+  docker-compose exec broker kafka-topics --bootstrap-server broker:29092 --list
 
 
 The Avro schemas were registered with the Schema Registry:
