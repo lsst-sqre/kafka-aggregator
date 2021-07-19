@@ -58,10 +58,6 @@ alabaster==0.7.12 \
     --hash=sha256:446438bdcca0e05bd45ea2de1668c1d9b032e1a9154c2c259092d77031ddd359 \
     --hash=sha256:a661d72d58e6ea8a57f7a86e37d86716863ee5e92788398526d58b26a4e4dc02
     # via sphinx
-appdirs==1.4.4 \
-    --hash=sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41 \
-    --hash=sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128
-    # via virtualenv
 async-timeout==3.0.1 \
     --hash=sha256:0c3c816a028d47f659d6ff5c745cb2acf1f966da1fe5c19c77a70282b25f4c5f \
     --hash=sha256:4291ca197d287d274d0b6cb5d6f8f8f82d434ed288f962539ff18cc9012f9ea3
@@ -76,6 +72,10 @@ babel==2.9.1 \
     --hash=sha256:ab49e12b91d937cd11f0b67cb259a57ab4ad2b59ac7a3b41d6c06c0ac5b0def9 \
     --hash=sha256:bc0c176f9f6a994582230df350aa6e05ba2ebe4b3ac317eab29d9be5d2768da0
     # via sphinx
+backports.entry-points-selectable==1.1.0 \
+    --hash=sha256:988468260ec1c196dab6ae1149260e2f5472c9110334e5d51adcb77867361f6a \
+    --hash=sha256:a6d9a871cde5e15b4c4a53e3d43ba890cc6861ec1332c9c2428c92f977192acc
+    # via virtualenv
 certifi==2021.5.30 \
     --hash=sha256:2bbf76fd432960138b3ef6dda3dde0544f27cbf8546c458e60baf371917ba9ee \
     --hash=sha256:50b1e4f8446b06f41be7dd6338db18e0990601dce795c2b1686458aa7e8fa7d8
@@ -87,9 +87,11 @@ cfgv==3.3.0 \
 chardet==4.0.0 \
     --hash=sha256:0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa \
     --hash=sha256:f864054d66fd9118f2e67044ac8981a54775ec5b67aed0441892edb553d21da5
-    # via
-    #   aiohttp
-    #   requests
+    # via aiohttp
+charset-normalizer==2.0.3 \
+    --hash=sha256:88fce3fa5b1a84fdcb3f603d889f723d1dd89b26059d0123ca435570e848d5e1 \
+    --hash=sha256:c46c3ace2d744cfbdebceaa3c19ae691f53ae621b39fd7570f59d14fb7f2fd12
+    # via requests
 click==7.1.2 \
     --hash=sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a \
     --hash=sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc
@@ -239,9 +241,9 @@ gitpython==3.1.18 \
     --hash=sha256:b838a895977b45ab6f0cc926a9045c8d1c44e2b653c1fcc39fe91f42c6e8f05b \
     --hash=sha256:fce760879cd2aebd2991b3542876dc5c4a909b30c9d69dfc488e504a8db37ee8
     # via documenteer
-graphviz==0.16 \
-    --hash=sha256:3cad5517c961090dfc679df6402a57de62d97703e2880a1a46147bb0dc1639eb \
-    --hash=sha256:d2d25af1c199cad567ce4806f0449cb74eb30cf451fd7597251e1da099ac6e57
+graphviz==0.17 \
+    --hash=sha256:5dadec94046d82adaae6019311a30e0487536d9d5a60d85451f0ba32f9fc6559 \
+    --hash=sha256:ef6e2c5deb9cdcc0c7eece1d89625fd07b0f2208ea2bcb483520907ddf8b4e12
     # via -r requirements/dev.in
 identify==2.2.11 \
     --hash=sha256:7abaecbb414e385752e8ce02d8c494f4fbc780c975074b46172598a28f1ab839 \
@@ -409,6 +411,10 @@ packaging==21.0 \
     # via
     #   pytest
     #   sphinx
+platformdirs==2.0.2 \
+    --hash=sha256:0b9547541f599d3d242078ae60b927b3e453f0ad52f58b4d4bc3be86aed3ec41 \
+    --hash=sha256:3b00d081227d9037bbbca521a5787796b5ef5000faea1e43fd76f1d44b06fcfa
+    # via virtualenv
 pluggy==0.13.1 \
     --hash=sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0 \
     --hash=sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d
@@ -468,9 +474,9 @@ pytest-vcr==1.0.2 \
     --hash=sha256:23ee51b75abbcc43d926272773aae4f39f93aceb75ed56852d0bf618f92e1896 \
     --hash=sha256:2f316e0539399bea0296e8b8401145c62b6f85e9066af7e57b6151481b0d6d9c
     # via -r requirements/dev.in
-python-dateutil==2.8.1 \
-    --hash=sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c \
-    --hash=sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a
+python-dateutil==2.8.2 \
+    --hash=sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86 \
+    --hash=sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9
     # via croniter
 pytz==2021.1 \
     --hash=sha256:83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da \
@@ -513,9 +519,9 @@ pyyaml==5.4.1 \
     #   pre-commit
     #   pybtex
     #   vcrpy
-requests==2.25.1 \
-    --hash=sha256:27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804 \
-    --hash=sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e
+requests==2.26.0 \
+    --hash=sha256:6c1246513ecd5ecd4528a0906f910e8f0f9c6b8ec72030dc9fd154dc1a6efd24 \
+    --hash=sha256:b8aa58f8cf793ffd8782d3d8cb19e66ef36f7aba4353eec859e74678b01b07a7
     # via
     #   documenteer
     #   sphinx
@@ -545,9 +551,9 @@ snowballstemmer==2.1.0 \
     # via
     #   pydocstyle
     #   sphinx
-sphinx==4.1.0 \
-    --hash=sha256:4219f14258ca5612a0c85ed9b7222d54da69724d7e9dd92d1819ad1bf65e1ad2 \
-    --hash=sha256:51028bb0d3340eb80bcc1a2d614e8308ac78d226e6b796943daf57920abc1aea
+sphinx==4.1.1 \
+    --hash=sha256:23c846a1841af998cb736218539bb86d16f5eb95f5760b1966abcd2d584e62b8 \
+    --hash=sha256:3d513088236eef51e5b0adb78b0492eb22cc3b8ccdb0b36dd021173b365d4454
     # via
     #   documenteer
     #   sphinx-automodapi
@@ -661,9 +667,9 @@ venusian==1.2.0 \
     --hash=sha256:2f2d077a1eedc3fda40425f65687c8c494da7e83d7c23bc2c4d1a40eb3ca5b6d \
     --hash=sha256:64ec8285b80b110d0ae5db4280e90e31848a59db98db1aba4d7d46f48ce91e3e
     # via faust
-virtualenv==20.4.7 \
-    --hash=sha256:14fdf849f80dbb29a4eb6caa9875d476ee2a5cf76a5f5415fa2f1606010ab467 \
-    --hash=sha256:2b0126166ea7c9c3661f5b8e06773d28f83322de7a3ff7d06f0aed18c9de6a76
+virtualenv==20.6.0 \
+    --hash=sha256:51df5d8a2fad5d1b13e088ff38a433475768ff61f202356bb9812c454c20ae45 \
+    --hash=sha256:e4fc84337dce37ba34ef520bf2d4392b392999dbe47df992870dc23230f6b758
     # via pre-commit
 wrapt==1.12.1 \
     --hash=sha256:b62ffa81fb85f4332a4f609cab4ac40709470da05643a082ec1eb88e6d9b97d7
