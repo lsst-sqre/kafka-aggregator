@@ -1,0 +1,16 @@
+---
+aggregated_topics:
+- name: aggregated_example0
+  window_aggregation:
+    window_size_seconds: 1
+    operations:
+    - mean
+  filter:
+    source_topics:
+    - name: example0
+      fields:
+      - value0
+      - value1
+      - value2
+      mapping:
+        value0: newvalue0
