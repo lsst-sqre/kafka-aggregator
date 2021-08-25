@@ -49,13 +49,6 @@ class Configuration:
     store, such as rocksdb:// is preferred.
     """
 
-    default_window_expiration_seconds: float = float(
-        os.getenv("WINDOW_EXPIRATION_SECONDS", "0")
-    )
-    """Default Window expiration time in seconds. This parameter controls when the
-    callback function to process the expired window(s) is called.
-    """
-
     min_sample_size: int = int(os.getenv("MIN_SAMPLE_SIZE", "2"))
     """Minimum sample size to compute statistics.
 
