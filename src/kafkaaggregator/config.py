@@ -55,10 +55,10 @@ class Configuration:
     Given the size of the tumbling window and the frequency of incoming
     messages, this parameter sets the minimum sample size to compute
     statistics. The Faust tumbling window will always contain at least one
-    message. If the number messages in the tumbling window is smaller than
+    message. If the number of messages in the tumbling window is smaller than
     min_sample_size the values of the first message are used instead.
 
-    The default value min_sample_size=2 make sure we can compute stdev.
+    The default value ``min_sample_size=2`` make sure we can compute stdev.
     """
 
     topic_partitions: int = int(os.getenv("TOPIC_PARTITIONS", "4"))
