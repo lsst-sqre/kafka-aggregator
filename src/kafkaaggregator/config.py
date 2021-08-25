@@ -68,6 +68,18 @@ class Configuration:
     workload of the application.
     """
 
+    topic_regex: str = str(os.getenv("TOPIC_REGEX", ".*"))
+    """Regex used to filter topic names."""
+
+    aggregator_config_file: str = os.getenv(
+        "AGGREGATOR_CONFIG_FILE", "aggregator.yaml"
+    )
+    """Aggregator configuration file.
+
+    Specify the mapping between source and aggregated topics, the
+    fields within those topics to use and window aggregation configuration.
+    """
+
     agents_output_dir: str = os.getenv("AGENTS_OUTPUT_DIR", "agents")
     """Name of output directory for the agents' code."""
 
