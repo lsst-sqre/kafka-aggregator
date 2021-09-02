@@ -1,6 +1,17 @@
 name: CI
 
-"on": [push]
+"on":
+  push:
+    branches-ignore:
+      # These should always correspond to pull requests, so ignore them for
+      # the push trigger and let them be triggered by the pull_request
+      # trigger, avoiding running the workflow twice.  This is a minor
+      # optimization so there's no need to ensure this is comprehensive.
+      - "dependabot/**"
+      - "renovate/**"
+      - "tickets/**"
+      - "u/**"
+  pull_request: {}
 
 jobs:
   test:
@@ -90,26 +101,6 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-  docs:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-      - name: Install tox and LTD Conveyor
-        run: pip install tox ltd-conveyor
-      - name: Install graphviz
-        run: sudo apt-get install graphviz
-      - name: Run tox
-        run: tox -e docs
-      - name: Upload to LSST the Docs
-        env:
-          LTD_USERNAME: ${{ secrets.LTD_USERNAME }}
-          LTD_PASSWORD: ${{ secrets.LTD_PASSWORD }}
-        run: ltd upload --product kafka-aggregator --gh --dir docs/_build/html
 
   pypi:
     runs-on: ubuntu-latest
