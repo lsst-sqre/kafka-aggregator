@@ -7,12 +7,18 @@ name: Docs
       - master
       - "tickets/**"
       - "u/**"
+      - "!u/neophile"
     paths:
       - "CHANGELOG.rst"
       - "docs/**"
       - "src/**.py"
     tags:
       - "*"
+  pull_request:
+    paths:
+      - "CHANGELOG.rst"
+      - "docs/**"
+      - "src/**.py"
 
 jobs:
   docs:
@@ -39,3 +45,4 @@ jobs:
           LTD_USERNAME: ${{ secrets.LTD_USERNAME }}
           LTD_PASSWORD: ${{ secrets.LTD_PASSWORD }}
         run: ltd upload --product kafka-aggregator --gh --dir docs/_build/html
+        if: github.event_name != 'pull_request'
