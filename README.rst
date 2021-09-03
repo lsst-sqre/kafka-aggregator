@@ -8,6 +8,8 @@ A Kafka aggregator based on the `Faust <https://faust.readthedocs.io/en/latest/i
 
 kafka-aggregator development is based on the `Safir <https://safir.lsst.io>`__ application template.
 
+Fake change to trigger workflows.
+
 
 Overview
 ========
