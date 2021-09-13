@@ -245,9 +245,9 @@ graphviz==0.17 \
     --hash=sha256:5dadec94046d82adaae6019311a30e0487536d9d5a60d85451f0ba32f9fc6559 \
     --hash=sha256:ef6e2c5deb9cdcc0c7eece1d89625fd07b0f2208ea2bcb483520907ddf8b4e12
     # via -r requirements/dev.in
-identify==2.2.13 \
-    --hash=sha256:7199679b5be13a6b40e6e19ea473e789b11b4e3b60986499b1f589ffb03c217c \
-    --hash=sha256:7bc6e829392bd017236531963d2d937d66fc27cadc643ac0aba2ce9f26157c79
+identify==2.2.14 \
+    --hash=sha256:113a76a6ba614d2a3dd408b3504446bcfac0370da5995aa6a17fd7c6dffde02d \
+    --hash=sha256:32f465f3c48083f345ad29a9df8419a4ce0674bf4a8c3245191d65c83634bdbf
     # via pre-commit
 idna==2.10 \
     --hash=sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6 \
@@ -431,17 +431,17 @@ packaging==21.0 \
     # via
     #   pytest
     #   sphinx
-platformdirs==2.2.0 \
-    --hash=sha256:4666d822218db6a262bdfdc9c39d21f23b4cfdb08af331a81e92751daf6c866c \
-    --hash=sha256:632daad3ab546bd8e6af0537d09805cec458dce201bccfe23012df73332e181e
+platformdirs==2.3.0 \
+    --hash=sha256:15b056538719b1c94bdaccb29e5f81879c7f7f0f4a153f46086d155dffcd4f0f \
+    --hash=sha256:8003ac87717ae2c7ee1ea5a84a1a61e87f3fbd16eb5aadba194ea30a9019f648
     # via virtualenv
-pluggy==0.13.1 \
-    --hash=sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0 \
-    --hash=sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d
+pluggy==1.0.0 \
+    --hash=sha256:4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159 \
+    --hash=sha256:74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3
     # via pytest
-pre-commit==2.14.1 \
-    --hash=sha256:7977a3103927932d4823178cbe4719ab55bb336f42a9f3bb2776cff99007a117 \
-    --hash=sha256:a22d12a02da4d8df314187dfe7a61bda6291d57992060522feed30c8cd658b68
+pre-commit==2.15.0 \
+    --hash=sha256:3c25add78dbdfb6a28a651780d5c311ac40dd17f160eb3954a0c59da40a505a7 \
+    --hash=sha256:a4ed01000afcb484d9eb8d504272e642c4c4099bbad3a6b27e519bd6a3e928a6
     # via -r requirements/dev.in
 py==1.10.0 \
     --hash=sha256:21b81bda15b66ef5e1a777a21c4dcd9c20ad3efd0b3f817e7a809035269e1bd3 \
@@ -479,9 +479,9 @@ pyparsing==2.4.7 \
     --hash=sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1 \
     --hash=sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b
     # via packaging
-pytest==6.2.4 \
-    --hash=sha256:50bcad0a0b9c5a72c8e4e7c9855a3ad496ca6a881a3641b4260605450772c54b \
-    --hash=sha256:91ef2131a9bd6be8f76f1f08eac5c5317221d6ad1e143ae03894b862e8976890
+pytest==6.2.5 \
+    --hash=sha256:131b36680866a76e6781d13f101efb86cf674ebb9762eb70d3082b6f29889e89 \
+    --hash=sha256:7310f8d27bc79ced999e760ca304d69f6ba6c6649c0b60fb0e04a4a77cacc134
     # via
     #   -r requirements/dev.in
     #   pytest-asyncio
@@ -571,9 +571,9 @@ snowballstemmer==2.1.0 \
     # via
     #   pydocstyle
     #   sphinx
-sphinx==4.1.2 \
-    --hash=sha256:3092d929cd807926d846018f2ace47ba2f3b671b309c7a89cd3306e80c826b13 \
-    --hash=sha256:46d52c6cee13fec44744b8c01ed692c18a640f6910a725cbb938bc36e8d64544
+sphinx==4.2.0 \
+    --hash=sha256:94078db9184491e15bce0a56d9186e0aec95f16ac20b12d00e06d4e36f1058a6 \
+    --hash=sha256:98a535c62a4fcfcc362528592f69b26f7caec587d32cd55688db580be0287ae0
     # via
     #   documenteer
     #   sphinx-automodapi
@@ -595,9 +595,9 @@ sphinxcontrib-applehelp==1.0.2 \
     --hash=sha256:806111e5e962be97c29ec4c1e7fe277bfd19e9652fb1a4392105b43e01af885a \
     --hash=sha256:a072735ec80e7675e3f432fcae8610ecf509c5f1869d17e2eecff44389cdbc58
     # via sphinx
-sphinxcontrib-bibtex==2.3.0 \
-    --hash=sha256:1aae1005935ae8e6499750b4ef1c8251a14ba16e025d0c0154fe2b6bf45defc0 \
-    --hash=sha256:7a09ab652e04f58c7fb988224a7bb8d5c17c334a4b7bba4ea51c4e661cd1562c
+sphinxcontrib-bibtex==2.4.1 \
+    --hash=sha256:282223309bbaf34cd20a8fe1ba346fe8642f403a8930607e77a8cb08ae81fc5f \
+    --hash=sha256:b7da94e960a855c07c6816c7b0f4e8619b5b3ada00a5cb99b1eaa847a788f779
     # via documenteer
 sphinxcontrib-devhelp==1.0.2 \
     --hash=sha256:8165223f9a335cc1af7ffe1ed31d2871f325254c0423bc0c4c7cd1c1e4734a2e \
@@ -661,10 +661,10 @@ typed-ast==1.4.3 \
     --hash=sha256:f8afcf15cc511ada719a88e013cec87c11aff7b91f019295eb4530f96fe5ef2f \
     --hash=sha256:fb1bbeac803adea29cedd70781399c99138358c26d05fcbd23c13016b7f5ec65
     # via mypy
-typing-extensions==3.10.0.1 \
-    --hash=sha256:045dd532231acfa03628df5e0c66dba64e2cc8fc8b844538d4ad6d5dd6cb82dc \
-    --hash=sha256:83af6730a045fda60f46510f7f1f094776d90321caa4d97d20ef38871bef4bd3 \
-    --hash=sha256:8bbffbd37fbeb9747a0241fdfde5ae99d4531ad1d1a41ccaea62100e15a5814c
+typing-extensions==3.10.0.2 \
+    --hash=sha256:49f75d16ff11f1cd258e1b988ccff82a3ca5570217d7ad8c5f48205dd99a677e \
+    --hash=sha256:d8226d10bc02a29bcc81df19a26e56a9647f8b0a6d4a83924139f4a8b01f17b7 \
+    --hash=sha256:f1d25edafde516b146ecd0613dabcc61409817af4766fbbcfb8d1ad4ec441a34
     # via
     #   aiohttp
     #   mypy
