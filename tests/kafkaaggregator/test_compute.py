@@ -1,12 +1,13 @@
 """Test the Kafka-aggregator method for computing summary statistics."""
 
+from pathlib import Path
 from typing import Any, List, Mapping
 
 import pytest
 
 from kafkaaggregator.aggregator import Aggregator
 from kafkaaggregator.fields import Field
-from kafkaaggregator.models import make_record
+from kafkaaggregator.models import create_record
 
 
 @pytest.fixture
@@ -21,7 +22,7 @@ def incoming_messages() -> List[Any]:
 
 
 @pytest.fixture
-def aggregation_fields() -> List[Field]:
+def aggregated_fields() -> List[Field]:
     """Mock aggregation fields."""
     fields = [
         Field("time", int),
@@ -73,10 +74,10 @@ def first_message_value(incoming_messages: List[Any]) -> Mapping[str, Any]:
 
 
 def test_compute(
+    config_dir: Path,
     incoming_messages: List[Any],
-    aggregation_fields: List[Field],
+    aggregated_fields: List[Field],
     expected_result: Mapping[str, Any],
-    first_message_value: Mapping[str, Any],
 ) -> None:
     """Test the Aggregator compute method.
 
@@ -90,37 +91,66 @@ def test_compute(
         Dictionary with the expected result for the aggregated_message
     """
     Agg = Aggregator(
-        source_topic_name="test-source-topic",
-        aggregation_topic_name="test-aggregation-topic",
-        # If these fields are present in the incoming message they are excluded
-        # as they are used by the aggregator
-        excluded_field_names=["time", "count", "window_size"],
-        operations=["min", "mean", "median", "stdev", "max"],
+        configfile=config_dir.joinpath("aggregator_config.yaml"),
+        aggregated_topic="aggregated_example0",
     )
 
-    # Mock the creation of the aggregation fields
-    Agg._aggregation_fields = aggregation_fields
+    # Mock the creation of the aggregated fields
+    Agg._aggregated_fields = aggregated_fields
+
     # Mock the creation of the Faust Record for the aggregation topic
-    Agg._record = make_record(
+    Agg._record = create_record(
         cls_name="AggregationRecord",
-        fields=aggregation_fields,
+        fields=aggregated_fields,
         doc="Faust record for topic test-source-topic.",
     )
     aggregated_message = Agg.compute(
         time=1.0,
-        window_size=1.0,
-        min_sample_size=1,
         messages=incoming_messages,
     )
     assert aggregated_message.is_valid()
     assert aggregated_message.asdict() == expected_result
 
-    # Test the case where the min_sample_size is larger than the number
-    # of messages in the aggregation window
+
+def test_compute_min_sample_size(
+    config_dir: Path,
+    incoming_messages: List[Any],
+    aggregated_fields: List[Field],
+    first_message_value: Mapping[str, Any],
+) -> None:
+    """Test the Aggregator compute method.
+
+    Test the case where the min_sample_size is larger than the number
+    of messages in the aggregation window.
+
+    Parameters
+    ----------
+    incoming_messages: `list`
+        Mock list of incoming messages
+    aggregation_fields:  `list` [`Field`]
+        List of fields to aggregate.
+    expected_result: `dict`
+        Dictionary with the expected result for the aggregated_message
+    """
+    Agg = Aggregator(
+        configfile=config_dir.joinpath(
+            "aggregator_config_min_sample_size.yaml"
+        ),
+        aggregated_topic="aggregated_example0",
+    )
+
+    # Mock the creation of the aggregated fields
+    Agg._aggregated_fields = aggregated_fields
+
+    # Mock the creation of the Faust Record for the aggregation topic
+    Agg._record = create_record(
+        cls_name="AggregationRecord",
+        fields=aggregated_fields,
+        doc="Faust record for topic test-source-topic.",
+    )
+
     aggregated_message = Agg.compute(
         time=1.0,
-        window_size=1.0,
-        min_sample_size=5,
         messages=incoming_messages,
     )
     assert aggregated_message.asdict() == first_message_value

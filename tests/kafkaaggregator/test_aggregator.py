@@ -6,7 +6,7 @@ import pytest
 
 from kafkaaggregator.aggregator import Aggregator
 from kafkaaggregator.fields import Field
-from kafkaaggregator.models import make_record
+from kafkaaggregator.models import create_record
 
 
 @pytest.fixture
@@ -40,8 +40,8 @@ def test_aggregation_fields(
     operations: List[str],
 ) -> None:
     """Test aggregation fields creation."""
-    aggregation_fields = Aggregator._create_aggregation_fields(
-        source_topic_fields, excluded_field_names, operations
+    aggregation_fields = Aggregator._create_aggregated_fields(
+        source_topic_fields, operations
     )
     # `time`, `count` and `window_size` are added by the aggregator
     assert Field("time", float) in aggregation_fields
@@ -66,7 +66,7 @@ def test_aggregation_fields(
 def test_record_class() -> None:
     """Test Faust Record creation."""
     # make a simple Faust Record
-    Foo = make_record(
+    Foo = create_record(
         cls_name="Foo",
         fields=[Field("bar", int)],
         doc="Test record",
