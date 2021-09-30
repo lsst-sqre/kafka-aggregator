@@ -1,0 +1,17 @@
+---
+aggregated_topics:
+- name: aggregated_example0
+  window_aggregation:
+    window_size_seconds: 1
+    operations:
+    - mean
+  filter:
+    source_topics:
+    - name: example0
+      fields:
+      - spam
+      - ham
+      - eggs
+      map:
+        spam: foo
+        ham: bar
