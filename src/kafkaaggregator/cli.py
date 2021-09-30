@@ -9,7 +9,7 @@ from faust.cli import AppCommand, option
 
 from kafkaaggregator.app import app
 from kafkaaggregator.config import ExampleConfiguration
-from kafkaaggregator.example import (
+from kafkaaggregator.example.example import (
     AggregationExample,
     UnexpectedNumberOfTopicsError,
 )
@@ -66,6 +66,6 @@ async def init_example(self: AppCommand) -> None:
 async def generate_agents(self: AppCommand) -> None:
     """Generate Faust agents' code."""
     agent_generator = AgentGenerator(
-        Path("aggregator_config.yaml"), "aggregated_example0"
+        Path("example/aggregator_config.yaml"), "aggregated_example0"
     )
     await agent_generator.run()

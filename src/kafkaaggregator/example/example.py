@@ -47,7 +47,7 @@ class AggregationExample:
         self._ntopics = min(config.ntopics, AggregationExample.MAX_NTOPICS)
         self._nfields = min(config.nfields, AggregationExample.MAX_NFIELDS)
         self._source_topic_names: List = []
-        self._make_record = create_record
+        self._create_record = create_record
 
     def make_fields(self) -> List[Field]:
         """Make fields for the example topics.
@@ -79,7 +79,7 @@ class AggregationExample:
         logger.info(f"Make Faust record for topic {name}.")
         cls_name = name.title().replace("-", "")
         fields = self.make_fields()
-        self._record = self._make_record(
+        self._record = self._create_record(
             cls_name=cls_name,
             fields=fields,
             doc=f"Faust record for topic {name}.",
