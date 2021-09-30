@@ -15,7 +15,7 @@ from faust_avro import Record
 
 from kafkaaggregator.config import ExampleConfiguration
 from kafkaaggregator.fields import Field
-from kafkaaggregator.models import make_record
+from kafkaaggregator.models import create_record
 from kafkaaggregator.topics import SourceTopic
 
 AvroSchemaT = str
@@ -46,7 +46,8 @@ class AggregationExample:
     def __init__(self) -> None:
         self._ntopics = min(config.ntopics, AggregationExample.MAX_NTOPICS)
         self._nfields = min(config.nfields, AggregationExample.MAX_NFIELDS)
-        self._make_record = make_record
+        self._source_topic_names: List = []
+        self._make_record = create_record
 
     def make_fields(self) -> List[Field]:
         """Make fields for the example topics.
@@ -107,6 +108,7 @@ class AggregationExample:
                 source_topic_name, value_type=record, internal=True
             )
             await internal_topic.declare()
+            self._source_topic_names.append(source_topic_name)
 
     async def produce(
         self, app: faust_avro.App, frequency: float, max_messages: int
@@ -126,26 +128,19 @@ class AggregationExample:
         max_messages : `int`
             The maximum number of messages to produce.
         """
-        source_topic_names = SourceTopic.names()
-        if len(source_topic_names) != self._ntopics:
-            msg = (
-                "Unexpected number of source topics from Kafka. Hint: "
-                "verify if the topic_regex configuration matches the "
-                "source topic names."
-            )
-            raise UnexpectedNumberOfTopicsError(msg)
         logger.info(
             f"Producing message(s) at {frequency} Hz for each source topic."
         )
         count = 0
         send_count = 0
+
         while True:
             message = {"time": time()}
             for n in range(self._nfields):
                 value = random.random()
                 message.update({f"value{n}": value})
             # The same message is sent for all source topics
-            for source_topic_name in source_topic_names:
+            for source_topic_name in self._source_topic_names:
                 source_topic = app.topic(source_topic_name)
                 await source_topic.send(value=message)
                 send_count += 1

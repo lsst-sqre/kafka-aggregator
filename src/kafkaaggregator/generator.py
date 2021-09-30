@@ -4,13 +4,14 @@ __all__ = ["AgentGenerator"]
 
 import logging
 import os
+from pathlib import Path
 from typing import Any, Mapping
 
 import aiofiles
 from jinja2 import Environment, PackageLoader, Template, TemplateError
 
+from kafkaaggregator.aggregator_config import AggregatorConfig
 from kafkaaggregator.app import config
-from kafkaaggregator.topics import SourceTopic
 
 logger = logging.getLogger("kafkaaggregator")
 
@@ -28,8 +29,14 @@ class AgentGenerator:
 
     logger = logger
 
-    def __init__(self) -> None:
-        self._source_topic_names = SourceTopic.names()
+    def __init__(self, configfile: Path, aggregated_topic: str) -> None:
+
+        self._aggregated_topic_name = aggregated_topic
+
+        config = AggregatorConfig(configfile).get(aggregated_topic)
+
+        # Supports the 1 source topic -> 1 aggregated topic case for the moment
+        self._source_topic_name = config.source_topics[0]
         self._template: Template = self._load_template()
 
     @property
@@ -55,8 +62,7 @@ class AgentGenerator:
 
         return filepath
 
-    @staticmethod
-    def _create_context(source_topic_name: str) -> Mapping[str, Any]:
+    def _create_context(self) -> Mapping[str, Any]:
         """Create the template context.
 
         The template context stores the values passed to the template.
@@ -71,18 +77,12 @@ class AgentGenerator:
         context : `dict`
             A dictionary with values passed to the template.
         """
-        cls_name = source_topic_name.title().replace("-", "")
-
-        topic_rename_format = config.topic_rename_format
-
-        aggregation_topic_name = topic_rename_format.format(
-            source_topic_name=source_topic_name
-        )
+        cls_name = self._source_topic_name.title().replace("-", "")
 
         context = dict(
             cls_name=cls_name,
-            source_topic_name=source_topic_name,
-            aggregation_topic_name=aggregation_topic_name,
+            source_topic_name=self._source_topic_name,
+            aggregation_topic_name=self._aggregated_topic_name,
         )
 
         return context
@@ -105,10 +105,9 @@ class AgentGenerator:
 
     async def run(self) -> None:
         """Run agents code generation."""
-        for source_topic_name in self._source_topic_names:
-            logger.info(f"Generating agent code for {source_topic_name}.")
-            filepath = self._create_filepath(source_topic_name)
-            context = self._create_context(source_topic_name)
+        logger.info(f"Generating agent code for {self._source_topic_name}.")
+        filepath = self._create_filepath(self._source_topic_name)
+        context = self._create_context()
 
-            async with aiofiles.open(filepath, "w") as file:
-                await file.write(self._template.render(**context))
+        async with aiofiles.open(filepath, "w") as file:
+            await file.write(self._template.render(**context))

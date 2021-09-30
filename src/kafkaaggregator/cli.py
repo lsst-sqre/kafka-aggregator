@@ -3,6 +3,7 @@
 __all__ = ["main", "produce", "init_example"]
 
 import logging
+from pathlib import Path
 
 from faust.cli import AppCommand, option
 
@@ -64,5 +65,7 @@ async def init_example(self: AppCommand) -> None:
 @app.command()
 async def generate_agents(self: AppCommand) -> None:
     """Generate Faust agents' code."""
-    agent_generator = AgentGenerator()
+    agent_generator = AgentGenerator(
+        Path("aggregator_config.yaml"), "aggregated_example0"
+    )
     await agent_generator.run()

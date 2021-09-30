@@ -1,18 +1,18 @@
-"""A class factory for Faust-avro Records."""
+"""Dynamic creation of Faust-avro Records."""
 
-__all__ = ["make_record"]
+__all__ = ["create_record"]
 
 from typing import Any, List, Mapping
 
-import faust_avro
+from faust_avro import Record
 
 from kafkaaggregator.fields import Field
 
 
-def make_record(
+def create_record(
     cls_name: str, fields: List[Field], doc: str = None
-) -> faust_avro.Record:
-    """Create a Faust-avro Record subclass.
+) -> Record:
+    """Create a Faust-avro Record class during runtime.
 
     Parameters
     ----------
@@ -25,14 +25,14 @@ def make_record(
 
     Returns
     -------
-    cls: `faust_avro.Record`
-        A faust_avro.Record subclass.
+    cls: `Record`
+        A faust_avro.Record class.
 
     Examples
     --------
     >>> from kafkaaggregator.fields import Field
-    >>> from kafkaaggregator.models import make_record
-    >>> Foo = make_record('Foo', [Field('bar', int)])
+    >>> from kafkaaggregator.models import create_record
+    >>> Foo = create_record('Foo', [Field('bar', int)])
     >>> f = Foo(bar=0)
     >>> f.bar
     0
@@ -47,4 +47,4 @@ def make_record(
         __doc__=doc,
     )
 
-    return type(cls_name, (faust_avro.Record,), cls_attrs)
+    return type(cls_name, (Record,), cls_attrs)

@@ -6,16 +6,13 @@ Registry and a parsed list of fields from the Avro schema with Python types.
 The child classes SourceTopic and AggregationTopic set the right Schema
 Registry URL to be used with each topic type.
 """
-__all__ = ["SchemaException", "Topic", "SourceTopic", "AggregationTopic"]
+__all__ = ["SchemaException", "Topic", "SourceTopic", "AggregatedTopic"]
 
 import json
 import logging
-import re
-from typing import List, Set, Union
+from typing import List, Union
 
 from faust_avro.asyncio import ConfluentSchemaRegistryClient
-from kafka import KafkaConsumer
-from kafka.errors import KafkaError
 
 from kafkaaggregator.app import config
 from kafkaaggregator.fields import Field
@@ -43,7 +40,9 @@ class Topic:
 
     logger = logger
 
-    def __init__(self, name: str, registry_url: str) -> None:
+    def __init__(
+        self, name: str, registry_url: str = config.registry_url
+    ) -> None:
 
         self.name = name
         self._subject = f"{self.name}-value"
@@ -143,48 +142,16 @@ class SourceTopic(Topic):
     def __init__(self, name: str) -> None:
         super().__init__(name=name, registry_url=config.registry_url)
 
-    @staticmethod
-    def names() -> Set[str]:
-        """Return a set of source topic names from Kafka.
 
-        Use the `topic_regex` and `excluded_topics` configuration settings to
-        select topics from kafka.
-        """
-        logger.info("Discovering source topics...")
-        bootstrap_servers = [config.broker.replace("kafka://", "")]
-        try:
-            consumer = KafkaConsumer(
-                bootstrap_servers=bootstrap_servers, enable_auto_commit=False
-            )
-            names: Set[str] = consumer.topics()
-        except KafkaError as e:
-            logger.error("Error retrieving topics from Kafka.")
-            raise e
+class AggregatedTopic(Topic):
+    """Represents aggregated topics.
 
-        if config.topic_regex:
-            pattern = re.compile(config.topic_regex)
-            names = {name for name in names if pattern.match(name)}
-
-        if config.excluded_topics:
-            excluded_topics = set(config.excluded_topics)
-            names = names - excluded_topics
-
-        n = len(names)
-        s = ", ".join(sorted(names))
-        logger.info(f"Found {n} source topic(s): {s}")
-
-        return names
-
-
-class AggregationTopic(Topic):
-    """Represents aggregation topics.
-
-    Sets the right Schema Registry URL for aggregation topics.
+    Sets the right Schema Registry URL for aggregated topics.
 
     Parameters
     ----------
     name: `str`
-        Name of the aggregation topic in Kafka.
+        Name of the aggregated topic in Kafka.
     """
 
     def __init__(self, name: str) -> None:

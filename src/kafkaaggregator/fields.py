@@ -1,6 +1,6 @@
-"""Aggregation field class.
+"""Aggregated field class.
 
-The Field has a numerical type by construction. It also holds the name of
+The Field has a numerical type by construction. It holds the name of
 the source field being aggregated and the operation performed.
 """
 
@@ -14,7 +14,7 @@ BasicType = Union[Type[int], Type[float], Type[bytes], Type[str]]
 
 
 class Field:
-    """Represents an aggregation field with numeric types.
+    """Represents an aggregated field of numeric type.
 
     Parameters
     ----------
