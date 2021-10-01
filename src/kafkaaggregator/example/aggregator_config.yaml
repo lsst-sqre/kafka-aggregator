@@ -1,32 +1,41 @@
 ---
 aggregated_topics:
-- name: aggregated_example0
+- name: aggregated-example-000
   window_aggregation:
     window_size_seconds: 1
     operations:
     - mean
   filter:
     source_topics:
-    - name: example0
+    - name: example-000
       fields:
-      - spam
-      - ham
-      - eggs
+      - value0
+      - value1
+      - value2
       map:
-        spam: foo
-        ham: bar
-- name: aggregated_example1
+        value0: foo
+        value1: bar
+        value2: baz
+- name: aggregated-example-001
   window_aggregation:
     window_size_seconds: 1
     operations:
+    - min
     - mean
+    - max
   filter:
     source_topics:
-    - name: example0
+    - name: example-000
       fields:
-      - spam
-      - ham
-      - eggs
+      - value0
+      - value1
+      - value2
       map:
-        spam: foo
-        ham: bar
+        value0: foo
+        value1: bar
+        value2: baz
+    - name: example-001
+      fields:
+      - value0
+      - value1
+      - value2
