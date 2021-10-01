@@ -91,7 +91,7 @@ def test_compute(
         Dictionary with the expected result for the aggregated_message
     """
     Agg = Aggregator(
-        configfile=config_dir.joinpath("aggregator_config.yaml"),
+        config_file=config_dir.joinpath("aggregator_config.yaml"),
         aggregated_topic="aggregated_example0",
     )
 
@@ -133,7 +133,7 @@ def test_compute_min_sample_size(
         Dictionary with the expected result for the aggregated_message
     """
     Agg = Aggregator(
-        configfile=config_dir.joinpath(
+        config_file=config_dir.joinpath(
             "aggregator_config_min_sample_size.yaml"
         ),
         aggregated_topic="aggregated_example0",

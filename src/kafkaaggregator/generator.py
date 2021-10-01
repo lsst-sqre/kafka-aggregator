@@ -29,11 +29,12 @@ class AgentGenerator:
 
     logger = logger
 
-    def __init__(self, configfile: Path, aggregated_topic: str) -> None:
+    def __init__(self, config_file: Path, aggregated_topic: str) -> None:
 
         self._aggregated_topic_name = aggregated_topic
 
-        config = AggregatorConfig(configfile).get(aggregated_topic)
+        # TODO: fix to aggregate multiple topics
+        config = AggregatorConfig(config_file).get(aggregated_topic)
 
         # Supports the 1 source topic -> 1 aggregated topic case for the moment
         self._source_topic_name = config.source_topics[0]

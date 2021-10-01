@@ -55,11 +55,11 @@ class Aggregator:
 
     logger = logger
 
-    def __init__(self, configfile: Path, aggregated_topic: str) -> None:
+    def __init__(self, config_file: Path, aggregated_topic: str) -> None:
 
         self._aggregated_topic = AggregatedTopic(name=aggregated_topic)
 
-        config = AggregatorConfig(configfile).get(aggregated_topic)
+        config = AggregatorConfig(config_file).get(aggregated_topic)
         self._operations = config.window_aggregation.operations
         self._window_size_secods = (
             config.window_aggregation.window_size_seconds
