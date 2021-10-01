@@ -72,7 +72,7 @@ class Configuration:
     """Regex used to filter topic names."""
 
     aggregator_config_file: str = os.getenv(
-        "AGGREGATOR_CONFIG_FILE", "aggregator.yaml"
+        "AGGREGATOR_CONFIG_FILE", "example/aggregator_config.yaml"
     )
     """Aggregator configuration file.
 
