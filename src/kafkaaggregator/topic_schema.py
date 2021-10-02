@@ -1,12 +1,17 @@
-"""Implements Topic, SourceTopic and AggregationTopic classes.
+"""Implements TopicSchema, SourceTopicSchema and AggregationTopicSchema.
 
-The Topic class has methods to retrieve the topic schema from the Schema
+The TopicSchema class has methods to retrieve the topic schema from the Schema
 Registry and a parsed list of fields from the Avro schema with Python types.
 
 The child classes SourceTopic and AggregationTopic set the right Schema
 Registry URL to be used with each topic type.
 """
-__all__ = ["SchemaException", "Topic", "SourceTopic", "AggregatedTopic"]
+__all__ = [
+    "SchemaException",
+    "TopicSchema",
+    "SourceTopicSchema",
+    "AggregatedTopicSchema",
+]
 
 import json
 import logging
@@ -26,7 +31,7 @@ class SchemaException(Exception):
     """A generic schema registry client exception."""
 
 
-class Topic:
+class TopicSchema:
     """
     Topic schema and interaction with the Schema Registry.
 
@@ -128,8 +133,8 @@ class Topic:
         return schema_id
 
 
-class SourceTopic(Topic):
-    """Represents source topics.
+class SourceTopicSchema(TopicSchema):
+    """Represents source topic schema.
 
     Sets the right Schema Registry URL for source topics.
 
@@ -143,8 +148,8 @@ class SourceTopic(Topic):
         super().__init__(name=name, registry_url=config.registry_url)
 
 
-class AggregatedTopic(Topic):
-    """Represents aggregated topics.
+class AggregatedTopicSchema(TopicSchema):
+    """Represents aggregated topic schema.
 
     Sets the right Schema Registry URL for aggregated topics.
 

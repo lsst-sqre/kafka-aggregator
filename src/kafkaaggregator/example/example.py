@@ -16,7 +16,7 @@ from faust_avro import Record
 from kafkaaggregator.config import ExampleConfiguration
 from kafkaaggregator.fields import Field
 from kafkaaggregator.models import create_record
-from kafkaaggregator.topics import SourceTopic
+from kafkaaggregator.topic_schema import SourceTopicSchema
 
 AvroSchemaT = str
 
@@ -99,7 +99,7 @@ class AggregationExample:
         """
         for n in range(self._ntopics):
             source_topic_name = f"{config.source_topic_name_prefix}-{n:03d}"
-            source_topic = SourceTopic(name=source_topic_name)
+            source_topic = SourceTopicSchema(name=source_topic_name)
             record = self.create_record(name=source_topic_name)
             schema = record.to_avro(registry=source_topic._registry)
             await source_topic.register(schema=json.dumps(schema))

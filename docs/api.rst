@@ -7,7 +7,7 @@ API Reference
 
 .. automodapi:: kafkaaggregator.fields
 
-.. automodapi:: kafkaaggregator.topics
+.. automodapi:: kafkaaggregator.topic_schema
 
 .. automodapi:: kafkaaggregator.models
    :no-inheritance-diagram:

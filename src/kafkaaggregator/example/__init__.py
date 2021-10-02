@@ -1,0 +1,1 @@
+"""Kafka-aggregator example module."""
