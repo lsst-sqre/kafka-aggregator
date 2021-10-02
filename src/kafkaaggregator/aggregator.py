@@ -14,13 +14,12 @@ __all__ = ["Aggregator"]
 import asyncio
 import json
 import logging
-from pathlib import Path
 from statistics import StatisticsError
 from typing import Any, List
 
 from faust_avro import Record
 
-from kafkaaggregator.aggregator_config import AggregatorConfig
+from kafkaaggregator.aggregator_config import AggregatedTopic
 from kafkaaggregator.fields import Field
 from kafkaaggregator.models import create_record
 from kafkaaggregator.operations import (  # noqa: F401
@@ -30,7 +29,10 @@ from kafkaaggregator.operations import (  # noqa: F401
     q3,
     stdev,
 )
-from kafkaaggregator.topics import AggregatedTopic, SourceTopic
+from kafkaaggregator.topic_schema import (
+    AggregatedTopicSchema,
+    SourceTopicSchema,
+)
 
 logger = logging.getLogger("kafkaaggregator")
 
@@ -55,24 +57,29 @@ class Aggregator:
 
     logger = logger
 
-    def __init__(self, config_file: Path, aggregated_topic: str) -> None:
+    def __init__(self, aggregated_topic: AggregatedTopic) -> None:
 
-        self._aggregated_topic = AggregatedTopic(name=aggregated_topic)
+        self._name = aggregated_topic.name
 
-        config = AggregatorConfig(config_file).get(aggregated_topic)
-        self._operations = config.window_aggregation.operations
+        self._aggregated_topic_schema = AggregatedTopicSchema(name=self._name)
+
         self._window_size_secods = (
-            config.window_aggregation.window_size_seconds
+            aggregated_topic.window_aggregation.window_size_seconds
         )
-        self._min_sample_size = config.window_aggregation.min_sample_size
+        self._operations = aggregated_topic.window_aggregation.operations
+        self._min_sample_size = (
+            aggregated_topic.window_aggregation.min_sample_size
+        )
 
         # Supports the 1 source topic -> 1 aggregated topic case for the moment
-        source_topic = config.source_topics[0]
+        source_topic_name = aggregated_topic.source_topics[0]
 
-        self._source_topic = SourceTopic(name=source_topic)
-        self._fields = config.get(source_topic).fields
+        self._source_topic_schema = SourceTopicSchema(name=source_topic_name)
+
+        # TODO: return field names prefixed by source topic
+        self._fields = aggregated_topic.get(source_topic_name).fields
+
         self._create_record = create_record
-
         self._aggregated_fields: List[Field] = []
         self._record: Record = None
 
