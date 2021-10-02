@@ -6,6 +6,7 @@ from typing import Any, List, Mapping
 import pytest
 
 from kafkaaggregator.aggregator import Aggregator
+from kafkaaggregator.aggregator_config import AggregatorConfig
 from kafkaaggregator.fields import Field
 from kafkaaggregator.models import create_record
 
@@ -90,10 +91,11 @@ def test_compute(
     expected_result: `dict`
         Dictionary with the expected result for the aggregated_message
     """
-    Agg = Aggregator(
-        config_file=config_dir.joinpath("aggregator_config.yaml"),
-        aggregated_topic="aggregated_example0",
-    )
+    config_file = config_dir.joinpath("aggregator_config.yaml")
+
+    aggregated_topic = AggregatorConfig(config_file).get("aggregated_example0")
+
+    Agg = Aggregator(aggregated_topic)
 
     # Mock the creation of the aggregated fields
     Agg._aggregated_fields = aggregated_fields
@@ -132,12 +134,11 @@ def test_compute_min_sample_size(
     expected_result: `dict`
         Dictionary with the expected result for the aggregated_message
     """
-    Agg = Aggregator(
-        config_file=config_dir.joinpath(
-            "aggregator_config_min_sample_size.yaml"
-        ),
-        aggregated_topic="aggregated_example0",
-    )
+    config_file = config_dir.joinpath("aggregator_config_min_sample_size.yaml")
+
+    aggregated_topic = AggregatorConfig(config_file).get("aggregated_example0")
+
+    Agg = Aggregator(aggregated_topic)
 
     # Mock the creation of the aggregated fields
     Agg._aggregated_fields = aggregated_fields
