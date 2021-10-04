@@ -1,7 +1,7 @@
 """Aggregation example."""
 
 
-__all__ = ["AggregationExample", "UnexpectedNumberOfTopicsError"]
+__all__ = ["AggregationExample"]
 
 import asyncio
 import json
@@ -23,14 +23,6 @@ AvroSchemaT = str
 logger = logging.getLogger("kafkaaggregator")
 
 config = ExampleConfiguration()
-
-
-class UnexpectedNumberOfTopicsError(RuntimeError):
-    """Raised when the number of source topics is unnexpected.
-
-    The number of source topics in Kafka must match the number of topics
-    initialized by the example.
-    """
 
 
 class AggregationExample:

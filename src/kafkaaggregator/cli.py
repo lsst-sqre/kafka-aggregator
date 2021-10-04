@@ -7,13 +7,14 @@ from pathlib import Path
 
 from faust.cli import AppCommand, option
 
-from kafkaaggregator.app import app, config
-from kafkaaggregator.config import ExampleConfiguration
+from kafkaaggregator.app import app
+from kafkaaggregator.config import Configuration, ExampleConfiguration
 from kafkaaggregator.example.example import AggregationExample
 from kafkaaggregator.generator import AgentGenerator
 
 logger = logging.getLogger("kafkaaggregator")
 
+config = Configuration()
 example_config = ExampleConfiguration()
 
 
@@ -61,20 +62,6 @@ async def init_example(self: AppCommand) -> None:
 
 @app.command(
     option(
-        "--template-file",
-        type=str,
-        default=config.agent_template_file,
-        help="Name of the agent Jinja2 template file.",
-        show_default=True,
-    ),
-    option(
-        "--output-dir",
-        type=str,
-        default=config.agents_output_dir,
-        help="Name of output directory for the agents' code.",
-        show_default=True,
-    ),
-    option(
         "--config-file",
         type=str,
         default=config.aggregator_config_file,
@@ -91,14 +78,8 @@ async def init_example(self: AppCommand) -> None:
     ),
 )
 async def generate_agents(
-    self: AppCommand,
-    config_file: str,
-    aggregated_topic: str,
-    template_file: str,
-    output_dir: str,
+    self: AppCommand, config_file: str, aggregated_topic: str
 ) -> None:
     """Generate Faust agents' code."""
-    agent_generator = AgentGenerator(
-        Path(config_file), aggregated_topic, template_file, output_dir
-    )
+    agent_generator = AgentGenerator(Path(config_file), aggregated_topic)
     await agent_generator.run()
