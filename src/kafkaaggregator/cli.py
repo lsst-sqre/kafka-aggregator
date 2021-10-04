@@ -1,20 +1,20 @@
 """Command-line interface for kafkaaggregator."""
 
-__all__ = ["main", "produce", "init_example"]
+__all__ = ["main", "produce", "init_example", "generate_agents"]
 
 import logging
 from pathlib import Path
 
 from faust.cli import AppCommand, option
 
-from kafkaaggregator.app import app
-from kafkaaggregator.config import Configuration, ExampleConfiguration
+from kafkaaggregator.aggregator_config import AggregatorConfig
+from kafkaaggregator.app import app, config
+from kafkaaggregator.config import ExampleConfiguration
 from kafkaaggregator.example.example import AggregationExample
 from kafkaaggregator.generator import AgentGenerator
 
 logger = logging.getLogger("kafkaaggregator")
 
-config = Configuration()
 example_config = ExampleConfiguration()
 
 
@@ -62,24 +62,40 @@ async def init_example(self: AppCommand) -> None:
 
 @app.command(
     option(
+        "--template-file",
+        type=str,
+        default=config.agent_template_file,
+        help="Name of the agent Jinja2 template file.",
+        show_default=True,
+    ),
+    option(
+        "--output-dir",
+        type=str,
+        default=config.agents_output_dir,
+        help="Name of output directory for the agents' code.",
+        show_default=True,
+    ),
+    option(
         "--config-file",
         type=str,
         default=config.aggregator_config_file,
         help="Aggregator configuration file.",
         show_default=True,
     ),
-    option(
-        "--aggregated-topic",
-        type=str,
-        help=(
-            "The aggregated topic to generate the agent for. If not specified "
-            "generate agents for all aggregated topics in the configuration."
-        ),
-    ),
 )
 async def generate_agents(
-    self: AppCommand, config_file: str, aggregated_topic: str
+    self: AppCommand,
+    config_file: str,
+    template_file: str,
+    output_dir: str,
 ) -> None:
     """Generate Faust agents' code."""
-    agent_generator = AgentGenerator(Path(config_file), aggregated_topic)
-    await agent_generator.run()
+    config_file_path = Path(__file__).parent.joinpath(config_file)
+    aggregator_config = AggregatorConfig(config_file_path)
+
+    for aggregated_topic in aggregator_config.aggregated_topics:
+
+        agent_generator = AgentGenerator(
+            config_file_path, aggregated_topic, template_file, output_dir
+        )
+        await agent_generator.run()
