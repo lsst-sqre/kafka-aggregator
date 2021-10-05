@@ -8,7 +8,9 @@ Running locally with docker-compose
 
 In this guide, we use ``docker-compose`` to illustrate how to run kafka-aggregator. To run kafka-aggregator on a Kubernetes environment see the :ref:`installation` section instead.
 
-kafka-aggregator `docker-compose configuration`_ includes services to run Confluent Kafka (zookeeper, broker, schema-registry and control-center) and was based on `this example`_.
+kafka-aggregator `docker-compose configuration`_ run Confluent Kafka services.
+
+.. Make a footnote ref to `this example`_.
 
 .. _docker-compose configuration: https://github.com/lsst-sqre/kafka-aggregator/blob/master/docker-compose.yaml
 .. _this example: https://github.com/confluentinc/examples/blob/5.3.2-post/cp-all-in-one/docker-compose.yml
@@ -17,51 +19,49 @@ Clone the kafka-aggregator repository:
 
 .. code-block:: bash
 
-  $ git clone https://github.com/lsst-sqre/kafka-aggregator.git
+  git clone https://github.com/lsst-sqre/kafka-aggregator.git
 
-Start the `zookeeper`, `broker`, and `schema-registry` services:
+Start Zookeeper, a Broker, and the Confluent Schema Registry services:
 
 .. code-block:: bash
 
+  cd kafka-aggregator
   docker-compose up -d zookeeper broker schema-registry
 
-On another terminal session, create a new Python virtual environment and install kafka-aggregator locally:
+Create a new Python virtual environment and install kafka-aggregator locally (kafka-aggregator has been tested with Python 3.9):
 
 .. code-block:: bash
 
-  $ cd kafka-aggregator
-  $ virtualenv -p Python3 venv
-  $ source venv/bin/activate
-  $ make update
+  python -m venv venv
+  source venv/bin/activate
+  make update
 
 
 Initializing source topics
 ==========================
 
 .. note::
-  In a production environment we expect that the source topics already exist in Kafka and that their Avro schemas are available from the Schema Registry.
+  In practice kafka-aggregator expects that the source topics already exist in Kafka and that their Avro schemas are available from the Confluent Schema Registry. The instructions below are only necessary to run the kafka-aggregator example module.
 
+Using the kafka-aggregator example module you can initialize source topics in Kafka, and produce messages for those topics.
 
-Using the kafka-aggregator example module, you can initialize source topics in Kafka, control the number of fields in each topic, and produce messages for those topics at a given frequency.
-
-With the default :ref:`configuration`, this command will initialize 10 source topics with 10 fields each and register their Avro schemas with the Schema Registry.
+With the default :ref:`configuration`, the following command initializes 10 source topics with 10 fields each.
 
 .. code-block:: bash
 
   kafkaaggregator -l info init-example
 
-You can check that the source topics were created in Kafka:
+You can check wether the source topics were created in kafka:
 
 .. code-block:: bash
 
   docker-compose exec broker kafka-topics --bootstrap-server broker:29092 --list
 
-
-The Avro schemas were registered with the Schema Registry:
+and that the Avro schemas are available from the Confluent Schema Registry:
 
 .. code-block:: bash
 
-    curl http://localhost:8081/subjects
+  curl http://localhost:8081/subjects
 
 
 Generating Faust agents
