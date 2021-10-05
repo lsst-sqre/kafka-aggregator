@@ -38,12 +38,19 @@ def main() -> None:
         help="The maximum number of messages to produce.",
         show_default=True,
     ),
+    option(
+        "--config-file",
+        type=str,
+        default=config.aggregator_config_file,
+        help="Aggregator configuration file.",
+        show_default=True,
+    ),
 )
 async def produce(
-    self: AppCommand, frequency: float, max_messages: int
+    self: AppCommand, frequency: float, max_messages: int, config_file: str
 ) -> None:
     """Produce messages for the aggregation example."""
-    example = AggregationExample()
+    example = AggregationExample(Path(__file__).parent.joinpath(config_file))
 
     try:
         await example.produce(
@@ -53,10 +60,18 @@ async def produce(
         logger.error(e)
 
 
-@app.command()
-async def init_example(self: AppCommand) -> None:
+@app.command(
+    option(
+        "--config-file",
+        type=str,
+        default=config.aggregator_config_file,
+        help="Aggregator configuration file.",
+        show_default=True,
+    ),
+)
+async def init_example(self: AppCommand, config_file: str) -> None:
     """Initialize the source topic used in the aggregation example."""
-    example = AggregationExample()
+    example = AggregationExample(Path(__file__).parent.joinpath(config_file))
     await example.initialize(app=app)
 
 

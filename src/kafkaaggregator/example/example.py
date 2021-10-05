@@ -7,12 +7,14 @@ import asyncio
 import json
 import logging
 import random
+from pathlib import Path
 from time import time
 from typing import List
 
 import faust_avro
 from faust_avro import Record
 
+from kafkaaggregator.aggregator_config import AggregatorConfig
 from kafkaaggregator.config import ExampleConfiguration
 from kafkaaggregator.fields import Field
 from kafkaaggregator.models import create_record
@@ -22,7 +24,7 @@ AvroSchemaT = str
 
 logger = logging.getLogger("kafkaaggregator")
 
-config = ExampleConfiguration()
+example_config = ExampleConfiguration()
 
 
 class AggregationExample:
@@ -35,11 +37,13 @@ class AggregationExample:
     MAX_NTOPICS = 999
     MAX_NFIELDS = 999
 
-    def __init__(self) -> None:
-        self._ntopics = min(config.ntopics, AggregationExample.MAX_NTOPICS)
-        self._nfields = min(config.nfields, AggregationExample.MAX_NFIELDS)
-        self._source_topic_names: List = []
+    def __init__(self, config_file: Path) -> None:
+        self._nfields = min(
+            example_config.nfields, AggregationExample.MAX_NFIELDS
+        )
         self._create_record = create_record
+        aggregator_config = AggregatorConfig(config_file)
+        self._source_topics = aggregator_config.source_topics
 
     def make_fields(self) -> List[Field]:
         """Make fields for the example topics.
@@ -89,18 +93,14 @@ class AggregationExample:
         app : `faust_avro.App`
             Faust application
         """
-        for n in range(self._ntopics):
-            source_topic_name = f"{config.source_topic_name_prefix}-{n:03d}"
-            source_topic = SourceTopicSchema(name=source_topic_name)
-            record = self.create_record(name=source_topic_name)
+        for topic in self._source_topics:
+            source_topic = SourceTopicSchema(name=topic)
+            record = self.create_record(name=topic)
             schema = record.to_avro(registry=source_topic._registry)
             await source_topic.register(schema=json.dumps(schema))
             # Declare the source topic as an internal topic in Faust.
-            internal_topic = app.topic(
-                source_topic_name, value_type=record, internal=True
-            )
+            internal_topic = app.topic(topic, value_type=record, internal=True)
             await internal_topic.declare()
-            self._source_topic_names.append(source_topic_name)
 
     async def produce(
         self, app: faust_avro.App, frequency: float, max_messages: int
@@ -132,8 +132,8 @@ class AggregationExample:
                 value = random.random()
                 message.update({f"value{n}": value})
             # The same message is sent for all source topics
-            for source_topic_name in self._source_topic_names:
-                source_topic = app.topic(source_topic_name)
+            for topic in self._source_topics:
+                source_topic = app.topic(topic)
                 await source_topic.send(value=message)
                 send_count += 1
 

@@ -127,9 +127,6 @@ class Configuration:
 class ExampleConfiguration:
     """Configuration for the Kafkaaggregator example."""
 
-    ntopics: int = int(os.getenv("NTOPICS", "10"))
-    """Number of source topics used in the aggregation example."""
-
     nfields: int = int(os.getenv("NFIELDS", "10"))
     """Number of fields for source topics used in the aggregation example."""
 
@@ -141,10 +138,4 @@ class ExampleConfiguration:
     max_messages: int = int(os.getenv("MAX_MESSAGES", "10"))
     """The maximum number of messages to produce. Set max_messages to a number
     smaller than 1 to produce an indefinite number of messages.
-    """
-
-    source_topic_name_prefix: str = os.getenv(
-        "SOURCE_TOPIC_NAME_PRFIX", "example"
-    )
-    """The prefix for source topic names to use with the aggregator example.
     """
