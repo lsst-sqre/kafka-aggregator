@@ -28,7 +28,7 @@ def aggregated_fields() -> List[Field]:
     fields = [
         Field("time", int),
         Field("count", int),
-        Field("window_size", float),
+        Field("window_size_seconds", float),
         Field("min_value", float, "value", "min"),
         Field("mean_value", float, "value", "mean"),
         Field("median_value", float, "value", "median"),
@@ -45,7 +45,7 @@ def expected_result() -> Mapping[str, Any]:
         "count": 3,
         "min_value": 1.0,
         "time": 1.0,
-        "window_size": 1.0,
+        "window_size_seconds": 1.0,
         "max_value": 3.0,
         "mean_value": 2.0,
         "median_value": 2.0,
@@ -65,7 +65,7 @@ def first_message_value(incoming_messages: List[Any]) -> Mapping[str, Any]:
         "count": 3,
         "min_value": incoming_messages[0]["value"],
         "time": 1.0,  # timestamp of the aggregated message
-        "window_size": 1.0,
+        "window_size_seconds": 1.0,
         "max_value": incoming_messages[0]["value"],
         "mean_value": incoming_messages[0]["value"],
         "median_value": incoming_messages[0]["value"],

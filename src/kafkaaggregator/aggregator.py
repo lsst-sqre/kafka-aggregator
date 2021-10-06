@@ -205,7 +205,7 @@ class Aggregator:
         aggregated_values = {
             "count": count,
             "time": time,
-            "window_size": self._window_size_secods,
+            "window_size_seconds": self._window_size_secods,
         }
 
         for aggregated_field in self._aggregated_fields:
