@@ -107,10 +107,10 @@ class Aggregator:
             List of aggregation fields.
         """
         time = Field(name="time", type=float)
-        window_size = Field(name="window_size", type=float)
+        window_size_seconds = Field(name="window_size_seconds", type=float)
         count = Field(name="count", type=int)
 
-        aggregated_fields = [time, window_size, count]
+        aggregated_fields = [time, window_size_seconds, count]
 
         for field in fields:
             # Only numeric fields are aggregated
