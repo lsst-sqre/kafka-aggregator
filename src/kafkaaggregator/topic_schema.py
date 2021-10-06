@@ -72,16 +72,21 @@ class TopicSchema:
 
         return schema
 
-    async def get_fields(self) -> List[Field]:
+    async def get_fields(self, filter: List[str]) -> List[Field]:
         """Get topic fields.
 
         Parses the topic Avro schema and returns a list of fields with
         Python types.
 
+        Parameters
+        ----------
+        filter : `list` [`str`]
+            List of fields names to return.
+
         Returns
         -------
         fields : `list` [`Field`]
-            List of topic fields.
+            List of field names and Python types.
         """
         schema = await self.get_schema()
         fields = []
@@ -90,8 +95,8 @@ class TopicSchema:
             # https://github.com/masterysystems/faust-avro/blob/master/faust_avro/parsers/avro.py#L20
             parsed_schema = self._parse(json.loads(schema))
             for field in parsed_schema.fields:
-                fields.append(Field(field.name, field.type.python_type))
-
+                if field.name in filter:
+                    fields.append(Field(field.name, field.type.python_type))
         return fields
 
     async def register(self, schema: AvroSchemaT) -> Union[int, None]:

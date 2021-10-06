@@ -136,7 +136,7 @@ class Aggregator:
         # The source fields are already validated when the
         # AggregatedTopic object is created
 
-        fields = await self._source_topic_schema.get_fields()
+        fields = await self._source_topic_schema.get_fields(self._fields)
 
         self._aggregated_fields = self._create_aggregated_fields(
             fields, self._operations

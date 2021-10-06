@@ -50,11 +50,19 @@ async def test_get_fields(avro_schema: str) -> None:
         name="test-avro-schema", registry_url="http://localhost:8081"
     )
     await topic_schema.register(schema=avro_schema)
-    fields = await topic_schema.get_fields()
+    fields = await topic_schema.get_fields(
+        [
+            "int_field",
+            "long_field",
+            "float_field",
+            "double_field",
+            "bytes_field",
+        ]
+    )
 
     assert Field("int_field", faust_avro.types.int32) in fields
     assert Field("long_field", int) in fields
     assert Field("float_field", faust_avro.types.float32) in fields
     assert Field("double_field", float) in fields
     assert Field("bytes_field", bytes) in fields
-    assert Field("string_field", str) in fields
+    assert Field("string_field", str) not in fields
