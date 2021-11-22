@@ -457,6 +457,7 @@ terminaltables==3.1.0 \
     --hash=sha256:f3eb0eb92e3833972ac36796293ca0906e998dc3be91fbe1f8615b331b853b81
     # via faust
 typing-extensions==4.0.0 \
+    --hash=sha256:2cdf80e4e04866a9b3689a51869016d36db0814d84b8d8a568d22781d45d27ed \
     --hash=sha256:829704698b22e13ec9eaf959122315eabb370b0884400e9818334d8b677023d9
     # via
     #   async-timeout
