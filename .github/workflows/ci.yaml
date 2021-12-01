@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         python:
-          - 3.9
+          - "3.9"
 
     steps:
       - uses: actions/checkout@v2
@@ -67,10 +67,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Define the Docker tag
         id: vars
-        run: echo ::set-output name=tag::$(scripts/docker-tag.sh "$GITHUB_REF")
+        run: echo ::set-output name=tag::$(scripts/docker-tag.sh)
 
       - name: Print the tag
         id: print

@@ -5,17 +5,21 @@
 # After editing, update requirements/dev.txt by running:
 #     make update-deps
 
+-c main.txt
+
 coverage[toml]
+documenteer
 flake8
 flake8-docstrings
 graphviz
-mypy==0.812
+lsst_sphinx_bootstrap_theme
+mypy
 pre-commit
 pytest
 pytest-asyncio
 pytest-vcr
-documenteer
-lsst_sphinx_bootstrap_theme
 sphinx-automodapi
-sphinx-prompt
 sphinx-click
+sphinx-prompt
+types-aiofiles
+types-PyYAML
