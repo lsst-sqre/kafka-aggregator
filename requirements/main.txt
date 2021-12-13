@@ -109,8 +109,9 @@ click==7.1.2 \
     --hash=sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a \
     --hash=sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc
     # via faust
-colorclass==2.2.0 \
-    --hash=sha256:b05c2a348dfc1aff2d502527d78a5b7b7e2f85da94a96c5081210d8e9ee8e18b
+colorclass==2.2.2 \
+    --hash=sha256:6d4fe287766166a98ca7bc6f6312daf04a0481b1eda43e7173484051c0ab4366 \
+    --hash=sha256:6f10c273a0ef7a1150b1120b6095cbdd68e5cf36dfd5d0fc957a2500bbf99a55
     # via faust
 colorlog==6.6.0 \
     --hash=sha256:344f73204009e4c83c5b6beb00b3c45dc70fcdae3c80db919e0a4171d006fde8 \
@@ -451,8 +452,9 @@ six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
     --hash=sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254
     # via python-dateutil
-terminaltables==3.1.0 \
-    --hash=sha256:f3eb0eb92e3833972ac36796293ca0906e998dc3be91fbe1f8615b331b853b81
+terminaltables==3.1.10 \
+    --hash=sha256:ba6eca5cb5ba02bba4c9f4f985af80c54ec3dccf94cfcd190154386255e47543 \
+    --hash=sha256:e4fdc4179c9e4aab5f674d80f09d76fa436b96fdc698a8505e0a36bf0804a874
     # via faust
 typing-extensions==4.0.1 \
     --hash=sha256:4ca091dea149f945ec56afb48dae714f21e8692ef22a395223bcd328961b6a0e \

@@ -148,8 +148,9 @@ click==7.1.2 \
     #   documenteer
     #   faust
     #   sphinx-click
-colorclass==2.2.0 \
-    --hash=sha256:b05c2a348dfc1aff2d502527d78a5b7b7e2f85da94a96c5081210d8e9ee8e18b
+colorclass==2.2.2 \
+    --hash=sha256:6d4fe287766166a98ca7bc6f6312daf04a0481b1eda43e7173484051c0ab4366 \
+    --hash=sha256:6f10c273a0ef7a1150b1120b6095cbdd68e5cf36dfd5d0fc957a2500bbf99a55
     # via
     #   -c requirements/main.txt
     #   faust
@@ -214,9 +215,9 @@ croniter==1.1.0 \
     # via
     #   -c requirements/main.txt
     #   faust
-distlib==0.3.3 \
-    --hash=sha256:c8b54e8454e5bf6237cc84c20e8264c3e991e824ef27e8f1e81049867d861e31 \
-    --hash=sha256:d982d0751ff6eaaab5e2ec8e691d949ee80eddf01a62eaa96ddb11531fe16b05
+distlib==0.3.4 \
+    --hash=sha256:6564fe0a8f51e734df6333d08b8b94d4ea8ee6b99b5ed50613f731fd4089f34b \
+    --hash=sha256:e4b58818180336dc9c529bfb9a0b58728ffc09ad92027a3f30b7cd91e3458579
     # via virtualenv
 documenteer==0.6.9 \
     --hash=sha256:5cbe4858611548aa2492fe8b35fd6a03a1026510493ebd4d5857f279fd02e174 \
@@ -376,9 +377,9 @@ gitpython==3.1.24 \
     --hash=sha256:dc0a7f2f697657acc8d7f89033e8b1ea94dd90356b2983bca89dc8d2ab3cc647 \
     --hash=sha256:df83fdf5e684fef7c6ee2c02fc68a5ceb7e7e759d08b694088d0cacb4eba59e5
     # via documenteer
-graphviz==0.19 \
-    --hash=sha256:60704af002770700b099e5d684b7f2bd59c06bbaec8f575def7fba7a31a1a27a \
-    --hash=sha256:b42554a1c47f24a9473b7f4e380d17b228586a067c97ea69d5354d6074be8dfd
+graphviz==0.19.1 \
+    --hash=sha256:09ed0cde452d015fe77c4845a210eb642f28d245f5bc250d4b97808cb8f49078 \
+    --hash=sha256:f34088c08be2ec16279dfa9c3b4ff3d1453c5c67597a33e2819b000e18d4c546
     # via -r requirements/dev.in
 identify==2.4.0 \
     --hash=sha256:a33ae873287e81651c7800ca309dc1f84679b763c9c8b30680e16fbfa82f0107 \
@@ -852,8 +853,9 @@ sphinxcontrib-serializinghtml==1.1.5 \
     --hash=sha256:352a9a00ae864471d3a7ead8d7d79f5fc0b57e8b3f95e9867eb9eb28999b92fd \
     --hash=sha256:aa5f6de5dfdf809ef505c4895e51ef5c9eac17d0f287933eb49ec495280b6952
     # via sphinx
-terminaltables==3.1.0 \
-    --hash=sha256:f3eb0eb92e3833972ac36796293ca0906e998dc3be91fbe1f8615b331b853b81
+terminaltables==3.1.10 \
+    --hash=sha256:ba6eca5cb5ba02bba4c9f4f985af80c54ec3dccf94cfcd190154386255e47543 \
+    --hash=sha256:e4fdc4179c9e4aab5f674d80f09d76fa436b96fdc698a8505e0a36bf0804a874
     # via
     #   -c requirements/main.txt
     #   faust
