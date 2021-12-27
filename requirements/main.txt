@@ -93,9 +93,9 @@ aiosignal==1.2.0 \
     --hash=sha256:26e62109036cd181df6e6ad646f91f0dcfd05fe16d0cb924138ff2ab75d64e3a \
     --hash=sha256:78ed67db6c7b7ced4f98e495e572106d5c432a93e1ddd1bf475e1dc05f5b7df2
     # via aiohttp
-async-timeout==4.0.1 \
-    --hash=sha256:a22c0b311af23337eb05fcf05a8b51c3ea53729d46fb5460af62bee033cec690 \
-    --hash=sha256:b930cb161a39042f9222f6efb7301399c87eeab394727ec5437924a36d6eef51
+async-timeout==4.0.2 \
+    --hash=sha256:2163e1640ddb52b7a8c80d0a67a08587e5d245cc9c553a74a847056bc2976b15 \
+    --hash=sha256:8ca1e4fcf50d07413d66d1a5e416e42cfdf5851c981d679a09851a6853383b3c
     # via aiohttp
 attrs==21.2.0 \
     --hash=sha256:149e90d6d8ac20db7a955ad60cf0e6881a3f20d37096140088356da6c716b0b1 \
@@ -232,9 +232,9 @@ frozenlist==1.2.0 \
     # via
     #   aiohttp
     #   aiosignal
-funcy==1.16 \
-    --hash=sha256:1d3fc5d42cf7564a6b2be04042d0df7a50c77903cf760a34786d0c9ebd659b25 \
-    --hash=sha256:2775409b7dc9106283f1224d97e6df5f2c02e7291c8caed72764f5a115dffb50
+funcy==1.17 \
+    --hash=sha256:40b9b9a88141ae6a174df1a95861f2b82f2fdc17669080788b73a3ed9370e968 \
+    --hash=sha256:ba7af5e58bfc69321aaf860a1547f18d35e145706b95d1b3c966abc4f0b60309
     # via faust-avro
 idna==3.3 \
     --hash=sha256:84d9dd047ffa80596e0f246e2eab0b391788b0503584e8945f2368256d2735ff \
@@ -460,7 +460,6 @@ typing-extensions==4.0.1 \
     --hash=sha256:4ca091dea149f945ec56afb48dae714f21e8692ef22a395223bcd328961b6a0e \
     --hash=sha256:7f001e5ac290a0c0401508864c7ec868be4e701886d5b573a9528ed3973d9d3b
     # via
-    #   async-timeout
     #   pydantic
     #   typing-inspect
 typing-inspect==0.5.0 \
