@@ -41,11 +41,11 @@ Initializing source topics
 ==========================
 
 .. note::
-  In practice kafka-aggregator expects that the source topics already exist in Kafka and that their Avro schemas are available from the Confluent Schema Registry. The instructions below are only necessary to run the kafka-aggregator example module.
+  In practice, kafka-aggregator expects that the source topics already exist in Kafka and that their Avro schemas are available from the Confluent Schema Registry. The instructions below are only necessary to run the kafka-aggregator example module.
 
 Using the kafka-aggregator example module you can initialize source topics in Kafka, and produce messages for those topics.
 
-With the default :ref:`configuration`, the following command initializes 10 source topics with 10 fields each.
+The following command initializes the source topics in ``example/aggregator-config.yaml`` using the default values in the ``ExampleConfiguration`` class.
 
 .. code-block:: bash
 
@@ -57,17 +57,17 @@ You can check wether the source topics were created in kafka:
 
   docker-compose exec broker kafka-topics --bootstrap-server broker:29092 --list
 
-and that the Avro schemas are available from the Confluent Schema Registry:
+The Avro schemas for the source topics are also registered at this point. You can use this command to retrieve the schema for one of the source topics, for example:
 
 .. code-block:: bash
 
-  curl http://localhost:8081/subjects
+  curl -s -X GET http://localhost:8081/schemas/ids/1 | jq
 
 
-Generating Faust agents
-=======================
+Generating the Faust agents
+===========================
 
-Use this command to generate the Faust agents to process the source topics.
+The following command generates the Faust agents to process the source topics:
 
 .. code-block:: bash
 
@@ -75,9 +75,9 @@ Use this command to generate the Faust agents to process the source topics.
 
 .. note::
 
-  By default agents are generated under the ``./agents`` folder where kafka-aggregator runs.
+  By default agents are generated under  the ``agents`` folder from where kafka-aggregator runs.
 
-For the source topics initialized with the kafka-aggregator example module you should have this output:
+For the source topics initialized above, you should have an output similar to this one:
 
 .. code-block:: bash
 
@@ -103,39 +103,45 @@ For the source topics initialized with the kafka-aggregator example module you s
   [2020-07-06 18:30:59,156] [54727] [INFO] [^Worker]: Closing event loop
 
 
-Starting a worker
-=================
+Running the Faust agents
+========================
 
-Use this command to start a kafka-aggregator worker:
+Start a kafka-aggregator worker:
 
 .. code-block:: bash
 
   kafkaaggregator -l info worker
 
-
-Producing messages
-==================
-
-On another terminal use this command to produce messages for the source topics. This command produces 6000 messages at 10Hz.
+On another terminal produce messages for the source topics. For example, the following will produce 6000 messages at 10Hz.
 
 .. code-block:: bash
 
   kafkaaggregator -l info produce --frequency 10 --max-messages 6000
 
-You can use `Confluent Control Center <http://localhost:9021>`_ to inspect the messages for the source and aggregation topics or use the following from the command line:
+As soon as new messages are produced, you should see the worker processing the source topics.
+
+
+Inspecting the results
+======================
+
+You can inspect the messages produced for the source and aggregated topics with the following:
 
 .. code-block:: bash
 
   docker-compose exec broker /bin/bash
   root@broker:/# kafka-console-consumer --bootstrap-server broker:9092 --topic example-000
   ...
-  root@broker:/# kafka-console-consumer --bootstrap-server broker:9092 --topic example-000-aggregated
+  root@broker:/# kafka-console-consumer --bootstrap-server broker:9092 --topic aggregated-example-000
 
 
-Inspecting the consumer lag
-===========================
+Consumer lag
+============
 
-An important aspect to look at is the consumer lag for the ``kafkaaggregator`` consumers. An advantage of Faust is that you can easily add more workers to distribute the workload of the application. If the source topics are created with multiple partitions, individual partitions are assigned to different workers.
+An important aspect to look at is the lag for the ``kafkaaggregator`` consumers.
+
+....
+
+An advantage of Faust is that you can easily add more workers to distribute the workload of the application. If the source topics are created with multiple partitions, individual partitions are assigned to different workers.
 
 
 Internal vs. external managed topics
