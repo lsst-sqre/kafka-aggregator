@@ -34,7 +34,6 @@ class AggregationExample:
     kafka-aggregator application.
     """
 
-    MAX_NTOPICS = 999
     MAX_NFIELDS = 999
 
     def __init__(self, config_file: Path) -> None:
@@ -45,7 +44,7 @@ class AggregationExample:
         aggregator_config = AggregatorConfig(config_file)
         self._source_topics = aggregator_config.source_topics
 
-    def make_fields(self) -> List[Field]:
+    def _make_fields(self) -> List[Field]:
         """Make fields for the example topics.
 
         Returns
@@ -60,47 +59,34 @@ class AggregationExample:
             fields.append(Field(name=f"value{n}", type=float))
         return fields
 
-    def create_record(self, name: str) -> Record:
-        """Create a Faust-avro Record class for the source topic.
+    async def init_topics(self, app: faust_avro.App) -> None:
+        """Initialize source topics for the kafka-aggregator example.
 
-        With a Faust-avro Record for the source topic it is possible
-        to produce messages in Avro format for the aggregation example,
-        instead of using ``value_type=bytes``.
-
-        Returns
-        -------
-        record : `Record`
-            Faust-avro Record class for the source topic.
-        """
-        logger.info(f"Make Faust record for topic {name}.")
-        cls_name = name.title().replace("-", "")
-        fields = self.make_fields()
-        self._record = self._create_record(
-            cls_name=cls_name,
-            fields=fields,
-            doc=f"Faust record for topic {name}.",
-        )
-        return self._record
-
-    async def initialize(self, app: faust_avro.App) -> None:
-        """Initialize source topics for the aggregation example.
-
-        To initialize the topic, its schema needs to be registered in
-        the Schema Registry and the topic itself needs to be created in Kafka.
+        Create the faust_avro.Record for the source topics, create
+        and register their Avro schemas with the Schema Registry.
+        Create the topics in Kafka
 
         Parameters
         ----------
         app : `faust_avro.App`
             Faust application
         """
+        # All source topics in the kafka-aggregator example have
+        # the same fields
+        fields = self._make_fields()
+        topics = []
         for topic in self._source_topics:
-            source_topic = SourceTopicSchema(name=topic)
-            record = self.create_record(name=topic)
-            schema = record.to_avro(registry=source_topic._registry)
-            await source_topic.register(schema=json.dumps(schema))
-            # Declare the source topic as an internal topic in Faust.
-            internal_topic = app.topic(topic, value_type=record, internal=True)
-            await internal_topic.declare()
+            # Create the faust_avro.Record
+            record = self._create_record(topic, fields)
+            # Create and register the Avro schema
+            source_topic = SourceTopicSchema(topic)
+            avro_schema = record.to_avro(registry=source_topic._registry)
+            await source_topic.register(schema=json.dumps(avro_schema))
+            # Create topic in Kafka, internal means that the number of
+            # partitions is configured by Faust
+            _topic = app.topic(topic, value_type=record, internal=True)
+            await _topic.declare()
+            topics.append(_topic)
 
     async def produce(
         self, app: faust_avro.App, frequency: float, max_messages: int
@@ -132,15 +118,14 @@ class AggregationExample:
                 value = random.random()
                 message.update({f"value{n}": value})
             # The same message is sent for all source topics
-            for topic in self._source_topics:
-                source_topic = app.topic(topic)
-                await source_topic.send(value=message)
+            for topic in self._faust_topics:
+                await faust_topic.send(value=message)
                 send_count += 1
 
             await asyncio.sleep(1 / frequency)
             # Allow for an indefinite loop if max_messages is a number
             # smaller than 1
             count += 1
-            if count == max_messages:
+            if count > max_messages:
                 logger.info(f"{send_count} messages sent.")
                 break
