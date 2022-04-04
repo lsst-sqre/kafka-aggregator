@@ -576,9 +576,9 @@ pluggy==1.0.0 \
     --hash=sha256:4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159 \
     --hash=sha256:74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3
     # via pytest
-pre-commit==2.17.0 \
-    --hash=sha256:725fa7459782d7bec5ead072810e47351de01709be838c2ce1726b9591dad616 \
-    --hash=sha256:c1a8040ff15ad3d648c70cc3e55b93e4d2d5b687320955505587fd79bbaed06a
+pre-commit==2.18.1 \
+    --hash=sha256:02226e69564ebca1a070bd1f046af866aa1c318dbc430027c50ab832ed2b73f2 \
+    --hash=sha256:5d445ee1fa8738d506881c5d84f83c62bb5be6b2838e32207433647e8e5ebe10
     # via -r requirements/dev.in
 py==1.11.0 \
     --hash=sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719 \
@@ -823,9 +823,9 @@ tomli==2.0.1 \
     #   coverage
     #   mypy
     #   pytest
-types-aiofiles==0.8.5 \
-    --hash=sha256:567ace1ecd918542f23c2f05deaca48779df18f020aafe35ea0c7f60f61fd710 \
-    --hash=sha256:e1867580b1305735ed75854c68096627b3ddb6059b22dd3e089304b398bba0ef
+types-aiofiles==0.8.6 \
+    --hash=sha256:40990251efa28ba60cac411221eb35ebb4b34cfef2b56f4d5f01054b06fbbbe8 \
+    --hash=sha256:ebf8b9a17f4128d095cbb7c523379b0764bd2dc0b3b4c79ec9dbb753561e07fb
     # via -r requirements/dev.in
 types-pyyaml==6.0.5 \
     --hash=sha256:2fd21310870addfd51db621ad9f3b373f33ee3cbb81681d70ef578760bd22d35 \
@@ -1008,7 +1008,7 @@ yarl==1.7.2 \
     #   aiohttp
     #   faust
     #   vcrpy
-zipp==3.7.0 \
-    --hash=sha256:9f50f446828eb9d45b267433fd3e9da8d801f614129124863f9c51ebceafb87d \
-    --hash=sha256:b47250dd24f92b7dd6a0a8fc5244da14608f3ca90a5efcd37a3b1642fac9a375
+zipp==3.8.0 \
+    --hash=sha256:56bf8aadb83c24db6c4b577e13de374ccfb67da2078beba1d037c17980bf43ad \
+    --hash=sha256:c4f6e5bbf48e74f7a38e7cc5b0480ff42b0ae5178957d564d18932525d5cf099
     # via importlib-metadata
