@@ -64,8 +64,10 @@ class WindowAggregation(BaseModel):
     """Size of the tumbling window in seconds used to aggregate messages."""
 
     window_expiration_seconds: int = 0
-    """Default Window expiration time in seconds. This parameter controls when the
-    callback function to process the expired window(s) is called.
+    """Default Window expiration time in seconds.
+
+    This parameter controls when the callback function to process the expired
+    window(s) is called.
     """
 
     min_sample_size: int = 2
