@@ -14,7 +14,7 @@
 #   - Runs a non-root user.
 #   - Sets up the entrypoint and port.
 
-FROM python:3.10.7-bullseye AS base-image
+FROM python:3.11.1-bullseye AS base-image
 
 # Update system packages
 COPY scripts/install-base-packages.sh .
