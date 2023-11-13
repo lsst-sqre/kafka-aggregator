@@ -6,6 +6,7 @@ from typing import Any, List, Mapping
 import pytest
 
 from kafkaaggregator.aggregator import Aggregator
+from kafkaaggregator.aggregator_config import AggregatorConfig
 from kafkaaggregator.fields import Field
 from kafkaaggregator.models import create_record
 
@@ -27,7 +28,7 @@ def aggregated_fields() -> List[Field]:
     fields = [
         Field("time", int),
         Field("count", int),
-        Field("window_size", float),
+        Field("window_size_seconds", float),
         Field("min_value", float, "value", "min"),
         Field("mean_value", float, "value", "mean"),
         Field("median_value", float, "value", "median"),
@@ -44,7 +45,7 @@ def expected_result() -> Mapping[str, Any]:
         "count": 3,
         "min_value": 1.0,
         "time": 1.0,
-        "window_size": 1.0,
+        "window_size_seconds": 1.0,
         "max_value": 3.0,
         "mean_value": 2.0,
         "median_value": 2.0,
@@ -64,7 +65,7 @@ def first_message_value(incoming_messages: List[Any]) -> Mapping[str, Any]:
         "count": 3,
         "min_value": incoming_messages[0]["value"],
         "time": 1.0,  # timestamp of the aggregated message
-        "window_size": 1.0,
+        "window_size_seconds": 1.0,
         "max_value": incoming_messages[0]["value"],
         "mean_value": incoming_messages[0]["value"],
         "median_value": incoming_messages[0]["value"],
@@ -90,10 +91,11 @@ def test_compute(
     expected_result: `dict`
         Dictionary with the expected result for the aggregated_message
     """
-    Agg = Aggregator(
-        configfile=config_dir.joinpath("aggregator_config.yaml"),
-        aggregated_topic="aggregated_example0",
-    )
+    config_file = config_dir.joinpath("aggregator_config.yaml")
+
+    aggregated_topic = AggregatorConfig(config_file).get("aggregated_example0")
+
+    Agg = Aggregator(aggregated_topic)
 
     # Mock the creation of the aggregated fields
     Agg._aggregated_fields = aggregated_fields
@@ -132,12 +134,11 @@ def test_compute_min_sample_size(
     expected_result: `dict`
         Dictionary with the expected result for the aggregated_message
     """
-    Agg = Aggregator(
-        configfile=config_dir.joinpath(
-            "aggregator_config_min_sample_size.yaml"
-        ),
-        aggregated_topic="aggregated_example0",
-    )
+    config_file = config_dir.joinpath("aggregator_config_min_sample_size.yaml")
+
+    aggregated_topic = AggregatorConfig(config_file).get("aggregated_example0")
+
+    Agg = Aggregator(aggregated_topic)
 
     # Mock the creation of the aggregated fields
     Agg._aggregated_fields = aggregated_fields

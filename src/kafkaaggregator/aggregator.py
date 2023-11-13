@@ -14,13 +14,12 @@ __all__ = ["Aggregator"]
 import asyncio
 import json
 import logging
-from pathlib import Path
 from statistics import StatisticsError
 from typing import Any, List
 
 from faust_avro import Record
 
-from kafkaaggregator.aggregator_config import AggregatorConfig
+from kafkaaggregator.aggregator_config import AggregatedTopic
 from kafkaaggregator.fields import Field
 from kafkaaggregator.models import create_record
 from kafkaaggregator.operations import (  # noqa: F401
@@ -30,7 +29,10 @@ from kafkaaggregator.operations import (  # noqa: F401
     q3,
     stdev,
 )
-from kafkaaggregator.topics import AggregatedTopic, SourceTopic
+from kafkaaggregator.topic_schema import (
+    AggregatedTopicSchema,
+    SourceTopicSchema,
+)
 
 logger = logging.getLogger("kafkaaggregator")
 
@@ -55,24 +57,29 @@ class Aggregator:
 
     logger = logger
 
-    def __init__(self, configfile: Path, aggregated_topic: str) -> None:
+    def __init__(self, aggregated_topic: AggregatedTopic) -> None:
 
-        self._aggregated_topic = AggregatedTopic(name=aggregated_topic)
+        self._name = aggregated_topic.name
 
-        config = AggregatorConfig(configfile).get(aggregated_topic)
-        self._operations = config.window_aggregation.operations
+        self._aggregated_topic_schema = AggregatedTopicSchema(name=self._name)
+
         self._window_size_secods = (
-            config.window_aggregation.window_size_seconds
+            aggregated_topic.window_aggregation.window_size_seconds
         )
-        self._min_sample_size = config.window_aggregation.min_sample_size
+        self._operations = aggregated_topic.window_aggregation.operations
+        self._min_sample_size = (
+            aggregated_topic.window_aggregation.min_sample_size
+        )
 
         # Supports the 1 source topic -> 1 aggregated topic case for the moment
-        source_topic = config.source_topics[0]
+        source_topic_name = aggregated_topic.source_topics[0]
 
-        self._source_topic = SourceTopic(name=source_topic)
-        self._fields = config.get(source_topic).fields
+        self._source_topic_schema = SourceTopicSchema(name=source_topic_name)
+
+        # TODO: return field names prefixed by source topic
+        self._fields = aggregated_topic.get(source_topic_name).fields
+
         self._create_record = create_record
-
         self._aggregated_fields: List[Field] = []
         self._record: Record = None
 
@@ -100,10 +107,10 @@ class Aggregator:
             List of aggregation fields.
         """
         time = Field(name="time", type=float)
-        window_size = Field(name="window_size", type=float)
+        window_size_seconds = Field(name="window_size_seconds", type=float)
         count = Field(name="count", type=int)
 
-        aggregated_fields = [time, window_size, count]
+        aggregated_fields = [time, window_size_seconds, count]
 
         for field in fields:
             # Only numeric fields are aggregated
@@ -119,64 +126,52 @@ class Aggregator:
 
         return aggregated_fields
 
-    async def create_record(self) -> Record:
-        """Create a Faust-avro Record class for the aggregation topic.
+    async def create_record_and_register(self) -> Record:
+        """Create a Faust Record and scehma for the aggregation topic."""
+        logger.info(f"Create Faust record for topic {self._name}.")
 
-        Returns
-        -------
-        record : `Record`
-            Faust-avro Record class for the aggreated topic.
-        """
-        aggregated_topic_name = self._aggregated_topic.name
-        logger.info(f"Create Faust record for topic {aggregated_topic_name}.")
+        cls_name = self._name.title().replace("-", "")
 
-        cls_name = aggregated_topic_name.title().replace("-", "")
+        # TODO: add ability to filter fields (use self._fields)
+        # The source fields are already validated when the
+        # AggregatedTopic object is created
 
-        # TODO: add ability to filter fields
-        source_fields = await self._source_topic.get_fields()
+        fields = await self._source_topic_schema.get_fields(self._fields)
 
         self._aggregated_fields = self._create_aggregated_fields(
-            source_fields, self._operations
+            fields, self._operations
         )
 
+        # Create Faust Record
         self._record = self._create_record(
             cls_name=cls_name,
             fields=self._aggregated_fields,
-            doc=f"Faust record for topic {aggregated_topic_name}.",
+            doc=f"Faust record for topic {self._name}.",
         )
 
-        await self._register(self._record)
+        logger.info(f"Register Avro schema for topic {self._name}.")
+
+        # Convert Faust Record to Avro Schema
+        avro_schema = self._record.to_avro(
+            registry=self._aggregated_topic_schema._registry
+        )
+
+        # Register Avro Schema with Schema Registry
+        await self._aggregated_topic_schema.register(
+            schema=json.dumps(avro_schema)
+        )
 
         return self._record
 
-    def async_create_record(self) -> Record:
+    def async_create_record_and_register(self) -> None:
         """Sync call to ``async create_record()``.
 
-        Get the current event loop and call the async ``create_record()``
+        Get the current event loop and call the async
+        ``create_record_and_register()``
         method.
-
-        Returns
-        -------
-        record : `Record`
-            Faust-avro Record class for the aggreation topic.
         """
         loop = asyncio.get_event_loop()
-        record = loop.run_until_complete(self.create_record())
-        return record
-
-    async def _register(self, record: Record) -> None:
-        """Register the Avro schema for the aggregation topic.
-
-        Parameters
-        ----------
-        record: `Record`
-            Faust-avro Record for the aggregation model.
-        """
-        topic_name = self._aggregated_topic.name
-        logger.info(f"Register Avro schema for topic {topic_name}.")
-        schema = record.to_avro(registry=self._aggregated_topic._registry)
-
-        await self._aggregated_topic.register(schema=json.dumps(schema))
+        loop.run_until_complete(self.create_record_and_register())
 
     def compute(
         self,
@@ -210,7 +205,7 @@ class Aggregator:
         aggregated_values = {
             "count": count,
             "time": time,
-            "window_size": self._window_size_secods,
+            "window_size_seconds": self._window_size_secods,
         }
 
         for aggregated_field in self._aggregated_fields:

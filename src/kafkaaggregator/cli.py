@@ -1,23 +1,21 @@
 """Command-line interface for kafkaaggregator."""
 
-__all__ = ["main", "produce", "init_example"]
+__all__ = ["main", "produce", "init_example", "generate_agents"]
 
 import logging
 from pathlib import Path
 
 from faust.cli import AppCommand, option
 
-from kafkaaggregator.app import app
+from kafkaaggregator.aggregator_config import AggregatorConfig
+from kafkaaggregator.app import app, config
 from kafkaaggregator.config import ExampleConfiguration
-from kafkaaggregator.example import (
-    AggregationExample,
-    UnexpectedNumberOfTopicsError,
-)
+from kafkaaggregator.example.example import AggregationExample
 from kafkaaggregator.generator import AgentGenerator
 
 logger = logging.getLogger("kafkaaggregator")
 
-config = ExampleConfiguration()
+example_config = ExampleConfiguration()
 
 
 def main() -> None:
@@ -29,43 +27,90 @@ def main() -> None:
     option(
         "--frequency",
         type=float,
-        default=config.frequency,
+        default=example_config.frequency,
         help="The frequency in Hz in wich messages are produced.",
         show_default=True,
     ),
     option(
         "--max-messages",
         type=int,
-        default=config.max_messages,
+        default=example_config.max_messages,
         help="The maximum number of messages to produce.",
+        show_default=True,
+    ),
+    option(
+        "--config-file",
+        type=str,
+        default=config.aggregator_config_file,
+        help="Aggregator configuration file.",
         show_default=True,
     ),
 )
 async def produce(
-    self: AppCommand, frequency: float, max_messages: int
+    self: AppCommand, frequency: float, max_messages: int, config_file: str
 ) -> None:
     """Produce messages for the aggregation example."""
-    example = AggregationExample()
+    example = AggregationExample(Path(__file__).parent.joinpath(config_file))
 
     try:
         await example.produce(
             app=app, frequency=frequency, max_messages=max_messages
         )
-    except UnexpectedNumberOfTopicsError as e:
+    except Exception as e:
         logger.error(e)
 
 
-@app.command()
-async def init_example(self: AppCommand) -> None:
+@app.command(
+    option(
+        "--config-file",
+        type=str,
+        default=config.aggregator_config_file,
+        help="Aggregator configuration file.",
+        show_default=True,
+    ),
+)
+async def init_example(self: AppCommand, config_file: str) -> None:
     """Initialize the source topic used in the aggregation example."""
-    example = AggregationExample()
+    example = AggregationExample(Path(__file__).parent.joinpath(config_file))
     await example.initialize(app=app)
 
 
-@app.command()
-async def generate_agents(self: AppCommand) -> None:
+@app.command(
+    option(
+        "--template-file",
+        type=str,
+        default=config.agent_template_file,
+        help="Name of the agent Jinja2 template file.",
+        show_default=True,
+    ),
+    option(
+        "--output-dir",
+        type=str,
+        default=config.agents_output_dir,
+        help="Name of output directory for the agents' code.",
+        show_default=True,
+    ),
+    option(
+        "--config-file",
+        type=str,
+        default=config.aggregator_config_file,
+        help="Aggregator configuration file.",
+        show_default=True,
+    ),
+)
+async def generate_agents(
+    self: AppCommand,
+    config_file: str,
+    template_file: str,
+    output_dir: str,
+) -> None:
     """Generate Faust agents' code."""
-    agent_generator = AgentGenerator(
-        Path("aggregator_config.yaml"), "aggregated_example0"
-    )
-    await agent_generator.run()
+    config_file_path = Path(__file__).parent.joinpath(config_file)
+    aggregator_config = AggregatorConfig(config_file_path)
+
+    for aggregated_topic in aggregator_config.aggregated_topics:
+
+        agent_generator = AgentGenerator(
+            config_file_path, aggregated_topic, template_file, output_dir
+        )
+        await agent_generator.run()

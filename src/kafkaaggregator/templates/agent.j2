@@ -1,15 +1,17 @@
-"""Faust agent for the {{ source_topic_name }} topic.
+"""Faust agent for the {{ aggregated_topic }} topic.
 
-The Faust agent persists the messages for the source topic in tumbling windows.
+The agent (strem processor) persists the messages from the source stream
+into a Faust table configured as a tumbling window.
 See https://faust.readthedocs.io/en/latest/userguide/tables.html#windowing
 
-If the source topic is produced at a constant rate, the number of messages
-aggregated in each window is n = window_size * frequency. The window range is
-relative to the timestamp in the Kafka stream.
+If the source stream is produced at a constant rate, the number of messages
+aggregated in each window is given by n = window_size * frequency.
+
+Note that the window range is relative to the timestamp in the stream.
 
 The window_expires parameter controls when the callback function that
-processes the expired window(s) is called. When a window is processed, a new
-message is produced with the aggregated results.
+processes the window is called. When a window is processed, a new
+message is produced to the aggregated topic.
 """
 
 __all__ = [
@@ -24,30 +26,27 @@ from faust import web
 from faust.types import StreamT
 
 from kafkaaggregator.aggregator import Aggregator
-from kafkaaggregator.app import app, config
+from kafkaaggregator.aggregator_config import AggregatorConfig
+from kafkaaggregator.app import app
 
 logger = logging.getLogger("kafkaaggregator")
 
+aggregator_config = AggregatorConfig("{{ config_file }}").get("{{ aggregated_topic }}")
 
-# Topic names for the example are obtained from the configuration
-aggregator = Aggregator(
-    source_topic_name="{{ source_topic_name }}",
-    aggregation_topic_name="{{ aggregation_topic_name }}",
-    excluded_field_names=config.excluded_field_names,
-    operations=config.operations,
-)
+# Source stream
+source_topic = app.topic(aggregator_config.source_topics[0])
 
-# The Faust Record for the aggregation topic is created at runtime
-{{ cls_name }} = aggregator.async_create_record()
+aggregator = Aggregator(aggregator_config)
 
-source_topic = app.topic("{{ source_topic_name }}")
+# The Faust Record for the aggregated topic is created at runtime
+{{ cls_name }} = aggregator.async_create_record_and_register()
 
-aggregation_topic = app.topic(
-    "{{ aggregation_topic_name }}",
+# Aggregated stream
+aggregated_topic = app.topic(
+    "{{ aggregated_topic }}",
     value_type={{ cls_name }},
     internal=True
 )
-
 
 def process_window(key: Tuple, value: List[Any]) -> None:
     """Process a window and send an aggregated message.
@@ -74,41 +73,45 @@ def process_window(key: Tuple, value: List[Any]) -> None:
 
     aggregated_message = aggregator.compute(
         time=time,
-        window_size=config.window_size,
-        min_sample_size=config.min_sample_size,
         messages=value
     )
 
-    aggregation_topic.send_soon(value=aggregated_message)
+    aggregated_topic.send_soon(value=aggregated_message)
 
     logger.info(
         f"{aggregated_message.count:5d} messages aggregated on "
-        f"{{ source_topic_name }}-tumbling-window ({start:.2f}, "
+        f"{{ aggregated_topic }}-tumbling-window ({start:.2f}, "
         f"{(end + 0.1):.2f})."
     )
 
 
-# Tumbling window to persist source topic messages, the process_window
+# Tumbling window to persist messages from the source stream, the process_window
 # callback is called when the window expires. The window range is relative to
-# the timestamp added by Kafka.
+# the stream timestamp.
+
+window_size_seconds = aggregator_config.window_aggregation.window_size_seconds
+window_expiration_seconds = (
+    aggregator_config.window_aggregation.window_expiration_seconds
+)
+
 table = (
     app.Table(
-        "{{ source_topic_name }}-tumbling-window",
+        "{{ aggregated_topic }}-tumbling-window",
         default=list,
         on_window_close=process_window,
-        help=f"Persit messages in windows of " f"{config.window_size}s.",
+        help=f"Persit messages in tumbling windows of {window_size_seconds}s.",
     )
-    .tumbling(config.window_size, expires=config.window_expires)
+    .tumbling(window_size_seconds, window_expiration_seconds)
     .relative_to_stream()
 )
 
 
 @app.agent(source_topic)
 async def process_source_topic(stream: StreamT) -> AsyncGenerator:
-    """Process incoming messages for the {{ source_topic_name }} topic."""
+    """Process incoming messages from the source topic."""
     async for message in stream:
-        messages = table["{{ source_topic_name }}"].value()
+        messages = table[source_topic].value()
         messages.append(message)
-        table["{{ source_topic_name }}"] = messages
+        table[source_topic] = messages
 
         yield message

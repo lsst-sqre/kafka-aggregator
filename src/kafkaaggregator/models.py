@@ -2,7 +2,7 @@
 
 __all__ = ["create_record"]
 
-from typing import Any, List, Mapping
+from typing import Any, List, Mapping, Optional
 
 from faust_avro import Record
 
@@ -10,18 +10,18 @@ from kafkaaggregator.fields import Field
 
 
 def create_record(
-    cls_name: str, fields: List[Field], doc: str = None
+    topic_name: str, fields: List[Field], doc: Optional[str] = None
 ) -> Record:
     """Create a Faust-avro Record class during runtime.
 
     Parameters
     ----------
-    cls_name: `str`
-        Name of the new class to create.
+    topic_name: `str`
+        Name of the topic to create the faust_avro.Record for.
     fields: `list` [`Field`]
-        List of tuples mapping field names and types for the Faust-avro Record.
+        List of tuples mapping field names and types for the faust_avro.Record.
     doc: `str`
-        Docstring for the new class.
+        Docstring for the faust_avro.Record, if not provided create one.
 
     Returns
     -------
@@ -40,7 +40,11 @@ def create_record(
     {'bar': 0, '__faust': {'ns': '__main__.Foo'}}
 
     """
+    cls_name = topic_name.title().replace("-", "")
     _fields: Mapping[str, Any] = dict([f.astuple() for f in fields])
+
+    if doc is None:
+        doc = f"Faust Record for topic {topic_name}"
 
     cls_attrs = dict(
         __annotations__=_fields,

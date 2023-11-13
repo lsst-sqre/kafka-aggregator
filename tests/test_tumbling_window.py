@@ -1,4 +1,4 @@
-"""Test example package."""
+"""Test Faust tumbling window."""
 
 import pytest
 from faust.windows import TumblingWindow

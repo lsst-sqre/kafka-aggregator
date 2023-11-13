@@ -21,4 +21,4 @@ There is a Helm chart for kafka-aggregator available from the `Rubin Observatory
 Argo CD
 =======
 
-kafka-aggregator aaa is deployed using Argo CD. An example of Argo CD app using the Helm chart can be found `here <https://github.com/lsst-sqre/argocd-efd/tree/master/apps/kafka-aggregator>`_.
+kafka-aggregator is deployed using Argo CD. An example of Argo CD app using the Helm chart can be found `here <https://github.com/lsst-sqre/argocd-efd/tree/master/apps/kafka-aggregator>`_.

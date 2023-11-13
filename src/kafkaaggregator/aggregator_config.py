@@ -1,7 +1,7 @@
 """Pydantic models for the aggregator configuration."""
 
 from pathlib import Path
-from typing import Any, List, Mapping, Optional
+from typing import Any, List, Mapping, Optional, Set
 
 import yaml
 from pydantic import BaseModel, validator
@@ -160,6 +160,14 @@ class AggregatorConfig:
         for topic in self._config.aggregated_topics:
             aggregated_topic.append(topic.name)
         return aggregated_topic
+
+    @property
+    def source_topics(self) -> Set:
+        """Return all source topics in the aggregator config."""
+        source_topics: Set = set()
+        for topic in self._config.aggregated_topics:
+            source_topics.update(topic.source_topics)
+        return source_topics
 
     def get(self, aggregated_topic: str) -> AggregatedTopic:
         """Get aggregated topic object by its name."""
